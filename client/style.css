@@ -1,0 +1,78 @@
+body {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px 0;
+}
+
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+}
+
+.container-wrraper {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+.container-wrraper p {
+    padding: 0;
+}
+
+#container-scroll {
+    margin-top: 10px;
+    /* border: 1px solid; */
+    padding: 20px;
+    height: 250px;
+    overflow-y: scroll;
+}
+
+#message-input {
+    margin-bottom: 5px;
+}
+#lucky-input {
+    margin-bottom: 2px;
+}
+#reset-user {
+    float: right;
+}
+
+.container-winner {
+    border: 1px solid #ccc;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#luck-number {
+    color: red;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#time-reset {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#time-reset span {
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.setting {
+    /* border-bottom: 1px solid #ccc; */
+    padding-bottom: 5px;
+    padding-top: 2px;
+}
+
+.viewers { 
+    float: right;
+    margin-top: -20px;
+}
