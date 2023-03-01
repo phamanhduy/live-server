@@ -10,6 +10,7 @@ body {
     border-radius: 5px;
     padding: 5px;
     margin: 10px 0;
+    position: relative;
 }
 
 .darker {
@@ -33,6 +34,22 @@ body {
     height: 250px;
     overflow-y: scroll;
 }
+
+#container-scroll::-webkit-scrollbar {
+    width: 5px;               /* width of the entire scrollbar */
+    border-radius: 2px;
+  }
+  
+  #container-scroll::-webkit-scrollbar-track {
+    background: rgb(161, 161, 161);        /* color of the tracking area */
+  }
+  
+  #container-scroll::-webkit-scrollbar-thumb {
+    background-color: blue;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid rgb(75, 75, 75);  /* creates padding around scroll thumb */
+  }
+ 
 
 #message-input {
     margin-bottom: 5px;
@@ -75,4 +92,17 @@ body {
 .viewers { 
     float: right;
     margin-top: -20px;
+}
+
+.lucky-number{
+    float: right;
+    position: absolute;
+    right: 11px;
+    z-index: 20;
+    background: #6155ff;
+    padding: 6px;
+    color: #FFF;
+    top: -1px;
+    /* height: 100%; */
+    border-radius: 5px;
 }

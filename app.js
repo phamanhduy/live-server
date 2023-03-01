@@ -6,6 +6,7 @@ const fs = require('fs');
 const cors = require('cors');
 const db = require('./db');
 const usersComment = require('./models/usersComment');
+const getLuckyNumberInText = require('./calculate');
 
 const app = express();
 app.use(cors());
@@ -44,13 +45,24 @@ app.post('/api/setData', (req, res) => {
   let data = req.body;
   let userData = data.userData;
   const arrayHref = data.location.split('/');
-  // console.log({data})
-  io.emit(arrayHref[3], data);
-  usersComment.importMessage({
+  console.log({data})
+  const luckyNumber = getLuckyNumberInText.getLuckyNumberInText(userData.textMessage);
+  console.log({
     ...userData,
-    channel: arrayHref[3],
-    viewers: data.viewers
+    luckyNumber,
+    viewers: data.viewers,
   })
+  io.emit(arrayHref[3], {
+    ...userData,
+    luckyNumber,
+    viewers: data.viewers,
+  });
+  // usersComment.importMessage({
+  //   ...userData,
+  //   channel: arrayHref[3],
+  //   viewers: data.viewers,
+  //   luckyNumber,
+  // })
   res.send('User created successfully');
   // fs.exists(`./data/${arrayHref[3]}.json`, function(exists) {
   //   fs.writeFileSync(`./data/${arrayHref[3]}.json`, JSON.stringify(data));

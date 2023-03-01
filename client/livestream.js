@@ -59,17 +59,17 @@ const usersJoined = [];
 function htmlMessage(msg) {
   console.log({msg})
   let html = '';
-  let userData = msg.userData;
   usersJoined.push({
-    avatar: userData.avatar,
-    message: userData.textMessage,
-    fullname: userData.userNameElement,
+    avatar: msg.avatar,
+    message: msg.textMessage,
+    fullname: msg.userNameElement,
   });
   for (let i = 0; i < usersJoined.length; i++) {
     const element = usersJoined[i];
       html += `<div class="container">
         <strong>${element.fullname}: </strong>
         <span>${element.message}</span>
+        ${element.luckyNumber ? `<span id='lucky-number'>${element.luckyNumber}</span>` : ''}
       </div>`;
   }
   document.getElementById('container-scroll').innerHTML = html;
@@ -141,7 +141,7 @@ function startTimer(duration) {
     }, 1000);
 }
 setTimeout(() => {
-  startTimer(getSesstion()?.timeInput);
+  startTimer(getSesstion()?.timeInput || 300);
 }, 500)
 
 function scrollBottom() {

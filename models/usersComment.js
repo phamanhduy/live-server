@@ -35,6 +35,7 @@ async function importMessage(data) {
     avatar: data.avatar,
     comment: data.textComment,
     viewers: data.viewers,
+    numberLucky: data.luckyNumber,
   };
   add(dataInsert);
 }
