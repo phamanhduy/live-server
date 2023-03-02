@@ -8,9 +8,10 @@ body {
     border: 2px solid #dedede;
     background-color: #f1f1f1;
     border-radius: 5px;
-    padding: 5px;
-    margin: 10px 0;
+    padding: 2px;
+    margin: 3px 0;
     position: relative;
+    height: 37px;
 }
 
 .darker {
@@ -30,7 +31,7 @@ body {
 #container-scroll {
     margin-top: 10px;
     /* border: 1px solid; */
-    padding: 20px;
+    padding: 10px;
     height: 250px;
     overflow-y: scroll;
 }
@@ -94,15 +95,31 @@ body {
     margin-top: -20px;
 }
 
-.lucky-number{
+.lucky-number {
     float: right;
     position: absolute;
-    right: 11px;
+    right: 5px;
     z-index: 20;
     background: #6155ff;
-    padding: 6px;
+    padding: 5px;
     color: #FFF;
-    top: -1px;
+    top: 1px;
     /* height: 100%; */
-    border-radius: 5px;
+    border-radius: 7px;
+    width: 30px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 24px;
 }
+
+.avatar {
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+  }
+
+  .left {
+    float: left;
+    margin-right: 3px;
+  }

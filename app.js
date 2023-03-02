@@ -42,31 +42,33 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/setData', (req, res) => {
-  let data = req.body;
-  let userData = data.userData;
-  const arrayHref = data.location.split('/');
-  console.log({data})
-  const luckyNumber = getLuckyNumberInText.getLuckyNumberInText(userData.textMessage);
-  console.log({
-    ...userData,
-    luckyNumber,
-    viewers: data.viewers,
-  })
-  io.emit(arrayHref[3], {
-    ...userData,
-    luckyNumber,
-    viewers: data.viewers,
-  });
-  // usersComment.importMessage({
-  //   ...userData,
-  //   channel: arrayHref[3],
-  //   viewers: data.viewers,
-  //   luckyNumber,
-  // })
-  res.send('User created successfully');
-  // fs.exists(`./data/${arrayHref[3]}.json`, function(exists) {
-  //   fs.writeFileSync(`./data/${arrayHref[3]}.json`, JSON.stringify(data));
-  // });
+  try {
+    let data = req.body;
+    const arrayHref = data.location.split('/');
+    let userData = data.userData;
+    // console.log({data})
+    const luckyNumber = getLuckyNumberInText.getLuckyNumberInText(userData?.textMessage || '');
+    console.log({luckyNumber})
+    io.emit(arrayHref[3], {
+      ...userData,
+      luckyNumber,
+      viewers: data.viewers,
+      type: data?.type,
+    });
+  
+    // usersComment.importMessage({
+    //   ...userData,
+    //   channel: arrayHref[3],
+    //   viewers: data.viewers,
+    //   luckyNumber,
+    // })
+    res.send('User created successfully');
+    // fs.exists(`./data/${arrayHref[3]}.json`, function(exists) {
+    //   fs.writeFileSync(`./data/${arrayHref[3]}.json`, JSON.stringify(data));
+    // }); 
+  } catch (error) {
+    console.log({error})
+  }
 });
 
 server.listen(3000, () => {
