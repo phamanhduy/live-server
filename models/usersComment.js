@@ -39,7 +39,7 @@ async function getMemberRamdom() {
     channel: '@thuymoyuum',
   }).then(async (updated) => updated).catch(async (err) => err);
 }
-// db.myCollection.aggregate([{ $sample: { size: 1 } }])
+
 async function getRamdom() {
   return await UsersComment.aggregate([{ $sample: { size: 1 } }]).then(async (updated) => updated).catch(async (err) => err);
 }

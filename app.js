@@ -85,7 +85,8 @@ app.post('/api/setData', (req, res) => {
   try {
     let data = req.body;
     let userData = data.userData;
-    if (_.get(data, 'type') === 'comment') {
+    console.log({data})
+    if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live') {
       io.emit(data?.liver, {
         ...userData,
         type: data?.type,
@@ -110,7 +111,7 @@ app.post('/api/setData', (req, res) => {
       });
     }
 
-    res.send('User created successfully');
+    res.send('1');
   } catch (error) {
     console.log({error})
   }

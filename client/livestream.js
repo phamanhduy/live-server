@@ -138,11 +138,29 @@ function htmlMessage(msg) {
           luckNumber = element.luckyNumber;
         }
       }
-      // let randomColor = contrastColors[Math.floor(Math.random() * contrastColors.length)]
+
+      let avatar = element.avatar;
+      let message = element.message;
+      let fullname = element.fullname;
+      if (_.includes(element.message, 'followed the host')) {
+        avatar = 'http://cdn.onlinewebfonts.com/svg/img_193993.png';
+        fullname = ` <span>Cảm ơn <strong style="color: red;">${element.fullname}</strong> đã Follow live nhé</span>`;
+        message = '';
+      } else  if (_.includes(element.message, 'shared the')) {
+        avatar = 'https://cdn-icons-png.flaticon.com/512/25/25702.png';
+        fullname = ` <span>Cảm ơn <strong style="color: red;">${element.fullname}</strong> đã chia sẻ live nhé </span>`;
+        message = '';
+      } else if (_.includes(element.message, 'liked the LIVE')) {
+        message = '';
+        fullname = `  <span>Cảm ơn <strong style="color: red;">${element.fullname}</strong> đã thả tim live nhé</span>`;
+        avatar = 'https://img.lovepik.com/free-png/20210918/lovepik-heart-shaped-png-image_400222937_wh1200.png';
+      }
+
+      // let randomColor = contrastColors[Math.floor(Math.random() * cont rastColors.length)]
       html += `<div class="container">
-        <div class='left'><img src="${element.avatar}" alt="Avatar" class="avatar"></div>
-        <strong>${element.fullname}: </strong>
-        <span>${element.message}</span>
+        <div class='left'><img src="${avatar}" alt="Avatar" class="avatar"></div>
+        <strong>${fullname} </strong>
+        <span>${message}</span>
         ${luckNumber != '' ? `<span class='lucky-number'>${luckNumber}</span>` : ''}
       </div>`;
   }
