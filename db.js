@@ -4,7 +4,6 @@ require('./models');
 async function init() {
   try {
     const DB_URI = 'mongodb://127.0.0.1:27017/livestream';
-    console.log('111111111')
     await mongoose.connect(DB_URI, { 
       useNewUrlParser: true,
       useUnifiedTopology: true

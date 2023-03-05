@@ -3,16 +3,55 @@ const socket = io("http://localhost:3000");
 const messageList = document.getElementById('messages');
 const messageForm = document.querySelector('form');
 const messageInput = document.getElementById('message-input');
-const contrastColors = ['#000000', '#555555', '#006600', '#990000', '#006699', '#660066', '#FF6600', '#336633', '#333399', '#FF3333', '#33FF33', '#3333FF', '#FFFF33', '#FF33FF', '#33FFFF', '#CC3300', '#0066CC', '#CC0066', '#00CC66', '#6600CC'];
+// const contrastColors = ['#000000', '#555555', '#006600', '#990000', '#006699', '#660066', '#FF6600', '#336633', '#333399', '#FF3333', '#33FF33', '#3333FF', '#FFFF33', '#FF33FF', '#33FFFF', '#CC3300', '#0066CC', '#CC0066', '#00CC66', '#6600CC'];
+const luotView = [{
+  soview: 100,
+  money: 5.000,
+  soview: 200,
+  money: 10.000,
+  soview: 100,
+  money: 10.000,
+}]
 let isUserActive = false;
 let userData = false;
 let isScrollBottom = false;
 let timeInterval;
-// var regex = /\d+/g;
-// var string = "you can enter 600 maximum 500 choices 4";
-// var matches = string.match(regex);  // creates array from matches
+let runningTime = false;
+let luckyNumberFix;
 
-// document.write(matches);
+const ramdomTime = [5000, 12000, 10000, 20000, 8000, 10000, 5000, 20000];
+
+function ramdomAuto() {
+  const numRandom = randomArr(ramdomTime);
+  fetch('http://localhost:3000/api/get-member-random')
+  .then(response => response.json())
+  .then(data => {
+    if (data[0].name) {
+      let newStr = data[0].name.slice(0, 3) + "**" + data[0].name.slice(3, 5);
+      document.getElementById('shopping').innerHTML = `${newStr} đang mua`
+    }
+  })
+  .catch(error => {
+    console.error('Lỗi:', error);
+  });
+
+  document.querySelector('.shoping').classList.add('move');
+
+  setTimeout(() => {
+    document.querySelector('.shoping').classList.remove('move');
+  }, 3000);
+  setTimeout(() => {
+    ramdomAuto();
+  }, numRandom);   
+}
+
+function randomArr(array) {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+setTimeout(() => {
+  ramdomAuto();
+}, 2000);
 getUserSecsion();
 
 function getSesstion() {
@@ -40,12 +79,10 @@ function setInputItem() {
   timeInput.value = userData?.timeInput || '';
   maxNumber.value = userData?.maxNumber || '';
   username.value = userData?.username || '';
-  // username.disabled = true;
-  // buttonInput.disabled = true;
 }
 function getUserSecsion() {
   if (sessionStorage.getItem('user')) {
-    userData = JSON.parse(sessionStorage.getItem('user'))
+    userData = JSON.parse(sessionStorage.getItem('user'));
     isUserActive = true;
     setTimeout(() => {
       setInputItem()
@@ -57,13 +94,21 @@ function getUserSecsion() {
         htmlMessage(msg);
         autoScrollBottom();
       });
+
+      socket.on('calculateTime_' + userData?.username, (msg) => {
+        if (msg.type === 'add') {
+          sessionStorage.setItem('sessionLucky', JSON.stringify(msg))
+        } else if (msg.type === 'winners') {
+          console.log({mesggg: msg})
+          runChungMung(msg);
+        }
+      });
     }, 500);
   }
 }
 const usersJoined = [];
 function htmlMessage(msg) {
   let maxLength = 0;
-
   if (parseInt(userData?.maxNumber) < 10) {
     maxLength = 1;
   } else if (parseInt(userData?.maxNumber) < 100) {
@@ -74,6 +119,9 @@ function htmlMessage(msg) {
     maxLength = 4;
   }
   let html = '';
+  if (usersJoined.length > 20) {
+    usersJoined.splice(0, 1)
+  }
   usersJoined.push({
     avatar: msg.avatar,
     message: msg.textMessage,
@@ -90,7 +138,7 @@ function htmlMessage(msg) {
           luckNumber = element.luckyNumber;
         }
       }
-      let randomColor = contrastColors[Math.floor(Math.random() * contrastColors.length)]
+      // let randomColor = contrastColors[Math.floor(Math.random() * contrastColors.length)]
       html += `<div class="container">
         <div class='left'><img src="${element.avatar}" alt="Avatar" class="avatar"></div>
         <strong>${element.fullname}: </strong>
@@ -101,7 +149,7 @@ function htmlMessage(msg) {
   document.getElementById('container-scroll').innerHTML = html;
 }
 
-function autoScrollBottom(params) {
+function autoScrollBottom() {
   if (sessionStorage.getItem('scroll')) {
     let scElm = document.getElementById('container-scroll');
     scElm.scrollTop = scElm.scrollHeight;
@@ -133,17 +181,21 @@ function usersJoinedFunction (style = false) {
     document.getElementById('luck-number').innerHTML = luckNumber;
     document.getElementById('luck-number').style.color = 'blue';
   }
+  return luckNumber;
 }
 
-function ramdomNumber(params) {
+function ramdomNumber(cb) {
+  runningTime = true;
   let rumdomTime = setInterval(() => {
-    usersJoinedFunction()
-  }, 50);
+    usersJoinedFunction();
+  }, 100);
 
   setTimeout(() => {
     clearInterval(rumdomTime);
     setTimeout(() => {
-      usersJoinedFunction(true);
+      runningTime = false;
+      luckyNumberFix = usersJoinedFunction(true);
+      cb(luckyNumberFix);
     }, 50);
   }, 5000);
 }
@@ -156,14 +208,40 @@ function startTimer(duration) {
       minutes = minutes < 10 ? "0" + minutes : minutes;
       seconds = seconds < 10 ? "0" + seconds : seconds;
       display.textContent = minutes + ":" + seconds;
-
+      if (timer === duration) {
+        calculateTime('start');
+      }
+      if (runningTime && timer === 0) {
+        return;
+      }
       if (--timer < 0) {
         timer = duration;
       }
       if (timer === 0) {
-        ramdomNumber();
+        ramdomNumber((number) => {
+          calculateTime('end', number);
+        });
       }
     }, 1000);
+}
+
+function calculateTime(time, number = null) {
+  if (time === 'start') {
+    socket.emit('calculateTime', {
+      time,
+      liver: userData?.username,
+      timeInput: userData?.timeInput,
+    })
+  } else if (time === 'end') {
+    socket.emit('calculateTime', {
+      viewers: document.getElementById('viewers')?.textContent,
+      time,
+      liver: userData?.username,
+      timeInput: userData?.timeInput,
+      luckyNumber: number,
+      ...JSON.parse(sessionStorage.getItem('sessionLucky')),
+    });
+  }
 }
 setTimeout(() => {
   startTimer(getSesstion()?.timeInput || 300);
@@ -189,3 +267,33 @@ function scrollActive() {
 setTimeout(() => {
   scrollActive();
 }, 500)
+
+function runChungMung(msg) {
+  function coverVND(string) {
+    return string.toLocaleString('vi', {style : 'currency', currency : 'VND'});
+  }
+  const data = msg.dataLive.winners[0];
+  document.getElementById("popup").style.display = "block";
+  document.getElementById("winner-popup").innerHTML= data?.name || 'Không có người trúng giải';
+  if (!data) {
+    setTimeout(() => {
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("money-popup").innerHTML = "";
+    }, 3000);
+    return;
+  }
+  document.getElementById("money-popup").innerHTML = `
+  <span style='color: blue; font-size: 20px'>Số: ${msg.dataLive.luckyNumber}</span><br>
+  <span style='color: red; font-size: 20px'>Số tiền: ${coverVND(msg.dataLive.numberPrize)}</span>`;
+  let chungMungIntertal = setInterval(() => {
+    getCongraguation();
+  }, 1000);
+
+  setTimeout(() => {
+    clearInterval(chungMungIntertal);
+    document.getElementById("popup").style.display = "none";
+    document.getElementById('canvas').remove()
+  }, 7000);
+  audioChungMung();
+}
+

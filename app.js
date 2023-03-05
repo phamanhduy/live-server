@@ -1,12 +1,14 @@
 const express = require('express');
+const _ = require('lodash');
+const moment = require('moment');
 const http = require('http');
 const socketIO = require('socket.io');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const cors = require('cors');
 const db = require('./db');
 const usersComment = require('./models/usersComment');
-const getLuckyNumberInText = require('./calculate');
+const liveSession = require('./models/liveSession');
+const getLuckyMember = require('./calculate');
 
 const app = express();
 app.use(cors());
@@ -35,6 +37,44 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
+
+  socket.on('calculateTime', async (data) =>  {
+    try {
+      const startTime = new Date();
+      if (data?.time === 'start') {
+        let dataLive = await liveSession.addSession({
+          channel: data?.liver,
+          startTime: startTime,
+          endTime: moment(startTime).add(data.timeInput, 'seconds'),
+          winners: [],
+        });
+        socket.emit('calculateTime_' + data?.liver, {
+          dataLive,
+          type: 'add',
+        });
+      } else if (data?.time === 'end') {
+        const listComment = await usersComment.listByTime({
+          channel: _.get(data, 'dataLive.channel'),
+          createdAt: {
+            $gte: _.get(data, 'dataLive.startTime'),
+            $lte: _.get(data, 'dataLive.endTime'),
+          }
+        });
+
+        const memberLucky = getLuckyMember.getMemberLuckyInSession(listComment, data.luckyNumber, data?.viewers);
+        socket.emit('calculateTime_' + data?.liver, {
+          dataLive: {
+            winners: [memberLucky],
+            numberPrize: getLuckyMember.calPrize({viewers: data?.viewers}),
+            luckyNumber: data.luckyNumber,
+          },
+          type: 'winners',
+        });
+      } 
+    } catch (error) {
+      console.log({error})
+    }
+  })
 });
 
 app.get('/', (req, res) => {
@@ -44,28 +84,42 @@ app.get('/', (req, res) => {
 app.post('/api/setData', (req, res) => {
   try {
     let data = req.body;
-    const arrayHref = data.location.split('/');
     let userData = data.userData;
-    // console.log({data})
-    const luckyNumber = getLuckyNumberInText.getLuckyNumberInText(userData?.textMessage || '');
-    console.log({luckyNumber})
-    io.emit(arrayHref[3], {
+    if (_.get(data, 'type') === 'comment') {
+      io.emit(data?.liver, {
+        ...userData,
+        type: data?.type,
+      });
+      res.send('1');
+      return;
+    }
+    const luckyNumber = getLuckyMember.getLuckyNumberInText(userData?.textMessage || '');
+    io.emit(data?.liver, {
       ...userData,
       luckyNumber,
       viewers: data.viewers,
       type: data?.type,
     });
-  
-    // usersComment.importMessage({
-    //   ...userData,
-    //   channel: arrayHref[3],
-    //   viewers: data.viewers,
-    //   luckyNumber,
-    // })
+
+    if (_.get(data, 'type') === 'comment') {
+      usersComment.importMessage({
+        ...userData,
+        channel: data?.liver,
+        viewers: data.viewers,
+        luckyNumber,
+      });
+    }
+
     res.send('User created successfully');
-    // fs.exists(`./data/${arrayHref[3]}.json`, function(exists) {
-    //   fs.writeFileSync(`./data/${arrayHref[3]}.json`, JSON.stringify(data));
-    // }); 
+  } catch (error) {
+    console.log({error})
+  }
+});
+
+app.get('/api/get-member-random', async (req, res) => {
+  try {
+    const userRandom = await usersComment.getRamdom();
+    res.send(userRandom);
   } catch (error) {
     console.log({error})
   }
