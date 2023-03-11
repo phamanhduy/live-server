@@ -20,15 +20,72 @@ let runningTime = false;
 let luckyNumberFix;
 
 const ramdomTime = [5000, 12000, 10000, 20000, 8000, 10000, 5000, 20000];
+const top45 = [{
+  name: 'Đình thái văn',
+  luckMoney: 20000,
+},
+{
+  name: 'Hương nguyễn',
+  luckMoney: 50000,
+}];
+const ranDomRating = (msg) => {
+  let winner = _.get(msg, 'dataLive.winners.0', false);
+  let top3 = [{
+    name: 'Duy phạm',
+    luckMoney: 600000,
+  }, {
+    name: 'Nợ đời',
+    luckMoney: 600000,
+  }, {
+    name: 'Thầy thiên hạ 102',
+    luckMoney: 1000000,
+  }, {
+    name: 'Em làm em chịu',
+    luckMoney: 300000,
+  }, {
+    name: 'Thời trang nam(cẩm tú)',
+    luckMoney: 600000,
+  }, {
+    name: 'Nguyễn Hằng',
+    luckMoney: 350000,
+  }];
+  if (_.get(winner, 'name', false)) {
+    top45.push({
+      name: winner?.name,
+      luckMoney: winner?.type === 'ramdom' ? winner?.prize : winner?.prizeNumber,
+    });
+    const totalWinnerss = sessionStorage.getItem('totalWinners');
+    if (!totalWinnerss) {
+      sessionStorage.setItem('totalWinners', JSON.stringify(350));
+    } else {
+      sessionStorage.setItem('totalWinners', parseInt(totalWinnerss) + 1);
+    }
+  }
+  if (top45.length > 2) {
+    top45.splice(0, 1)
+  }
+  let randomIndex = Math.floor(Math.random() * (top3.length - 2)); // Lấy một chỉ số ngẫu nhiên từ 0 đến 3 (length - 2 để tránh trường hợp chỉ số cuối cùng vượt quá độ dài của mảng)
+  let randomArrayTop3 = top3.slice(randomIndex, randomIndex + 3); // Lấy mảng bắt đầu từ chỉ số ngẫu nhiên và có độ dài 3
+  return {
+    totalWinners: sessionStorage.getItem('totalWinners'),
+    type: 'week',
+    listRatings: _.concat(randomArrayTop3, top45),
+  }
+}
 
+setTimeout(() => {
+  runRating()
+}, 500)
 function ramdomAuto() {
   const numRandom = randomArr(ramdomTime);
   fetch('http://localhost:3000/api/get-member-random')
   .then(response => response.json())
   .then(data => {
     if (data[0].name) {
-      let newStr = data[0].name.slice(0, 3) + "**" + data[0].name.slice(3, 5);
-      document.getElementById('shopping').innerHTML = `${newStr} đang mua`
+      let nameUser = _.get(data, '0.name', '');
+      nameUser = nameUser.replace(/[^\w\s]/gi, '');
+      nameUser = nameUser.slice(0, 3) + "**" + nameUser.slice(3, 5);
+      document.getElementById('shopping').innerHTML = `${nameUser} đang mua`;
     }
   })
   .catch(error => {
@@ -99,10 +156,11 @@ function getUserSecsion() {
         if (msg.type === 'add') {
           sessionStorage.setItem('sessionLucky', JSON.stringify(msg))
         } else if (msg.type === 'winners') {
-          console.log({mesggg: msg})
           runChungMung(msg);
+          runRating(msg);
         }
       });
+      // socket.emit('message_alo', {data: ''})
     }, 500);
   }
 }
@@ -286,23 +344,28 @@ setTimeout(() => {
   scrollActive();
 }, 500)
 
+function coverVND(string, currency = 'VND') {
+  return string.toLocaleString('vi', {style : 'currency', currency});
+}
+
 function runChungMung(msg) {
-  function coverVND(string) {
-    return string.toLocaleString('vi', {style : 'currency', currency : 'VND'});
-  }
-  const data = msg.dataLive.winners[0];
-  document.getElementById("popup").style.display = "block";
-  document.getElementById("winner-popup").innerHTML= data?.name || 'Không có người trúng giải';
-  if (!data) {
+  console.log({msg})
+  const data = _.get(msg, 'dataLive.winners.0');
+  if (!_.get(data, 'name', false)) {
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("winner-popup").innerHTML= `Chưa có ai tham thai lần này`;
     setTimeout(() => {
       document.getElementById("popup").style.display = "none";
-      document.getElementById("money-popup").innerHTML = "";
     }, 3000);
+    document.getElementById("money-popup").innerHTML = "";
     return;
+  } else {
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("winner-popup").innerHTML= `Chúc mừng: <span style="color: rgb(255, 0, 0); font-size: 20px;"> ${data?.name}</span>`;
   }
   document.getElementById("money-popup").innerHTML = `
-  <span style='color: blue; font-size: 20px'>Số: ${msg.dataLive.luckyNumber}</span><br>
-  <span style='color: red; font-size: 20px'>Số tiền: ${coverVND(msg.dataLive.numberPrize)}</span>`;
+  <span style='color: blue; font-size: 20px'>Thưởng ngẫu nhiên => ${coverVND(data.prize)}</span><br>
+  <span style='color: blue; font-size: 20px'>Thưởng theo số: ${data.numberLucky} => ${coverVND(data.prizeNumber)}</span>`;
   let chungMungIntertal = setInterval(() => {
     getCongraguation();
   }, 1000);
@@ -313,5 +376,31 @@ function runChungMung(msg) {
     document.getElementById('canvas').remove()
   }, 7000);
   audioChungMung();
+}
+
+function runRating(msg) {
+  let {listRatings, totalWinners, type} = ranDomRating(msg);
+  let html = '';
+  let maxNumberRating =  1000000;
+
+  for (let i = 0; i < listRatings.length; i++) {
+    const elm = listRatings[i];
+    let perNum = (elm.luckMoney / maxNumberRating) * 100;
+    html += `<div class="rating-wrap">
+  <div class="side">
+    <div>${_.get(elm, 'name', '').length > 6 ? elm?.name.slice(0, 6) + ".." : _.get(elm, 'name', '')}</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div style='width: ${perNum}%' class="bar-${5 - i}"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>${coverVND(elm?.luckMoney)}</div>
+  </div>
+</div>`;
+    document.getElementById('rating-list').innerHTML = html;
+    document.getElementById('total-number').innerHTML = `Có ${totalWinners} người trúng thưởng ${type == 'week' ? 'tuần' : 'ngày'} qua`;
+  }
 }
 

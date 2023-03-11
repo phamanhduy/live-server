@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 app.use(express.static('client'));
@@ -30,7 +30,14 @@ const init = async () => {
   ]);
 }
 
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: 'https://www.tiktok.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }
+});
 io.on('connection', (socket) => {
   console.log('A user connected');
 
@@ -61,12 +68,35 @@ io.on('connection', (socket) => {
           }
         });
 
-        const memberLucky = getLuckyMember.getMemberLuckyInSession(listComment, data.luckyNumber, data?.viewers);
+        const dataWinner = getLuckyMember.getMemberLuckyInSession(listComment, data.luckyNumber, data?.viewers);
+        await liveSession.updateOne({_id: _.get(data, 'dataLive._id')}, {
+          winners: [{
+            name: _.get(dataWinner, 'memberLucky.name'),
+            channel: _.get(dataWinner, 'memberLucky.channel'),
+            username: _.get(dataWinner, 'memberLucky.username'),
+            avatar: _.get(dataWinner, 'memberLucky.avatar'),
+            comment: _.get(dataWinner, 'memberLucky.comment'),
+            viewers: _.get(dataWinner, 'memberLucky.viewers'),
+            prize: _.get(dataWinner, 'prize'),
+            type: _.get(dataWinner, 'type'),
+            prizeNumber: _.get(dataWinner, 'prizeNumber'),
+            numberLucky: _.get(dataWinner, 'numberLucky'),
+          }],
+        });
         socket.emit('calculateTime_' + data?.liver, {
           dataLive: {
-            winners: [memberLucky],
-            numberPrize: getLuckyMember.calPrize({viewers: data?.viewers}),
-            luckyNumber: data.luckyNumber,
+            winners: [{
+              name: _.get(dataWinner, 'memberLucky.name'),
+              channel: _.get(dataWinner, 'memberLucky.channel'),
+              username: _.get(dataWinner, 'memberLucky.username'),
+              avatar: _.get(dataWinner, 'memberLucky.avatar'),
+              comment: _.get(dataWinner, 'memberLucky.comment'),
+              viewers: _.get(dataWinner, 'memberLucky.viewers'),
+              prize: _.get(dataWinner, 'prize'),
+              type: _.get(dataWinner, 'type'),
+              prizeNumber: _.get(dataWinner, 'prizeNumber'),
+              numberLucky: _.get(dataWinner, 'numberLucky'),
+            }],
           },
           type: 'winners',
         });
@@ -85,7 +115,6 @@ app.post('/api/setData', (req, res) => {
   try {
     let data = req.body;
     let userData = data.userData;
-    console.log({data})
     if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live') {
       io.emit(data?.liver, {
         ...userData,
