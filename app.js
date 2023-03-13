@@ -1,3 +1,29 @@
+const { WebcastPushConnection } = require('tiktok-live-connector');
+
+
+// fetch('https://ntt123-viettts.hf.space/api/predict/',
+//   {
+//     method: "POST", body: JSON.stringify(
+//       { "data": ["Xin chào mọi người"] }
+//     ),
+//     headers: { "Content-Type": "application/json" }
+//   }).then(function (response) {
+//     return response.json();
+//   }).then(function (json_response) {
+//     console.log(json_response)
+//   })
+
+
+
+
+
+
+
+
+
+
+
+
 const express = require('express');
 const _ = require('lodash');
 const moment = require('moment');
@@ -39,13 +65,43 @@ const io = socketIO(server, {
   }
 });
 io.on('connection', (socket) => {
-  console.log('A user connected');
+
+function connectStream(username) {
+  let tiktokLiveConnection = new WebcastPushConnection(username);
+  // Connect to the chat (await can be used as well)
+  tiktokLiveConnection.connect().then(state => {
+      console.info(`Connected to roomId ${state.roomId}`);
+      onSocket(socket, username);
+  }).catch(err => {
+      console.error('Failed to connect', username);
+      setTimeout(() => {
+        connectStream(username);
+      }, 1000);
+  });
+
+  tiktokLiveConnection.on('chat', data => {
+    socket.emit('text-to-speech', data)
+  });
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');
+    tiktokLiveConnection.disconnect();
   });
 
-  socket.on('calculateTime', async (data) =>  {
+  // tiktokLiveConnection.on('member', data => {
+  //   console.log(`${JSON.stringify(data)} joins the stream!`);
+  // });
+}
+socket.on('connect_user', (username) => {
+  connectStream(username);
+  // Create a new wrapper object and pass the username
+})
+});
+
+
+
+function onSocket(socket, username) {
+    socket.on(`calculateTime-${username}`, async (data) =>  {
     try {
       const startTime = new Date();
       if (data?.time === 'start') {
@@ -105,46 +161,11 @@ io.on('connection', (socket) => {
       console.log({error})
     }
   })
-});
-
+}
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
 });
 
-app.post('/api/setData', (req, res) => {
-  try {
-    let data = req.body;
-    let userData = data.userData;
-    if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live') {
-      io.emit(data?.liver, {
-        ...userData,
-        type: data?.type,
-      });
-      res.send('1');
-      return;
-    }
-    const luckyNumber = getLuckyMember.getLuckyNumberInText(userData?.textMessage || '');
-    io.emit(data?.liver, {
-      ...userData,
-      luckyNumber,
-      viewers: data.viewers,
-      type: data?.type,
-    });
-
-    if (_.get(data, 'type') === 'comment') {
-      usersComment.importMessage({
-        ...userData,
-        channel: data?.liver,
-        viewers: data.viewers,
-        luckyNumber,
-      });
-    }
-
-    res.send('1');
-  } catch (error) {
-    console.log({error})
-  }
-});
 
 app.get('/api/get-member-random', async (req, res) => {
   try {

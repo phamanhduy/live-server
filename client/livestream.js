@@ -1,5 +1,7 @@
 
-const socket = io("http://localhost:3000");
+const URL_API = 'https://319e-2001-ee0-41c1-3d38-ad1f-3921-8569-5761.ap.ngrok.io';
+
+const socket = io(URL_API);
 const messageList = document.getElementById('messages');
 const messageForm = document.querySelector('form');
 const messageInput = document.getElementById('message-input');
@@ -78,7 +80,7 @@ setTimeout(() => {
 }, 500)
 function ramdomAuto() {
   const numRandom = randomArr(ramdomTime);
-  fetch('http://localhost:3000/api/get-member-random')
+  fetch(`${URL_API}/api/get-member-random`)
   .then(response => response.json())
   .then(data => {
     if (data[0].name) {
@@ -404,3 +406,48 @@ function runRating(msg) {
   }
 }
 
+
+
+
+
+
+
+
+
+
+let isSpeaking = false;
+setTimeout(() => {
+  socket.on('text-to-speech', (data) => {
+    console.log({data})
+    if (!isSpeaking) {
+      runText(data);
+    }
+  })
+}, 500);
+
+function runText(data) {
+  isSpeaking = true;
+  let textSpeak = `${data.nickname} nói là ${data.comment}`;
+  console.log({textSpeak})
+  fetch('https://ntt123-viettts.hf.space/api/predict/',
+    {
+      method: "POST", body: JSON.stringify(
+        { "data": [textSpeak] }
+      ),
+      headers: { "Content-Type": "application/json" }
+    }).then(function (response) {
+      return response.json();
+    }).then(function (json_response) {
+      if (_.get(json_response, 'data[0]', '')) {
+        const binaryData = atob(json_response.data[0].split(',')[1]);
+        const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
+        const audio = new Audio(dataUri);
+        audio.addEventListener('ended', function() {
+          isSpeaking = false;
+        });
+        audio.play();
+      } else {
+        isSpeaking = false;
+      }
+    })
+}
