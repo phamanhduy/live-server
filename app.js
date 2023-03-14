@@ -1,29 +1,5 @@
 const { WebcastPushConnection } = require('tiktok-live-connector');
 
-
-// fetch('https://ntt123-viettts.hf.space/api/predict/',
-//   {
-//     method: "POST", body: JSON.stringify(
-//       { "data": ["Xin chào mọi người"] }
-//     ),
-//     headers: { "Content-Type": "application/json" }
-//   }).then(function (response) {
-//     return response.json();
-//   }).then(function (json_response) {
-//     console.log(json_response)
-//   })
-
-
-
-
-
-
-
-
-
-
-
-
 const express = require('express');
 const _ = require('lodash');
 const moment = require('moment');
@@ -71,26 +47,59 @@ function connectStream(username) {
   // Connect to the chat (await can be used as well)
   tiktokLiveConnection.connect().then(state => {
       console.info(`Connected to roomId ${state.roomId}`);
-      onSocket(socket, username);
+      socket.emit(`connect-success-${username}`, {
+        channel: username,
+        status: true,
+      })
+      // onSocket(socket, username);
   }).catch(err => {
       console.error('Failed to connect', username);
       setTimeout(() => {
         connectStream(username);
       }, 1000);
   });
-
-  tiktokLiveConnection.on('chat', data => {
-    socket.emit('text-to-speech', data)
-  });
-
   socket.on('disconnect', () => {
     console.log('A user disconnected');
     tiktokLiveConnection.disconnect();
   });
 
-  // tiktokLiveConnection.on('member', data => {
-  //   console.log(`${JSON.stringify(data)} joins the stream!`);
-  // });
+
+  tiktokLiveConnection.on('chat', data => {
+    socket.emit(`chat-${username}`, data);
+  });
+  tiktokLiveConnection.on('member', data => {
+    socket.emit(`member-${username}`, data);
+  });
+  tiktokLiveConnection.on('gift', data => {
+    socket.emit(`gift-${username}`, data);
+  })
+  tiktokLiveConnection.on('roomUser', data => {
+    socket.emit(`roomUser-${username}`, data);
+  })
+  tiktokLiveConnection.on('like', data => {
+    socket.emit(`like-${username}`, data);
+  })
+  tiktokLiveConnection.on('social', data => {
+    socket.emit(`social-${username}`, data);
+  })
+  tiktokLiveConnection.on('emote', data => {
+    socket.emit(`emote-${username}`, data);
+  });
+  tiktokLiveConnection.on('envelope', data => {
+    socket.emit(`envelope-${username}`, data);
+  })
+  tiktokLiveConnection.on('questionNew', data => {
+    socket.emit(`questionNew-${username}`, data);
+  })
+  tiktokLiveConnection.on('subscribe', data => {
+    socket.emit(`subscribe-${username}`, data);
+  })
+  tiktokLiveConnection.on('follow', data => {
+    socket.emit(`follow-${username}`, data);
+  })
+  tiktokLiveConnection.on('share', data => {
+    socket.emit(`share-${username}`, data);
+  })
 }
 socket.on('connect_user', (username) => {
   connectStream(username);
@@ -101,80 +110,21 @@ socket.on('connect_user', (username) => {
 
 
 function onSocket(socket, username) {
-    socket.on(`calculateTime-${username}`, async (data) =>  {
-    try {
-      const startTime = new Date();
-      if (data?.time === 'start') {
-        let dataLive = await liveSession.addSession({
-          channel: data?.liver,
-          startTime: startTime,
-          endTime: moment(startTime).add(data.timeInput, 'seconds'),
-          winners: [],
-        });
-        socket.emit('calculateTime_' + data?.liver, {
-          dataLive,
-          type: 'add',
-        });
-      } else if (data?.time === 'end') {
-        const listComment = await usersComment.listByTime({
-          channel: _.get(data, 'dataLive.channel'),
-          createdAt: {
-            $gte: _.get(data, 'dataLive.startTime'),
-            $lte: _.get(data, 'dataLive.endTime'),
-          }
-        });
 
-        const dataWinner = getLuckyMember.getMemberLuckyInSession(listComment, data.luckyNumber, data?.viewers);
-        await liveSession.updateOne({_id: _.get(data, 'dataLive._id')}, {
-          winners: [{
-            name: _.get(dataWinner, 'memberLucky.name'),
-            channel: _.get(dataWinner, 'memberLucky.channel'),
-            username: _.get(dataWinner, 'memberLucky.username'),
-            avatar: _.get(dataWinner, 'memberLucky.avatar'),
-            comment: _.get(dataWinner, 'memberLucky.comment'),
-            viewers: _.get(dataWinner, 'memberLucky.viewers'),
-            prize: _.get(dataWinner, 'prize'),
-            type: _.get(dataWinner, 'type'),
-            prizeNumber: _.get(dataWinner, 'prizeNumber'),
-            numberLucky: _.get(dataWinner, 'numberLucky'),
-          }],
-        });
-        socket.emit('calculateTime_' + data?.liver, {
-          dataLive: {
-            winners: [{
-              name: _.get(dataWinner, 'memberLucky.name'),
-              channel: _.get(dataWinner, 'memberLucky.channel'),
-              username: _.get(dataWinner, 'memberLucky.username'),
-              avatar: _.get(dataWinner, 'memberLucky.avatar'),
-              comment: _.get(dataWinner, 'memberLucky.comment'),
-              viewers: _.get(dataWinner, 'memberLucky.viewers'),
-              prize: _.get(dataWinner, 'prize'),
-              type: _.get(dataWinner, 'type'),
-              prizeNumber: _.get(dataWinner, 'prizeNumber'),
-              numberLucky: _.get(dataWinner, 'numberLucky'),
-            }],
-          },
-          type: 'winners',
-        });
-      } 
-    } catch (error) {
-      console.log({error})
-    }
-  })
 }
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
 });
 
 
-app.get('/api/get-member-random', async (req, res) => {
-  try {
-    const userRandom = await usersComment.getRamdom();
-    res.send(userRandom);
-  } catch (error) {
-    console.log({error})
-  }
-});
+// app.get('/api/get-member-random', async (req, res) => {
+//   try {
+//     const userRandom = await usersComment.getRamdom();
+//     res.send(userRandom);
+//   } catch (error) {
+//     console.log({error})
+//   }
+// });
 
 server.listen(3000, () => {
   console.log('Server is running on port 3000');
