@@ -53,7 +53,7 @@ function connectStream(username) {
       })
       // onSocket(socket, username);
   }).catch(err => {
-      console.error('Failed to connect', username);
+      console.error('Failed to connect', username, {err});
       setTimeout(() => {
         connectStream(username);
       }, 1000);
@@ -110,7 +110,27 @@ socket.on('connect_user', (username) => {
 
 
 function onSocket(socket, username) {
-
+  socket.on(`calculateTime-${username}`, async (data) =>  {
+    try {
+      const startTime = new Date();
+      if (data?.time === 'start') {
+        // let dataLive = await liveSession.addSession({
+        //   channel: data?.liver,
+        //   startTime: startTime,
+        //   endTime: moment(startTime).add(data.timeInput, 'seconds'),
+        //   winners: [],
+        // });
+        // socket.emit('calculateTime_' + data?.liver, {
+        //   dataLive,
+        //   type: 'add',
+        // });
+      } else if (data?.time === 'end') {
+        
+      } 
+    } catch (error) {
+      console.log({error})
+    }
+  })
 }
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');

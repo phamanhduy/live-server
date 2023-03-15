@@ -374,11 +374,11 @@ function runChungMung(msg) {
 
   setTimeout(() => {
     clearInterval(chungMungIntertal);
-    document.getElementById("popup").style.display = "none";
-    document.getElementById('canvas').remove()
-  }, 7000);
-  audioChungMung();
-}
+      document.getElementById("popup").style.display = "none";
+      document.getElementById('canvas').remove()
+    }, 7000);
+    audioChungMung();
+  }
 
 function runRating(msg) {
   let {listRatings, totalWinners, type} = ranDomRating(msg);
@@ -418,7 +418,6 @@ function runRating(msg) {
 let isSpeaking = false;
 setTimeout(() => {
   socket.on('text-to-speech', (data) => {
-    console.log({data})
     if (!isSpeaking) {
       runText(data);
     }
@@ -428,7 +427,6 @@ setTimeout(() => {
 function runText(data) {
   isSpeaking = true;
   let textSpeak = `${data.nickname} nói là ${data.comment}`;
-  console.log({textSpeak})
   fetch('https://ntt123-viettts.hf.space/api/predict/',
     {
       method: "POST", body: JSON.stringify(

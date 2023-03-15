@@ -56,11 +56,11 @@ function loadingPageData() {
   } 
 }
 function loadingPageFun(loading) {
-  if (loading) {
-    document.getElementById('loading').style.display = 'block';
-  } else {
-    document.getElementById('loading').style.display = 'none';
-  }
+  // if (loading) {
+  //   document.getElementById('loading').style.display = 'block';
+  // } else {
+  //   document.getElementById('loading').style.display = 'none';
+  // }
 }
 
 // Opens inventory
@@ -115,3 +115,11 @@ function receivedMessage() {
       });
     }
 }
+
+// setTimeout(() => {
+//   // clearInterval(chungMungIntertal);
+//   //   document.getElementById("popup").style.display = "none";
+//   //   document.getElementById('canvas').remove()
+//   document.getElementById('winner-con').style.display = 'block'
+//   }, 7000);
+//   audioChungMung();

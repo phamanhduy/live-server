@@ -91,10 +91,6 @@ option {
     background-color: #030303;
 }
 
-img {
-    pointer-events: none;
-    margin-top: 1rem;
-}
 
 body {
     background: -webkit-linear-gradient(360deg, #030303 10%, #1f1f1f 360%);
@@ -246,6 +242,7 @@ main {
 .primary-panel {
     border-radius: 0.3rem;
     border: solid 1px;
+    text-align: center;
 }
 
 /* Buttons */
@@ -874,8 +871,6 @@ header button i {
   .side {
     float: left;
     width: 16%;
-    margin-top:10px;
-    margin-right: 20px;
   }
   
   .middle {
@@ -903,6 +898,7 @@ header button i {
     background-color: #f1f1f1;
     text-align: center;
     color: white;
+    margin-left: 5px;
   }
   
   /* Individual bars */
@@ -956,6 +952,11 @@ header button i {
 
   .image-container img {
     padding: 10px;
+    text-align: center;
+  }
+
+  .image-container {
+    text-align: center;
   }
 
   .zoom-in-out-box {
@@ -968,7 +969,7 @@ header button i {
       transform: scale(1, 1);
     }
     50% {
-      transform: scale(1.1, 1.1);
+      transform: scale(1.03, 1.03);
     }
     100% {
       transform: scale(1, 1);
@@ -978,3 +979,51 @@ header button i {
   .setting {
     text-align: center;
   }
+
+#container-words {
+  display: flex;
+  display: inline-flex;
+  /* width: 300px; */
+  margin-top: 20px;
+}
+#container-words .square {
+  width: 25px;
+  height: 25px;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  margin-right: 3px;
+  padding: 5px;
+  color: #0070dd;
+  font-weight: 700;
+}
+#container-words .space {
+    width: 10px;
+}
+
+#timer-countdown {
+    font-size: 24px;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.raking-avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.stat-panel table tr {
+    /* display: flow-root;
+    margin: 2px; */
+}
+
+.bar-container span {
+    color: #030303;
+    margin-left: 2px;
+}
