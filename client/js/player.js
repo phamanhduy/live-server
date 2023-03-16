@@ -58,6 +58,7 @@ function showPlayHtml(game) {
 }
 
 function ramdomNumber(cb) {
+  // show winner
   runningTime = true;
   let rumdomTime = setInterval(() => {
   }, 100);
@@ -66,7 +67,7 @@ function ramdomNumber(cb) {
     clearInterval(rumdomTime);
     setTimeout(() => {
       runningTime = false;
-      winner = {winner: 'ok'};
+      sessionStorage.removeItem('winner');
       cb(winner);
     }, 50);
   }, 5000);
@@ -82,7 +83,6 @@ function startTimer(duration) {
       seconds = seconds < 10 ? "0" + seconds : seconds;
       display.textContent = minutes + ":" + seconds;
       if (timer === duration) {
-        sessionStorage.removeItem('winner');
         calculateTime('start');
       }
       if (runningTime && timer === 0) {
