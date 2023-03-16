@@ -27,8 +27,8 @@ async function add(data) {
     .then(async (updated) => updated).catch(async (err) => err);
 }
 
-async function updateData(data) {
-  return await SessionGame.updateOne(data)
+async function updateData(filter, data) {
+  return await SessionGame.updateOne(filter, data)
     .then(async (updated) => updated).catch(async (err) => err);
 }
 

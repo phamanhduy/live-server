@@ -69,7 +69,7 @@ async function caculatorScore(socket, dataLive) {
         sessionName: _.get(dataLive, 'sessionName', 'datatest'),
       });
     } else {
-      await SessionGame.updateData({
+      await SessionGame.updateData({_id: _.get(sessionGame, '_id')}, {
         channel: _.get(dataLive, 'channel'),
         userId: _.get(user, '_id'),
         score: (_.get(dataLive, 'score',  20)) + _.get(sessionGame, 'score', 20),
