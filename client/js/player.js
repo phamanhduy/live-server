@@ -14,22 +14,22 @@ return array[randomIndex];
 // Tạo một đối tượng chứa thông tin của trò chơi
 const gameResounce = [{
     image: 'https://e.gamevui.vn/web/2014/10/batchu/assets/pics/xygl-vygl.jpg', // Tên tệp hình ảnh
-    word: 'BÁO CÁO LÁO',
+    word: 'EM LÀ NAM',
     suggest: 'Đây là 1 loại quả có thể ăn được, nó nằm trên cây cao, tôi không nhớ rõ những bạn thử đoán xem'
 },
 {
     image: 'https://cdn.tgdd.vn//GameApp/-1//toan-bo-dap-an-game-bat-chu-duoi-hinh-bat-chu4-800x532-800x532.jpg', // Tên tệp hình ảnh
-    word: 'SIÊU LỪA', // Từ cần đoán
+    word: 'SIÊU NHÂN', // Từ cần đoán
     suggest: 'Đây là tên một thực phẩm phổ biến nhất việt nam, nó nằm trên cây cao '
 },
 {
     image: 'https://i1-vnexpress.vnecdn.net/2015/04/25/4-7254-1429945566.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=BOVPmjRPLSLqokpNS5YhpQ', // Tên tệp hình ảnh
-    word: 'GẦY ĐẦY NGƯỜI YÊU', // Từ cần đoán
+    word: 'MỌI NGƯỜI ƠI', // Từ cần đoán
     suggest: 'Tôi xin gợi ý đây là 1 loại thuốc, nó cực tốt cho sức khỏe'
 },
 {
     image: 'https://i1-vnexpress.vnecdn.net/2015/06/28/4-1679-1435503803.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=Ik91F0u4Ma_IFOY8hEGAMw', // Tên tệp hình ảnh
-    word: 'MẬT MÃ', // Từ cần đoán
+    word: 'CHÀO MỌI', // Từ cần đoán
     suggest: 'Thôi câu này quá dễ rồi tôi không cần gợi ý, bạn cứ nhìn theo thứ tự là sẽ ra đáp án'
 }
 ];
@@ -73,7 +73,6 @@ function ramdomNumber(cb) {
 }
 
 function startTimer(duration) {
-    let game = JSON.parse(sessionStorage.getItem('play'));
     var display = document.getElementById('timer-countdown');
     var timer = duration, minutes, seconds;
     timeInterval = setInterval(function () {
@@ -83,6 +82,7 @@ function startTimer(duration) {
       seconds = seconds < 10 ? "0" + seconds : seconds;
       display.textContent = minutes + ":" + seconds;
       if (timer === duration) {
+        sessionStorage.removeItem('winner');
         calculateTime('start');
       }
       if (runningTime && timer === 0) {
@@ -90,14 +90,14 @@ function startTimer(duration) {
       }
       if (timer === 5) {
         showWord = true;
-        showPlayHtml(game)
+        showPlayHtml(JSON.parse(sessionStorage.getItem('play')))
       }
       if (--timer < 0) {
         timer = duration;
       }
       if (timer === 0) {
         ramdomNumber((winner) => {
-          calculateTime('end', winner);
+          // calculateTime('end', winner);
         });
       }
     }, 1000);
@@ -106,18 +106,6 @@ function startTimer(duration) {
 
 function calculateTime(time, number = null) {
   play();
-  if (time === 'start') {
-    socket.emit('calculateTime', {
-      time,
-      liver: userData?.username,
-    })
-  } else if (time === 'end') {
-    socket.emit('calculateTime', {
-      viewers: document.getElementById('viewers')?.textContent,
-      time,
-      liver: userData?.username,
-    });
-  }
 }
 
 startTimer(15);

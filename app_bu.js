@@ -162,6 +162,7 @@ function onSocket(socket, username) {
     }
   })
 }
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
 });
@@ -173,6 +174,41 @@ app.get('/api/get-member-random', async (req, res) => {
     res.send(userRandom);
   } catch (error) {
     console.log({error})
+  }
+});
+
+app.post('/api/setData', (req, res) => {
+  try {
+    let data = req.body;
+    let userData = data.userData;
+    if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live') {
+      io.emit(data?.liver, {
+        ...userData,
+        type: data?.type,
+      });
+      res.send(true);
+      return;
+    }
+    // const luckyNumber = getLuckyMember.getLuckyNumberInText(userData?.textMessage || '');
+    // io.emit(data?.liver, {
+    //   ...userData,
+    //   luckyNumber,
+    //   viewers: data.viewers,
+    //   type: data?.type,
+    // });
+
+    // if (_.get(data, 'type') === 'comment') {
+    //   usersComment.importMessage({
+    //     ...userData,
+    //     channel: data?.liver,
+    //     viewers: data.viewers,
+    //     luckyNumber,
+    //   });
+    // }
+
+    res.send('1');
+  } catch (error) {
+    console.log({ error })
   }
 });
 
