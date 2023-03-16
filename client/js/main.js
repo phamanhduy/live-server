@@ -10,9 +10,11 @@ function getUserSecsion() {
 function saveUserSecsion() {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
+    const sessionLive = document.getElementById('live-section');
     sessionStorage.setItem('user', JSON.stringify({
       channel: channel.value,
-      maxNumber: maxNumber.value
+      maxNumber: maxNumber.value,
+      liveSession: sessionLive.value,
     }));
     setTimeout(() => {
       getUserSecsion();
@@ -30,7 +32,8 @@ function connectionTiktok() {
     });
     getRanking()
     socket.on(`${userData?.channel}-ranking`, (dataLive) => {
-      showRanking(dataLive)
+      sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')))
+      sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
     });
     closeInventory();
   }
@@ -47,8 +50,10 @@ function loadingPageData() {
   if (userData) {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
+    const sessionLive = document.getElementById('live-section');
     channel.value = userData?.channel;
     maxNumber.value = userData?.maxNumber;
+    sessionLive.value = userData?.liveSession;
     document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
   } 
 }
@@ -85,13 +90,18 @@ function showNumberViewer(dataLive) {
 }
 
 function caculator(dataLive) {
-  let game = JSON.parse(sessionStorage.getItem('play'));
-  let gameWord = _.get(game, 'word', '').toLowerCase();
-  let comment = _.get(dataLive, 'comment').toLowerCase();
-  if (game) {
-    if (_.includes(comment, gameWord) && !sessionStorage.getItem('winner')) {
-      sessionStorage.setItem('winner', JSON.stringify(dataLive));
-      socket.emit(`score-winner`, dataLive);
+  if (userData) {
+    let game = JSON.parse(sessionStorage.getItem('play'));
+    let gameWord = _.get(game, 'word', '').toLowerCase();
+    let comment = _.get(dataLive, 'comment').toLowerCase();
+    if (game) {
+      if (_.includes(comment, gameWord) && !sessionStorage.getItem('winner')) {
+        sessionStorage.setItem('winner', JSON.stringify(dataLive));
+        socket.emit(`score-winner`, {
+          ...dataLive,
+          liveSession: userData?.liveSession
+        });
+      }
     }
   }
 }
@@ -107,21 +117,24 @@ function caculator(dataLive) {
 // }, 5000);
 
 function getRanking() {
-  fetch(`${URL_API}/api/get-ranking?session=${'datatest'}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  }).then(res => res.json())
-  .then((json) => {
-    showRanking(json);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+  if (userData) {
+    fetch(`${URL_API}/api/get-ranking?session=${userData?.liveSession}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json())
+    .then((json) => {
+      showRanking(json);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
 }
 
 function showRanking(data) {
+  sessionStorage.setItem('ranking', JSON.stringify(data));
   let rankingArr = [{
     avatar: "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
     name: 'Chưa có 4i',
@@ -175,10 +188,3 @@ function showRanking(data) {
   }
   document.getElementById('ranking').innerHTML = html;
 }
-// setTimeout(() => {
-//   // clearInterval(chungMungIntertal);
-//   //   document.getElementById("popup").style.display = "none";
-//   //   document.getElementById('canvas').remove()
-//   document.getElementById('winner-con').style.display = 'block'
-//   }, 7000);
-//   audioChungMung();

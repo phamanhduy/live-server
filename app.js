@@ -60,25 +60,34 @@ async function caculatorScore(socket, dataLive) {
       });
     }
  
-    let sessionGame = await SessionGame.findOne({userId: new mongoose.Types.ObjectId(_.get(user, '_id'))});
+    let sessionGame = await SessionGame.findOne({
+      userId: (new mongoose.Types.ObjectId(_.get(user, '_id'))),
+      sessionName: _.get(dataLive, 'liveSession', ''),
+    });
+    let sessionWinner = null;
     if (!sessionGame) {
-      await SessionGame.add({
+      sessionWinner = {
         channel: _.get(dataLive, 'channel'),
         userId: _.get(user, '_id'),
         score: _.get(dataLive, 'score',  20),
-        sessionName: _.get(dataLive, 'sessionName', 'datatest'),
-      });
+        sessionName: _.get(dataLive, 'liveSession', ''),
+      };
+      await SessionGame.add(sessionWinner);
     } else {
-      await SessionGame.updateData({_id: _.get(sessionGame, '_id')}, {
+      sessionWinner = {
         channel: _.get(dataLive, 'channel'),
         userId: _.get(user, '_id'),
         score: (_.get(dataLive, 'score',  20)) + _.get(sessionGame, 'score', 20),
-        sessionName: _.get(dataLive, 'sessionName', 'datatest'),
-      });
+        sessionName: _.get(dataLive, 'liveSession', ''),
+      };
+      await SessionGame.updateData({_id: _.get(sessionGame, '_id')}, sessionWinner);
     }
 
-    const winner = await SessionGame.getLimitWinner({sessionName: 'datatest'});
-    socket.emit(`${_.get(dataLive, 'channel')}-ranking`, winner);
+    const winner = await SessionGame.getLimitWinner({sessionName: _.get(dataLive, 'liveSession', '')});
+    socket.emit(`${_.get(dataLive, 'channel')}-ranking`, {
+      ranking: winner,
+      sessionWinner,
+    });
   } catch (error) {
     console.log(error)
   }
