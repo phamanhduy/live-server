@@ -2,7 +2,6 @@
 
 let showWord = false;
 let runningTime = false;
-let isSpeaking = false;
 // Lấy các phần tử DOM
 const imageContainer = document.querySelector('.image-container');
 
@@ -117,42 +116,14 @@ setTimeout(() => {
   }
 }, 500);
 
-function runText(msg) {
-  isSpeaking = true;
-  fetch('https://ntt123-viettts.hf.space/api/predict/',
-    {
-      method: "POST", body: JSON.stringify(
-        { "data": [msg] }
-      ),
-      headers: { "Content-Type": "application/json" }
-    }).then(function (response) {
-      return response.json();
-    }).then(function (json_response) {
-      if (_.get(json_response, 'data[0]', '')) {
-        const binaryData = atob(json_response.data[0].split(',')[1]);
-        const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
-        const audio = new Audio(dataUri);
-        audio.addEventListener('ended', function () {
-          isSpeaking = false;
-        });
-        audio.play();
-      } else {
-        isSpeaking = false;
-      }
-    })
-}
-
 
 function runChungMung(winner) {
   if (!winner) {
     return;
   }
-  let ranking = JSON.parse(sessionStorage.getItem('ranking')) || [];
-  let sessionWinner = JSON.parse(sessionStorage.getItem('sessionWinner')) || [];
-  let maxRank = Math.max(...ranking.map(o => o.score));
-  let remaining = maxRank - sessionWinner?.score;
+
   let remainingText = ''
-  if (remaining === 0) {
+  if (isTop()) {
     remainingText = `Oa ! Bạn là top 1, Duy trì để lấy tiền nhé 😍`
   } else {
     remainingText = `Còn ${remaining} điểm nữa bạn sẽ giành top 1 rồi ^^`
@@ -173,6 +144,13 @@ function runChungMung(winner) {
   // audioChungMung();
 }
 
+function isTop() {
+  let ranking = JSON.parse(sessionStorage.getItem('ranking')) || [];
+  let sessionWinner = JSON.parse(sessionStorage.getItem('sessionWinner')) || [];
+  let maxRank = Math.max(...ranking.map(o => o.score));
+  let remaining = maxRank - sessionWinner?.score;
+  return remaining === 0;
+}
 
 function adProduct(show = false) {
   if (show) {

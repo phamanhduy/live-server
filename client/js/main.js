@@ -97,6 +97,7 @@ function caculator(dataLive) {
     if (game) {
       if (_.includes(comment, gameWord) && !sessionStorage.getItem('winner')) {
         sessionStorage.setItem('winner', JSON.stringify(dataLive));
+        saveSpeaking('congratulation', SON.stringify(dataLive))
         socket.emit(`score-winner`, {
           ...dataLive,
           liveSession: userData?.liveSession
