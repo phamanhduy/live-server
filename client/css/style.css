@@ -1031,3 +1031,59 @@ canvas {
     color: #030303;
     margin-left: 2px;
 }
+
+#ads-product img {
+    height: 261px;
+}
+
+#ads-product {
+    flex-direction: column;
+}
+
+#ads-product .content {
+    padding: 0;
+    gap: 0;
+    height: 300px;
+    width: 100%;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 40%;
+}
+#ads-loading {
+    position: relative;
+}
+
+#ads-loading .loader{
+    position: absolute;
+    top: 42px;
+    right: -20px;
+    border: 0.5rem solid #ff0000;
+    border-top: 0.5rem solid white;
+}
+
+.call-action {
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+}
+
+.call-action .text-hook{
+    font-weight: 700;
+}
+
+.icon-action {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    animation: icon-action 0.5s ease-in-out infinite alternate;
+  }
+  
+@keyframes icon-action {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
