@@ -1,5 +1,6 @@
-async function connectStream(username, cb) {
-  let tiktokLiveConnection = new WebcastPushConnection(username, {
+const { WebcastPushConnection } = require('tiktok-live-connector');
+async function connectStream(channel, socket, cb) {
+  let tiktokLiveConnection = new WebcastPushConnection(channel, {
     processInitialData: false,
     enableExtendedGiftInfo: true,
     enableWebsocketUpgrade: true,
@@ -20,63 +21,64 @@ async function connectStream(username, cb) {
     websocketOptions: {
         timeout: 10000
     }
-});
+  });
   // Connect to the chat (await can be used as well)
   tiktokLiveConnection.connect().then(state => {
       console.info(`Connected to roomId ${state.roomId}`);
-
+      socket.emit(`connect-success-${channel}`, '');
       cb(tiktokLiveConnection);
-      // onSocket(socket, username);
   }).catch(err => {
-      console.error('Failed to connect', username, {err});
+      console.error('Lỗi khi kết nối ', channel, {err});
       setTimeout(() => {
-        connectStream(username, cb);
+        connectStream(channel, socket, cb);
       }, 1000);
   });
-  // socket.on('disconnect', () => {
-  //   console.log('A user disconnected');
-  //   tiktokLiveConnection.disconnect();
-  // });
-
+  socket.on(`dis-connect-${channel}`, () => {
+    console.log('dis', channel)
+    tiktokLiveConnection.disconnect();
+  });
+  tiktokLiveConnection.on('disconnected', () => {
+    console.error('Đã ngắt kết nối ', channel);
+    socket.emit(`disconnect-${channel}`, '');
+  });
 }
 
-export {
+module.exports = {
   connectStream
-}
-
+};
 // tiktokLiveConnection.on('chat', data => {
-//   socket.emit(`chat-${username}`, data);
+//   socket.emit(`chat-${channel}`, data);
 // });
 // tiktokLiveConnection.on('member', data => {
-//   socket.emit(`member-${username}`, data);
+//   socket.emit(`member-${channel}`, data);
 // });
 // tiktokLiveConnection.on('gift', data => {
-//   socket.emit(`gift-${username}`, data);
+//   socket.emit(`gift-${channel}`, data);
 // })
 // tiktokLiveConnection.on('roomUser', data => {
-//   socket.emit(`roomUser-${username}`, data);
+//   socket.emit(`roomUser-${channel}`, data);
 // })
 // tiktokLiveConnection.on('like', data => {
-//   socket.emit(`like-${username}`, data);
+//   socket.emit(`like-${channel}`, data);
 // })
 // tiktokLiveConnection.on('social', data => {
-//   socket.emit(`social-${username}`, data);
+//   socket.emit(`social-${channel}`, data);
 // })
 // tiktokLiveConnection.on('emote', data => {
-//   socket.emit(`emote-${username}`, data);
+//   socket.emit(`emote-${channel}`, data);
 // });
 // tiktokLiveConnection.on('envelope', data => {
-//   socket.emit(`envelope-${username}`, data);
+//   socket.emit(`envelope-${channel}`, data);
 // })
 // tiktokLiveConnection.on('questionNew', data => {
-//   socket.emit(`questionNew-${username}`, data);
+//   socket.emit(`questionNew-${channel}`, data);
 // })
 // tiktokLiveConnection.on('subscribe', data => {
-//   socket.emit(`subscribe-${username}`, data);
+//   socket.emit(`subscribe-${channel}`, data);
 // })
 // tiktokLiveConnection.on('follow', data => {
-//   socket.emit(`follow-${username}`, data);
+//   socket.emit(`follow-${channel}`, data);
 // })
 // tiktokLiveConnection.on('share', data => {
-//   socket.emit(`share-${username}`, data);
+//   socket.emit(`share-${channel}`, data);
 // })

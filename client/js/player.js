@@ -10,33 +10,10 @@ function randomArr(array) {
   return array[randomIndex];
 }
 
-// Tạo một đối tượng chứa thông tin của trò chơi
-const gameResounce = [{
-  image: 'https://e.gamevui.vn/web/2014/10/batchu/assets/pics/xygl-vygl.jpg', // Tên tệp hình ảnh
-  word: 'EM LÀ NAM',
-  suggest: 'Đây là 1 loại quả có thể ăn được, nó nằm trên cây cao, tôi không nhớ rõ những bạn thử đoán xem'
-},
-{
-  image: 'https://cdn.tgdd.vn//GameApp/-1//toan-bo-dap-an-game-bat-chu-duoi-hinh-bat-chu4-800x532-800x532.jpg', // Tên tệp hình ảnh
-  word: 'SIÊU NHÂN', // Từ cần đoán
-  suggest: 'Đây là tên một thực phẩm phổ biến nhất việt nam, nó nằm trên cây cao '
-},
-{
-  image: 'https://i1-vnexpress.vnecdn.net/2015/04/25/4-7254-1429945566.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=BOVPmjRPLSLqokpNS5YhpQ', // Tên tệp hình ảnh
-  word: 'MỌI NGƯỜI ƠI', // Từ cần đoán
-  suggest: 'Tôi xin gợi ý đây là 1 loại thuốc, nó cực tốt cho sức khỏe'
-},
-{
-  image: 'https://i1-vnexpress.vnecdn.net/2015/06/28/4-1679-1435503803.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=Ik91F0u4Ma_IFOY8hEGAMw', // Tên tệp hình ảnh
-  word: 'CHÀO MỌI', // Từ cần đoán
-  suggest: 'Thôi câu này quá dễ rồi tôi không cần gợi ý, bạn cứ nhìn theo thứ tự là sẽ ra đáp án'
-}
-];
-
 // Hiển thị hình ảnh trên trang web
 function play() {
   showWord = false;
-  const game = randomArr(gameResounce);
+  const game = dhbc();
   imageContainer.innerHTML = `<img class="zoom-in-out-box" src="${game.image}" alt="Hình ảnh">`;
   sessionStorage.setItem('play', JSON.stringify(game));
   showPlayHtml(game);
@@ -83,7 +60,7 @@ function startTimer(duration) {
     seconds = seconds < 10 ? "0" + seconds : seconds;
     display.textContent = minutes + ":" + seconds;
     if (timer === duration) {
-      calculateTime('start');
+      play();
     }
     if (runningTime && timer === 0) {
       return;
@@ -93,21 +70,20 @@ function startTimer(duration) {
       showRanking(JSON.parse(sessionStorage.getItem('ranking')));
       showPlayHtml(JSON.parse(sessionStorage.getItem('play')))
     }
+    if (timer === 3) {
+      // initSpeak('introProduct', {});
+    }
     if (--timer < 0) {
       timer = duration;
     }
     if (timer === 0) {
       ramdomNumber((winner) => {
-        runChungMung(JSON.parse(winner))
+        runChungMung(JSON.parse(winner));
       });
     }
   }, 1000);
 }
 
-
-function calculateTime(time, number = null) {
-  play();
-}
 
 setTimeout(() => {
   if (sessionStorage.getItem('user')) {
@@ -121,12 +97,12 @@ function runChungMung(winner) {
   if (!winner) {
     return;
   }
-
+  runSpeakChungMung('congratulation');
   let remainingText = ''
   if (isTop()) {
-    remainingText = `Oa ! Bạn là top 1, Duy trì để lấy tiền nhé 😍`
+    remainingText = `Oa ! Bạn là top 1, Duy trì để lấy quà nhé 😍`
   } else {
-    remainingText = `Còn ${remaining} điểm nữa bạn sẽ giành top 1 rồi ^^`
+    remainingText = `Bạn sắp đuổi kịp top 1 rồi, cố lên ^^`
   }
   document.getElementById("winner-con").style.display = 'block';
   document.getElementById("winner-name").innerHTML = winner?.name;
@@ -146,8 +122,9 @@ function runChungMung(winner) {
 
 function isTop() {
   let ranking = JSON.parse(sessionStorage.getItem('ranking')) || [];
-  let sessionWinner = JSON.parse(sessionStorage.getItem('sessionWinner')) || [];
+  let sessionWinner = JSON.parse(sessionStorage.getItem('sessionWinner')) || {};
   let maxRank = Math.max(...ranking.map(o => o.score));
+  console.log({maxRank, sessionWinner})
   let remaining = maxRank - sessionWinner?.score;
   return remaining === 0;
 }

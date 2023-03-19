@@ -1,5 +1,5 @@
 
-const URL_API = 'https://319e-2001-ee0-41c1-3d38-ad1f-3921-8569-5761.ap.ngrok.io';
+const URL_API = 'https://4046-2001-ee0-41c1-f38d-71cd-4b3d-bc49-58f5.ap.ngrok.io';
 
 const socket = io(URL_API);
 const messageList = document.getElementById('messages');

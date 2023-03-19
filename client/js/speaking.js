@@ -3,7 +3,7 @@ let isSpeaking = false;
 
 
 // FunctionUtil
-// initSpeak('intro')
+// initSpeak('intro');
 
 function initSpeak(type, data) {
   switch (type) {
@@ -13,19 +13,38 @@ function initSpeak(type, data) {
     case 'congratulation':
       congratulationGame(data);
       break;
+    case 'introProduct':
+      introProduct(data);
+      break;
     default:
       break;
   }
 }
 
-function congratulationGame(name, isTop = false, {}) {
+function introProduct() {
+  let introArr = [
+    "Hãy xem ngay giỏ hàng của chúng tôi để khám phá những món đồ độc đáo và hấp dẫn nhất!",
+    "Bạn có muốn tìm kiếm những sản phẩm độc đáo và thú vị? Hãy ghé qua giỏ hàng của chúng tôi ngay!",
+    "Khám phá ngay giỏ hàng đầy đủ các sản phẩm chất lượng và đa dạng để lựa chọn cho mình những món hàng ưa thích nhất!",
+    "Đến với giỏ hàng của chúng tôi, bạn sẽ có cơ hội tham quan và mua sắm những sản phẩm mới nhất và độc đáo nhất!",
+    "Những món đồ độc đáo và hấp dẫn đang chờ đón bạn tại giỏ hàng của chúng tôi, hãy đến và khám phá ngay thôi!",
+    "Bạn sẽ không thể bỏ qua những món hàng đặc biệt và hấp dẫn trong giỏ hàng của chúng tôi. Hãy ghé thăm ngay để trải nghiệm!",
+    "Hãy khám phá ngay giỏ hàng đa dạng và phong phú của chúng tôi để tìm kiếm những sản phẩm ưng ý nhất cho mình!",
+    "Đến với giỏ hàng của chúng tôi, bạn sẽ có cơ hội tìm thấy những món đồ độc đáo và hấp dẫn nhất, không thể tìm thấy ở bất kỳ đâu khác!",
+    "Bạn sẽ không thể rời mắt khỏi những món đồ độc đáo và thú vị trong giỏ hàng của chúng tôi. Hãy đến và trải nghiệm ngay thôi!",
+    "Những món hàng độc đáo và chất lượng tốt nhất đang chờ đón bạn trong giỏ hàng của chúng tôi. Hãy đến và khám phá ngay thôi!",
+  ]
+  runSpeaking(FunctionUtil.randomArr(introArr));
+}
+
+function congratulationGame(name, isTop = false) {
   // VNnum2words(10560)
   let introArr;
   if (isTop) {
     introArr = [
       `Chúc mừng ${name} đã đạt được vị trí top một! Hãy tiếp tục cố gắng và giữ vững vị trí này nhé!`,
-      `Wow, ${name} làm tốt lắm! Vị trí top một chưa đủ, hãy tiếp tục thách thức bản thân và bảo vệ vị trí này!`,
-      `Cảm giác đứng đầu bảng xếp hạng là gì? Chắc chắn tuyệt vời lắm! Hãy tiếp tục giữ vững thành tích này và đánh bại các đối thủ tiếp theo!`,
+      `OA, ${name} bạn làm tốt lắm! Vị trí top một chưa đủ, hãy tiếp tục thách thức bản thân và bảo vệ vị trí này`,
+      `Cảm giác đứng đầu bảng xếp hạng là gì? Chắc chắn tuyệt vời lắm! Hãy tiếp tục giữ vững thành tích này và đánh bại các đối thủ tiếp theo`,
       `Xin chúc mừng ${name}, vị trí top một là thành quả xứng đáng cho sự nỗ lực của ${name}. Tiếp tục đánh bại mọi thử thách và trở thành nhà vô địch!`,
       `${name} là người chiến thắng! Hãy tiếp tục giữ vững vị trí này và chinh phục mọi đối thủ để trở thành nhà vô địch đích thực!`,
       `Tuyệt vời! ${name} đang dẫn đầu trò chơi. Đừng ngừng nỗ lực và giữ vững vị trí này để trở thành kẻ chiến thắng cuối cùng!`,
@@ -55,10 +74,29 @@ function congratulationGame(name, isTop = false, {}) {
 function introGame() {
   let index = 0;
   const introArr = [
+    'Xin chào mọi người và chào mừng đến với trò chơi đuổi hình bắt chữ! Tôi là dẫn chương trình của chương trình này và sẽ giúp bạn có một trải nghiệm vui vẻ.',
+    'Trò chơi này sẽ giúp bạn rèn luyện khả năng tập trung, tăng cường từ vựng và cải thiện kỹ năng tư duy lô díc.',
+    'Nội dung của trò chơi rất đơn giản: chúng ta sẽ hiển thị một hình ảnh lên màn hình, và bạn sẽ phải tìm ra từ được ẩn trong hình ảnh đó bằng cách sắp xếp các chữ cái tạo thành từ đó.',
+    'Nhưng đừng để bị lừa bởi sự đơn giản của trò chơi này, độ khó sẽ tăng dần, càng ngày càng khó đó',
+    'Hãy share để bạn bè của bạn cũng có cơ hội tham gia trò chơi đuổi hình bắt chữ và giành chiến thắng tiền thưởng hấp dẫn nhé',
+    'Mỗi câu hỏi đều được thiết kế để thử thách khả năng tư duy và sự kiên nhẫn của bạn. Vì vậy, hãy cố gắng hết sức để tìm ra câu trả lời và giành chiến thắng.',
+    'Và bây giờ, hãy sẵn sàng để bắt đầu trò chơi và chinh phục các câu hỏi thú vị của chúng tôi!',
+    'Để chơi trò chơi này, bạn sẽ thấy một hình ảnh được hiển thị lên màn hình.',
+    'Thả tim để cho chúng tôi cảm nhận được sự hứng thú của bạn với trò chơi đuổi hình bắt chữ và cùng nhau tạo nên một buổi lai chim thú vị nhé',
+    'Trong hình ảnh đó sẽ có một từ được ẩn đi bằng cách sắp xếp các chữ cái thành các vị trí khác nhau.',
+    'Nhiệm vụ của bạn là tìm ra từ đó và nhập vào ô trống bên dưới hình ảnh. Hãy cẩn thận, các chữ cái có thể bị xáo trộn hoặc xoay chuyển, và có thể xuất hiện theo bất kỳ hướng nào!',
+    'Đừng quên pho lâu chúng tôi để cập nhật những thông tin mới nhất về các buổi lai chim chơi game và trò chơi đuổi hình bắt chữ nhé',
+    'Bạn sẽ được cấp một số lần sai để giúp bạn có thể tìm ra từ đó. Nhưng hãy chơi thận trọng, vì mỗi lần sai sẽ khiến bạn mất một cơ hội để giành chiến thắng.',
+    'pho lâu chúng tôi để không bỏ lỡ bất kỳ buổi lai chim nào và có cơ hội nhận được những thông tin mới nhất về trò chơi đuổi hình bắt chữ nhé!',
+    'Hãy thả tim để ủng hộ và động viên chúng tôi trong buổi lai chim đuổi hình bắt chữ nhé!',
+    'Và bây giờ, hãy chuẩn bị tinh thần và bắt đầu chơi trò chơi đuổi hình bắt chữ với tôi ngay bây giờ!',
+    'pho lâu chúng tôi để không bỏ lỡ bất kỳ buổi lai chim đuổi hình bắt chữ nào ',
     'Để được cộng điểm, bạn cần trả lời đúng và nhanh với mỗi lần chơi',
     'Người trả lời nhanh nhất trong vòng hai phút sẽ được cộng thêm hai mươi điểm',
-    'Kết thúc trò chơi vào lúc mười hai giờ trưa, người chơi với số điểm cao nhất sẽ nhận được giải thưởng tiền mặt',
-    'Với thời gian chơi mỗi hai phút, bạn sẽ có nhiều cơ hội để tích lũy điểm số và giành chiến thắng',
+    'Share để bạn bè của bạn cũng có cơ hội tham gia trò chơi đuổi hình bắt chữ và giành chiến thắng tiền thưởng hấp dẫn nhé',
+    'Với thời gian chơi hai phút, bạn sẽ có nhiều cơ hội để tích lũy điểm số và giành chiến thắng để lên tốp đầu',
+    'Các bạn được trả lời liên tục đến khi nào đúng cho đến khi hết giờ',
+    'Thả tim để cho chúng tôi biết rằng bạn đang đón xem và sẵn sàng tham gia trò chơi đuổi hình bắt chữ cùng chúng tôi. Cảm ơn bạn',
   ];
 
   runSpeaking(introArr[index], (cb) => {
@@ -66,7 +104,8 @@ function introGame() {
     if (index < introArr.length) {
       runSpeaking(introArr[index], cb);
     } else {
-      console.log('KẾT THÚC ĐỌC introGame')
+      console.log('KẾT THÚC ĐỌC introGame');
+      initSpeak('intro')
     }
   });
 }
@@ -85,7 +124,7 @@ function runSpeaking(msg, cb) {
       if (_.get(json_response, 'data[0]', '')) {
         const binaryData = atob(json_response.data[0].split(',')[1]);
         const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
-        const audio = new Audio(dataUri);
+        let audio = new Audio(dataUri);
         audio.addEventListener('ended', function () {
           cb(cb);
           isSpeaking = false;
@@ -115,4 +154,12 @@ function saveSpeaking(key, dataLive) {
         sessionStorage.setItem(key, dataUri);
       }
     })
+}
+
+function runSpeakChungMung(key) {
+  sessionStorage.getItem(key);
+  if (sessionStorage.getItem(key)) {
+    let audio = new Audio(sessionStorage.getItem(key));
+    audio.play();
+  }
 }

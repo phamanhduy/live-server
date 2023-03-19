@@ -11,15 +11,21 @@ function saveUserSecsion() {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
+    // const startPlay = document.getElementById('start-play');
     sessionStorage.setItem('user', JSON.stringify({
       channel: channel.value,
       maxNumber: maxNumber.value,
       liveSession: sessionLive.value,
+      // startPlay: startPlay.value,
     }));
     setTimeout(() => {
       getUserSecsion();
       connectionTiktok();
     }, 500);
+    socket.emit(`connect-tiktok`, {
+      channel: userData?.channel,
+      liveSession: userData?.liveSession
+    });
 }
 
 function connectionTiktok() {
@@ -30,11 +36,25 @@ function connectionTiktok() {
     socket.on(`${userData?.channel}`, (dataLive) => {
       receivedMessage(dataLive)
     });
-    getRanking()
+
+    socket.on(`connect-success-${userData?.channel}`, () => {
+      alert(`Kết nối ${userData?.channel} thành công`);
+    });
+    socket.on(`disconnect-${userData?.channel}`, () => {
+      alert(`${userData?.channel} bị ngắt kết nối`);
+    });
+    getRanking();
     socket.on(`${userData?.channel}-ranking`, (dataLive) => {
       sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')))
       sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
     });
+    closeInventory();
+  }
+}
+
+function disConnect () {
+  if (sessionStorage.getItem('user')) {
+    socket.emit(`dis-connect-${userData?.channel}`, '');
     closeInventory();
   }
 }
@@ -51,9 +71,11 @@ function loadingPageData() {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
+    // const startPlay = document.getElementById('start-play');
     channel.value = userData?.channel;
     maxNumber.value = userData?.maxNumber;
     sessionLive.value = userData?.liveSession;
+    // startPlay.value = userData?.startPlay;
     document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
   } 
 }
@@ -81,7 +103,9 @@ function receivedMessage(dataLive) {
   if (_.get(dataLive, 'type') === 'view') {
     showNumberViewer(dataLive);
   } else if (_.get(dataLive, 'type') === 'comment') {
-    caculator(dataLive);
+    if (!sessionStorage.getItem('winner')) {
+      caculator(dataLive);
+    }
   }
 }
 
@@ -97,7 +121,7 @@ function caculator(dataLive) {
     if (game) {
       if (_.includes(comment, gameWord) && !sessionStorage.getItem('winner')) {
         sessionStorage.setItem('winner', JSON.stringify(dataLive));
-        saveSpeaking('congratulation', SON.stringify(dataLive))
+        // saveSpeaking('congratulation', dataLive)
         socket.emit(`score-winner`, {
           ...dataLive,
           liveSession: userData?.liveSession
@@ -106,16 +130,6 @@ function caculator(dataLive) {
     }
   }
 }
-
-// setTimeout(() => {
-//   socket.emit(`score-winner`, {
-//     "channel": "kimnguyenbentre",
-//     "name": "bhaktithapa705",
-//     "username": "",
-//     "avatar": "https://p16-sign-va.tiktokcdn.com/tos-useast2a-avt-0068-giso/db0440e41cf1a34f2bfdd5491bd4239a~tplv-tiktok-shrink:72:72.webp?x-expires=1678194000&x-signature=lUfS688Yafhk2fvFowHuRQpISYM%3D",
-//     "comment": "vry good",
-//   });
-// }, 5000);
 
 function getRanking() {
   if (userData) {
@@ -136,56 +150,64 @@ function getRanking() {
 
 function showRanking(data) {
   sessionStorage.setItem('ranking', JSON.stringify(data));
-  let rankingArr = [{
-    avatar: "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
-    name: 'Chưa có 4i',
-    score: 4,
-  }, {
-    avatar: "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
-    name: 'Chưa có ai',
-    score: 2,
-  }, {
-    avatar: "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
-    name: 'Chưa có ai',
+  let avatar = 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg';
+  let rankingArr = new Array(15).fill({
+    avatar,
+    name: null,
     score: 0,
-  }, {
-    avatar: "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
-    name: 'Chưa có ai',
-    score: 3,
-  }];
-  _.assign(rankingArr, _.map(data, d => {
+  })
+  _.assign(rankingArr, _.map(data, (d, i) => {
     return {
       avatar: _.get(d, 'user.0.avatar'),
       name: _.get(d, 'user.0.name'),
-      score: _.get(d, 'score')
+      score: d.score || 0 + (i * 2)
     }
-  }))
+  }));
   let tongDiem = rankingArr.reduce(function(total, r) {
     return total + r.score;
   }, 0);
-
-  rankingArr = _.orderBy(rankingArr, ['score'], ['desc'])
+  rankingArr = _.orderBy(rankingArr, ['score'], ['desc']).map((d, i) => ({
+    avatar: _.get(d, 'avatar'),
+    name: _.get(d, 'name') || `Top${i+1}`,
+    score: d.score || 0 + (i * 2)
+  }));
+  var group1 = rankingArr.slice(0, 5);    // 5 objects from index 0 to index 4
+  var group2 = rankingArr.slice(5, 10);   // 5 objects from index 5 to index 9
+  var group3 = rankingArr.slice(10, 15);  // 5 objects from index 10 to index 14
+  
+  var groups = [group1, group2, group3];
   let html = '';
-  for (let i = 0; i < rankingArr.length; i++) {
-    const elm = rankingArr[i];
-    let percen = (elm.score / tongDiem) * 100;
-    html += `<tr>
-    <td style="margin-right: 5px;">
-      <img class="raking-avatar" src='${elm.avatar}'>
-    </td>
-    <td style="width: 200px">
-      <div class="bar-container">
-        <div style='width: ${percen}%' class="bar-${i + 1}">
-          <span>${elm.name}</span>
-        </div>
-      </div>
-    </td>
-    <td>
-      <div class="side right">
-        <div>${elm.score}</div>
-      </div>
-    </td>
-  </tr>`
+  for (let i = 0; i < groups.length; i++) {
+    let elm = groups[i];
+    let htmlItem = '';
+    for (let e = 0; e < elm.length; e++) {
+      let elmItem = elm[e];
+      let percen = (elmItem.score / tongDiem) * 100;
+      htmlItem += `<tr>
+          <td style="margin-right: 5px;">
+            <img class="raking-avatar" src='${elmItem.avatar}'>
+          </td>
+          <td style="width: 90px">
+            <div class="bar-container">
+              <div style='width: ${percen}%' class="bar-${i + 1}">
+                <span>${elmItem.name.length > 10 ? `${elmItem.name.slice(0, 10)}..` : elmItem.name}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="side right">
+              <div>${elmItem.score}</div>
+            </div>
+          </td>
+        </tr>`
+    }
+    html += `<table class="ranking">
+              ${htmlItem}
+            </table>`
   }
-  document.getElementById('ranking').innerHTML = html;
+
+  document.getElementById('group-table').innerHTML = html;
 }
+
+// document.getElementById('mc-img').src = `${URL_API}/images/mc1.gif`;
+

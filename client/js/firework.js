@@ -81,7 +81,7 @@
  }
 
 var audio4 = new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3');
-audio4.volume = 0.5;
+audio4.volume = 0.2;
 audio4.play();
 
 // Lấy chiều rộng của cửa sổ trình duyệt

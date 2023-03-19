@@ -11,16 +11,20 @@ module.exports = {
   getRamdom,
 };
 
-const userCommentSchema = new Schema({
+const sessionGameSchema = new Schema({
   userId: ObjectId,
   channel: String,
   sessionName: String,
   score: Number,
+  followed: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });
 
-const SessionGame = mongoose.model('sessionGame', userCommentSchema);
+const SessionGame = mongoose.model('sessionGame', sessionGameSchema);
 
 async function add(data) {
   return await SessionGame.create(data)

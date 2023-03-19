@@ -7,12 +7,14 @@ module.exports = {
   findOne,
   listByTime,
   getRamdom,
+  updateData,
 };
 
 const userSchema = new Schema({
   name: String,
   username: String,
   avatar: String,
+  avatarBase64: String,
 }, {
   timestamps: true,
 });
@@ -36,4 +38,9 @@ async function listByTime(query) {
 
 async function getRamdom() {
   return await Users.aggregate([{ $sample: { size: 1 } }]).then(async (updated) => updated).catch(async (err) => err);
+}
+
+async function updateData(filter, data) {
+  return await Users.updateOne(filter, data)
+    .then(async (updated) => updated).catch(async (err) => err);
 }

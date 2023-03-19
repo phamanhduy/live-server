@@ -164,13 +164,12 @@ main {
 
 /* Combat Log */
 .logBox {
-    margin: 0.5rem;
     height: 100%;
     min-height: 10rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0.5em;
+    padding: 0.1em;
     overflow: auto;
 }
 
@@ -568,7 +567,6 @@ header {
     align-items: center;
     gap: 0.3rem;
     padding: 0.3rem 0.5rem;
-    margin: 0.5rem 0.5rem 0;
 }
 
 header button {
@@ -601,24 +599,39 @@ header button i {
 
 /* Stat Panel */
 .stat-panel {
-    display: flex;
-    margin: 0.5rem;
+    display: grid;
     gap: 0.5rem;
+    width: 100%;
+    text-align: center;
+}
+.stat-panel.intro {
+    height: 34px;
+    border: 1px solid;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+}
+
+/* .stat-panel table {
+    margin-left: 15px;
+} */
+
+.stat-panel .left {
     width: 100%;
 }
 
-.stat-panel table {
-    margin-left: 15px;
-}
-
-.stat-panel .left {
-    width: 70%;
-}
-
-.stat-panel .right {
+/* .stat-panel .right {
     width: 25%;
+} */
+#floorCount {
+    display: flex;
 }
 
+#floorCount #viewers {
+    margin-left: 10px;
+}
 .stat-panel .box {
     white-space: nowrap;
     border: solid 1px;
@@ -630,6 +643,7 @@ header button i {
     /* width: 70%; */
     padding: 0.5rem;
     overflow: hidden;
+    display: flex;
 }
 
 .stat-panel .box::-webkit-scrollbar {
@@ -955,7 +969,7 @@ header button i {
   }
 
   .image-container img {
-    padding: 10px;
+    padding: 3px;
     text-align: center;
   }
 
@@ -996,17 +1010,17 @@ header button i {
   background-color: #ffffff;
   position: relative;
   overflow: hidden;
-  margin-right: 3px;
+  margin-right: 2px;
   padding: 5px;
-  color: #0070dd;
-  font-weight: 700;
+  color: #005eff;
+  font-weight: 900;
 }
 #container-words .space {
-    width: 10px;
+    width: 4px;
 }
 
 #timer-countdown {
-    font-size: 24px;
+    font-size: 35px;
 }
 
 canvas {
@@ -1033,7 +1047,7 @@ canvas {
 }
 
 #ads-product img {
-    height: 261px;
+    height: 250px;
 }
 
 #ads-product {
@@ -1043,11 +1057,12 @@ canvas {
 #ads-product .content {
     padding: 0;
     gap: 0;
-    height: 300px;
+    /* height: 300px; */
     width: 100%;
     align-items: center;
     margin: 0 auto;
-    margin-top: 40%;
+    margin-top: 180px;
+    background: #4b4b4b;
 }
 #ads-loading {
     position: relative;
@@ -1062,9 +1077,10 @@ canvas {
 }
 
 .call-action {
-    position: absolute;
-    bottom: 100px;
+    /* position: absolute; */
+    /* bottom: 100px; */
     left: 20px;
+    margin-bottom: 5px;
 }
 
 .call-action .text-hook{
@@ -1087,3 +1103,12 @@ canvas {
       transform: translateY(-10px);
     }
   }
+
+#mc-img {
+    width: 100%;
+    height: 100%;
+}
+
+#bonus-stats {
+    padding: 0px;
+}
