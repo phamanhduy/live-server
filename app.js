@@ -107,7 +107,7 @@ async function caculatorScore(socket, dataLive) {
     console.log(error)
   }
 }
-async function addScore({username, name, avatar}, {channel, sessionName, score}, type) {
+async function addScore({username, name, avatar}, {channel, sessionName, score}, type, socket) {
   let user = await User.findOne({username});
   if (!user) {
     user = await User.add({
@@ -125,16 +125,24 @@ async function addScore({username, name, avatar}, {channel, sessionName, score},
       sessionName,
     });
   } else {
-    if(_.get(sessionGame, 'followed')) {
-      return;
-    }
     let dataSess = {
       score: score + _.get(sessionGame, 'score'),
     }
     if (type === 'follow') {
+      if(_.get(sessionGame, 'followed')) {
+        return;
+      }
       dataSess['followed'] = true;
     }
     await SessionGame.updateData({_id: _.get(sessionGame, '_id'), sessionName}, dataSess); 
+    
+    const winner = await SessionGame.getLimitWinner({
+      sessionName,
+    }, 15);
+    socket.emit(`${channel}-ranking`, {
+      ranking: winner,
+      sessionWinner: null,
+    });
   }
 }
 
@@ -150,22 +158,21 @@ io.on('connection', (socket) => {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 5)}, 'like')  
+        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 5)}, 'like', socket)  
       });
       tiktokLiveConnection.on('follow', data => {
-        console.log({data})
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 5}, 'follow');
+        }, {channel, sessionName: liveSession, score: 5}, 'follow', socket);
       });
       tiktokLiveConnection.on('share', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 3}, 'share');
+        }, {channel, sessionName: liveSession, score: 3}, 'share', socket);
       })
 
       tiktokLiveConnection.on('chat', data => {

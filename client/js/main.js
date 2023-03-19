@@ -45,8 +45,10 @@ function connectionTiktok() {
     });
     getRanking();
     socket.on(`${userData?.channel}-ranking`, (dataLive) => {
-      sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')))
-      sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
+      sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')));
+      if (_.get(dataLive, 'sessionWinner')) {
+        sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
+      }
     });
     closeInventory();
   }
@@ -131,6 +133,9 @@ function caculator(dataLive) {
   }
 }
 
+// setInterval(() => {
+//   getRanking();
+// }, 7000)
 function getRanking() {
   if (userData) {
     fetch(`${URL_API}/api/get-ranking?session=${userData?.liveSession}`, {
