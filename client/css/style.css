@@ -1112,3 +1112,14 @@ canvas {
 #bonus-stats {
     padding: 0px;
 }
+
+.mycursor {
+    cursor: url("https://cdn-icons-png.flaticon.com/128/3119/3119214.png"), auto;
+    padding: 40px;
+}
+
+#myVideo {
+    width: 200px;
+    height: 150px;
+    z-index: 999;
+}

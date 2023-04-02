@@ -53,7 +53,7 @@ function ramdomNumber(cb) {
 function startTimer(duration) {
   var display = document.getElementById('timer-countdown');
   var timer = duration, minutes, seconds;
-  timeInterval = setInterval(function () {
+  setInterval(function () {
     minutes = parseInt(timer / 60, 10);
     seconds = parseInt(timer % 60, 10);
     minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -63,6 +63,7 @@ function startTimer(duration) {
       play();
     }
     if (runningTime && timer === 0) {
+      console.log(111)
       return;
     }
     if (timer === 5) {

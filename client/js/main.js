@@ -165,7 +165,7 @@ function showRanking(data) {
     return {
       avatar: _.get(d, 'user.0.avatar'),
       name: _.get(d, 'user.0.name'),
-      score: d.score || 0 + (i * 2)
+      score: d.score
     }
   }));
   let tongDiem = rankingArr.reduce(function(total, r) {
@@ -174,7 +174,7 @@ function showRanking(data) {
   rankingArr = _.orderBy(rankingArr, ['score'], ['desc']).map((d, i) => ({
     avatar: _.get(d, 'avatar'),
     name: _.get(d, 'name') || `Top${i+1}`,
-    score: d.score || 0 + (i * 2)
+    score: d.score
   }));
   var group1 = rankingArr.slice(0, 5);    // 5 objects from index 0 to index 4
   var group2 = rankingArr.slice(5, 10);   // 5 objects from index 5 to index 9
