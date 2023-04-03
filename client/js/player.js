@@ -50,46 +50,42 @@ function ramdomNumber(cb) {
   }, 8000);
 }
 
-function startTimer(duration) {
+function startRunTimer(duration) {
   var display = document.getElementById('timer-countdown');
-  var timer = duration, minutes, seconds;
-  setInterval(function () {
-    minutes = parseInt(timer / 60, 10);
-    seconds = parseInt(timer % 60, 10);
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    display.textContent = minutes + ":" + seconds;
-    if (timer === duration) {
+  let totalSeconds = duration;
+  setInterval(function() {
+    let minutes = parseInt(Math.floor(totalSeconds / 60), 10);
+    let seconds = parseInt(totalSeconds % 60, 10);
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    if (totalSeconds >= 0) {
+      display.textContent = minutes + ':' + seconds;
+    }
+    // Replace with your own code to update the countdown display
+    if (totalSeconds === duration) {
       play();
     }
-    if (runningTime && timer === 0) {
-      console.log(111)
-      return;
-    }
-    if (timer === 5) {
+    if (totalSeconds === 5) {
       showWord = true;
       showRanking(JSON.parse(sessionStorage.getItem('ranking')));
       showPlayHtml(JSON.parse(sessionStorage.getItem('play')))
     }
-    if (timer === 3) {
-      // initSpeak('introProduct', {});
-    }
-    if (--timer < 0) {
-      timer = duration;
-    }
-    if (timer === 0) {
+    if (totalSeconds === 0) {
       ramdomNumber((winner) => {
+        totalSeconds = duration;
         runChungMung(JSON.parse(winner));
       });
     }
+    totalSeconds--;
   }, 1000);
+
 }
 
 
 setTimeout(() => {
   if (sessionStorage.getItem('user')) {
     let setting = JSON.parse(sessionStorage.getItem('user'));
-    startTimer(setting?.maxNumber);
+    startRunTimer(setting?.maxNumber);
   }
 }, 500);
 
@@ -116,7 +112,7 @@ function runChungMung(winner) {
   setTimeout(() => {
     clearInterval(chungMungIntertal);
     document.getElementById("winner-con").style.display = 'none';
-    document.getElementById('canvas').remove()
+    // document.getElementById('canvas').remove()
   }, 7000);
   // audioChungMung();
 }
@@ -125,7 +121,6 @@ function isTop() {
   let ranking = JSON.parse(sessionStorage.getItem('ranking')) || [];
   let sessionWinner = JSON.parse(sessionStorage.getItem('sessionWinner')) || {};
   let maxRank = Math.max(...ranking.map(o => o.score));
-  console.log({maxRank, sessionWinner})
   let remaining = maxRank - sessionWinner?.score;
   return remaining === 0;
 }

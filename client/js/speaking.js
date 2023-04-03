@@ -122,9 +122,9 @@ function runSpeaking(msg, cb) {
       return response.json();
     }).then(function (json_response) {
       if (_.get(json_response, 'data[0]', '')) {
-        const binaryData = atob(json_response.data[0].split(',')[1]);
-        const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
-        let audio = new Audio(dataUri);
+        if (_.get(json_response, 'data[0].is_file', false)) {
+          speakAudio(_.get(json_response, 'data[0].name', ''))
+        }
         audio.addEventListener('ended', function () {
           cb(cb);
           isSpeaking = false;
@@ -135,7 +135,6 @@ function runSpeaking(msg, cb) {
       }
     })
 }
-
 
 function saveSpeaking(key, dataLive) {
   let text = congratulationGame(dataLive?.name, isTop());
@@ -148,7 +147,10 @@ function saveSpeaking(key, dataLive) {
     }).then(function (response) {
       return response.json();
     }).then(function (json_response) {
-      if (_.get(json_response, 'data[0]', '')) {
+      console.log({json_response})
+      if (_.get(json_response, 'data[0].is_file', false)) {
+        sessionStorage.setItem(key, _.get(json_response, 'data[0].name', ''));
+      } else {
         const binaryData = atob(json_response.data[0].split(',')[1]);
         const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
         sessionStorage.setItem(key, dataUri);
@@ -159,7 +161,11 @@ function saveSpeaking(key, dataLive) {
 function runSpeakChungMung(key) {
   sessionStorage.getItem(key);
   if (sessionStorage.getItem(key)) {
-    let audio = new Audio(sessionStorage.getItem(key));
-    audio.play();
+    speakAudio(sessionStorage.getItem(key))
   }
+}
+
+function speakAudio(audioSpeak) {
+  let audioRun = new Audio(`https://ntt123-viettts.hf.space/file=${audioSpeak}`);
+  audioRun.play();
 }

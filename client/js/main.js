@@ -7,7 +7,7 @@ function getUserSecsion() {
   }
 }
 
-function saveUserSecsion() {
+function saveUserSecsion(isConnect = true) {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
@@ -22,10 +22,12 @@ function saveUserSecsion() {
       getUserSecsion();
       connectionTiktok();
     }, 500);
-    socket.emit(`connect-tiktok`, {
-      channel: userData?.channel,
-      liveSession: userData?.liveSession
-    });
+    if (isConnect) {
+      socket.emit(`connect-tiktok`, {
+        channel: userData?.channel,
+        liveSession: userData?.liveSession
+      });
+    }
 }
 
 function connectionTiktok() {
@@ -105,9 +107,10 @@ function receivedMessage(dataLive) {
   if (_.get(dataLive, 'type') === 'view') {
     showNumberViewer(dataLive);
   } else if (_.get(dataLive, 'type') === 'comment') {
-    if (!sessionStorage.getItem('winner')) {
-      caculator(dataLive);
+    if (sessionStorage.getItem('winner')) {
+      return;
     }
+    caculator(dataLive);
   }
 }
 
@@ -121,9 +124,9 @@ function caculator(dataLive) {
     let gameWord = _.get(game, 'word', '').toLowerCase();
     let comment = _.get(dataLive, 'comment').toLowerCase();
     if (game) {
-      if (_.includes(comment, gameWord) && !sessionStorage.getItem('winner')) {
+      if (_.includes(comment, gameWord)) {
         sessionStorage.setItem('winner', JSON.stringify(dataLive));
-        // saveSpeaking('congratulation', dataLive)
+        saveSpeaking('congratulation', dataLive)
         socket.emit(`score-winner`, {
           ...dataLive,
           liveSession: userData?.liveSession
@@ -192,10 +195,10 @@ function showRanking(data) {
           <td style="margin-right: 5px;">
             <img class="raking-avatar" src='${elmItem.avatar}'>
           </td>
-          <td style="width: 90px">
+          <td style="width: 60px">
             <div class="bar-container">
               <div style='width: ${percen}%' class="bar-${i + 1}">
-                <span>${elmItem.name.length > 10 ? `${elmItem.name.slice(0, 10)}..` : elmItem.name}</span>
+                <span>${elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name}</span>
               </div>
             </div>
           </td>

@@ -158,7 +158,7 @@ io.on('connection', (socket) => {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 5)}, 'like', socket)  
+        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 10)}, 'like', socket)  
       });
       tiktokLiveConnection.on('follow', data => {
         addScore({

@@ -5,7 +5,7 @@
     "main": "app.js",
     "scripts": {
         "start": "node app.js",
-        "dev": "nodemon app.js"
+        "dev": "nodemon --ignore client --exec node app.js"
     },
     "author": "Your Name",
     "license": "MIT",
