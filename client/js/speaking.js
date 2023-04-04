@@ -74,7 +74,7 @@ function congratulationGame(name, isTop = false) {
 function introGame() {
   let index = 0;
   const introArr = [
-    'Các bạn thả tim thật nhiều để lên điểm nha, 5 tim 1 điểm, sẽ nhanh lên được top đầu thôi',
+    'Các bạn thả tim thật nhiều để lên điểm nha, 5 tim sẽ nhận được 1 điểm, sẽ nhanh lên được top đầu thôi',
     'xe lai chim này được 5 điểm, pho lâu 20 điểm, mỗi còm mem là được 1 điểm',
     'Người đạt top 1 sẽ giành được 200 ca nhé, 3 tiếng trao thưởng 1 lần các bạn ơi',
     'Càng nhiều mắt xem giải thưởng sẽ càng cao, các bạn hãy thả tim để kéo nhiều mắt xem nha',
