@@ -1,9 +1,14 @@
-let loadingPage = false;
-let userData = null;
+var loadingPage = false;
+var userData = null;
+
+var URL_API = _.get(userData, 'serverInput') || 'http://localhost:3000';
+var socket = io(URL_API);
 
 function getUserSecsion() {
   if (sessionStorage.getItem('user')) {
     userData = JSON.parse(sessionStorage.getItem('user'));
+    URL_API = _.get(userData, 'serverInput');
+    socket = io(URL_API);
   }
 }
 
@@ -11,12 +16,13 @@ function saveUserSecsion(isConnect = true) {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
+    const serverInput = document.getElementById('server-input');
     // const startPlay = document.getElementById('start-play');
     sessionStorage.setItem('user', JSON.stringify({
       channel: channel.value,
       maxNumber: maxNumber.value,
       liveSession: sessionLive.value,
-      // startPlay: startPlay.value,
+      serverInput: serverInput.value,
     }));
     setTimeout(() => {
       getUserSecsion();
@@ -75,10 +81,12 @@ function loadingPageData() {
     const channel = document.getElementById('message-input');
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
-    // const startPlay = document.getElementById('start-play');
+    const serverInput = document.getElementById('server-input');
+
     channel.value = userData?.channel;
     maxNumber.value = userData?.maxNumber;
     sessionLive.value = userData?.liveSession;
+    serverInput.value = userData?.serverInput;
     // startPlay.value = userData?.startPlay;
     document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
   } 

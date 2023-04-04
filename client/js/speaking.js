@@ -3,7 +3,7 @@ let isSpeaking = false;
 
 
 // FunctionUtil
-// initSpeak('intro');
+initSpeak('intro');
 
 function initSpeak(type, data) {
   switch (type) {
@@ -23,7 +23,7 @@ function initSpeak(type, data) {
 
 function introProduct() {
   let introArr = [
-    "Hãy xem ngay giỏ hàng của chúng tôi để khám phá những món đồ độc đáo và hấp dẫn nhất!",
+    "Các bạn thả tim thật nhiều để lên điểm nha, 5 tim 1 điểm, sẽ nhanh lên được top đầu thôi!",
     "Bạn có muốn tìm kiếm những sản phẩm độc đáo và thú vị? Hãy ghé qua giỏ hàng của chúng tôi ngay!",
     "Khám phá ngay giỏ hàng đầy đủ các sản phẩm chất lượng và đa dạng để lựa chọn cho mình những món hàng ưa thích nhất!",
     "Đến với giỏ hàng của chúng tôi, bạn sẽ có cơ hội tham quan và mua sắm những sản phẩm mới nhất và độc đáo nhất!",
@@ -74,29 +74,10 @@ function congratulationGame(name, isTop = false) {
 function introGame() {
   let index = 0;
   const introArr = [
-    'Xin chào mọi người và chào mừng đến với trò chơi đuổi hình bắt chữ! Tôi là dẫn chương trình của chương trình này và sẽ giúp bạn có một trải nghiệm vui vẻ.',
-    'Trò chơi này sẽ giúp bạn rèn luyện khả năng tập trung, tăng cường từ vựng và cải thiện kỹ năng tư duy lô díc.',
-    'Nội dung của trò chơi rất đơn giản: chúng ta sẽ hiển thị một hình ảnh lên màn hình, và bạn sẽ phải tìm ra từ được ẩn trong hình ảnh đó bằng cách sắp xếp các chữ cái tạo thành từ đó.',
-    'Nhưng đừng để bị lừa bởi sự đơn giản của trò chơi này, độ khó sẽ tăng dần, càng ngày càng khó đó',
-    'Hãy share để bạn bè của bạn cũng có cơ hội tham gia trò chơi đuổi hình bắt chữ và giành chiến thắng tiền thưởng hấp dẫn nhé',
-    'Mỗi câu hỏi đều được thiết kế để thử thách khả năng tư duy và sự kiên nhẫn của bạn. Vì vậy, hãy cố gắng hết sức để tìm ra câu trả lời và giành chiến thắng.',
-    'Và bây giờ, hãy sẵn sàng để bắt đầu trò chơi và chinh phục các câu hỏi thú vị của chúng tôi!',
-    'Để chơi trò chơi này, bạn sẽ thấy một hình ảnh được hiển thị lên màn hình.',
-    'Thả tim để cho chúng tôi cảm nhận được sự hứng thú của bạn với trò chơi đuổi hình bắt chữ và cùng nhau tạo nên một buổi lai chim thú vị nhé',
-    'Trong hình ảnh đó sẽ có một từ được ẩn đi bằng cách sắp xếp các chữ cái thành các vị trí khác nhau.',
-    'Nhiệm vụ của bạn là tìm ra từ đó và nhập vào ô trống bên dưới hình ảnh. Hãy cẩn thận, các chữ cái có thể bị xáo trộn hoặc xoay chuyển, và có thể xuất hiện theo bất kỳ hướng nào!',
-    'Đừng quên pho lâu chúng tôi để cập nhật những thông tin mới nhất về các buổi lai chim chơi game và trò chơi đuổi hình bắt chữ nhé',
-    'Bạn sẽ được cấp một số lần sai để giúp bạn có thể tìm ra từ đó. Nhưng hãy chơi thận trọng, vì mỗi lần sai sẽ khiến bạn mất một cơ hội để giành chiến thắng.',
-    'pho lâu chúng tôi để không bỏ lỡ bất kỳ buổi lai chim nào và có cơ hội nhận được những thông tin mới nhất về trò chơi đuổi hình bắt chữ nhé!',
-    'Hãy thả tim để ủng hộ và động viên chúng tôi trong buổi lai chim đuổi hình bắt chữ nhé!',
-    'Và bây giờ, hãy chuẩn bị tinh thần và bắt đầu chơi trò chơi đuổi hình bắt chữ với tôi ngay bây giờ!',
-    'pho lâu chúng tôi để không bỏ lỡ bất kỳ buổi lai chim đuổi hình bắt chữ nào ',
-    'Để được cộng điểm, bạn cần trả lời đúng và nhanh với mỗi lần chơi',
-    'Người trả lời nhanh nhất trong vòng hai phút sẽ được cộng thêm hai mươi điểm',
-    'Share để bạn bè của bạn cũng có cơ hội tham gia trò chơi đuổi hình bắt chữ và giành chiến thắng tiền thưởng hấp dẫn nhé',
-    'Với thời gian chơi hai phút, bạn sẽ có nhiều cơ hội để tích lũy điểm số và giành chiến thắng để lên tốp đầu',
-    'Các bạn được trả lời liên tục đến khi nào đúng cho đến khi hết giờ',
-    'Thả tim để cho chúng tôi biết rằng bạn đang đón xem và sẵn sàng tham gia trò chơi đuổi hình bắt chữ cùng chúng tôi. Cảm ơn bạn',
+    'Các bạn thả tim thật nhiều để lên điểm nha, 5 tim 1 điểm, sẽ nhanh lên được top đầu thôi',
+    'xe lai chim này được 5 điểm, pho lâu 20 điểm, mỗi còm mem là được 1 điểm',
+    'Người đạt top 1 sẽ giành được 200 ca nhé, 3 tiếng trao thưởng 1 lần các bạn ơi',
+    'Càng nhiều mắt xem giải thưởng sẽ càng cao, các bạn hãy thả tim để kéo nhiều mắt xem nha',
   ];
 
   runSpeaking(introArr[index], (cb) => {
@@ -123,13 +104,12 @@ function runSpeaking(msg, cb) {
     }).then(function (json_response) {
       if (_.get(json_response, 'data[0]', '')) {
         if (_.get(json_response, 'data[0].is_file', false)) {
-          speakAudio(_.get(json_response, 'data[0].name', ''))
+          let audio = speakAudio(_.get(json_response, 'data[0].name', ''));
+          audio.addEventListener('ended', function () {
+            cb(cb);
+            isSpeaking = false;
+          });
         }
-        audio.addEventListener('ended', function () {
-          cb(cb);
-          isSpeaking = false;
-        });
-        audio.play();
       } else {
         isSpeaking = false;
       }
@@ -168,4 +148,5 @@ function runSpeakChungMung(key) {
 function speakAudio(audioSpeak) {
   let audioRun = new Audio(`https://ntt123-viettts.hf.space/file=${audioSpeak}`);
   audioRun.play();
+  return audioRun;
 }

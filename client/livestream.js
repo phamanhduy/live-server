@@ -439,11 +439,11 @@ function runText(data) {
       if (_.get(json_response, 'data[0]', '')) {
         const binaryData = atob(json_response.data[0].split(',')[1]);
         const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
-        const audio = new Audio(dataUri);
-        audio.addEventListener('ended', function() {
+        const audioT = new Audio(dataUri);
+        audioT.addEventListener('ended', function() {
           isSpeaking = false;
         });
-        audio.play();
+        audioT.play();
       } else {
         isSpeaking = false;
       }
