@@ -148,7 +148,7 @@ function runImage(remove = false) {
     let IMG_RAN = Math.floor((Math.random() * IMG_DIR.total) + 1);
     let srcImg = `${URL_API}/${IMG_DIR.dir}/img_product (${IMG_RAN + 1}).jpeg`;
     document.getElementById('img-product').src = srcImg;
-  }, 1500);
+  }, 4000);
   if (remove) {
     clearInterval(showImgeInval);
   }

@@ -74,10 +74,10 @@ function congratulationGame(name, isTop = false) {
 function introGame() {
   let index = 0;
   const introArr = [
-    'Các bạn thả tim thật nhiều để lên điểm nha, năm tim sẽ nhận được một điểm, sẽ nhanh lên được top đầu thôi',
-    'xe lai chim này được năm điểm, pho lâu hai mươi điểm, mỗi còm mem là được một điểm',
-    'Người đạt top một sẽ giành được hai chăm ca nhé, ba tiếng trao thưởng một lần các bạn ơi',
-    'Càng nhiều mắt xem giải thưởng sẽ càng cao, các bạn hãy thả tim để kéo nhiều mắt xem nha',
+    'Các bạn thả tim thật nhiều để lên điểm nha, năm lần tim sẽ nhận được một điểm, sẽ nhanh lên được top đầu thôi',
+    'xe lai chim này được năm điểm, pho lâu hai mươi điểm, mỗi còm men là được một điểm',
+    'Người đạt top một đến khi thời gian kết thúc sẽ giành được số tiền trên, ba tiếng sẽ sang lần chơi mới các bạn nhé',
+    'Càng nhiều mắt xem tiền sẽ càng cao, các bạn hãy thả tim để kéo nhiều mắt xem nha',
   ];
 
   runSpeaking(introArr[index], (cb) => {
@@ -147,6 +147,7 @@ function runSpeakChungMung(key) {
 
 function speakAudio(audioSpeak) {
   let audioRun = new Audio(`https://ntt123-viettts.hf.space/file=${audioSpeak}`);
+  audioRun.volume = 0.5;
   audioRun.play();
   return audioRun;
 }
