@@ -54,6 +54,7 @@ function connectionTiktok() {
     getRanking();
     socket.on(`${userData?.channel}-ranking`, (dataLive) => {
       sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')));
+      showRanking(_.get(dataLive, 'ranking'));
       if (_.get(dataLive, 'sessionWinner')) {
         sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
       }
