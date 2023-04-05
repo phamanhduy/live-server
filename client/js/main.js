@@ -1,16 +1,16 @@
 var loadingPage = false;
 var userData = null;
 
-var URL_API = _.get(userData, 'serverInput') || 'http://localhost:3000';
-var socket = io(URL_API);
-
 function getUserSecsion() {
   if (sessionStorage.getItem('user')) {
     userData = JSON.parse(sessionStorage.getItem('user'));
-    URL_API = _.get(userData, 'serverInput');
-    socket = io(URL_API);
+    // URL_API = _.get(userData, 'serverInput');
+    // socket = io(URL_API);
   }
 }
+
+var URL_API = _.get(userData, 'serverInput') || 'http://localhost:3000';
+var socket = io(URL_API);
 
 function saveUserSecsion(isConnect = true) {
     const channel = document.getElementById('message-input');
