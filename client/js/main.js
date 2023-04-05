@@ -9,7 +9,7 @@ function getUserSecsion() {
   }
 }
 
-var URL_API = _.get(userData, 'serverInput') || 'http://localhost:3000';
+var URL_API = _.get(JSON.parse(sessionStorage.getItem('user')), 'serverInput') || 'http://localhost:3000';
 var socket = io(URL_API);
 
 function saveUserSecsion(isConnect = true) {
