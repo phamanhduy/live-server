@@ -90,6 +90,30 @@ setTimeout(() => {
 }, 500);
 
 
+function countdown(duration) {
+  let totalSeconds = duration;
+  setInterval(function() {
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    let display = document.getElementById('time-finish');
+    display.textContent = hours + ':' + minutes + ':' + seconds;
+    totalSeconds--;
+    if (totalSeconds === 0) {
+      totalSeconds = duration;
+    }
+  }, 1000);
+}
+
+setTimeout(() => {
+  if (sessionStorage.getItem('user')) {
+    countdown(10800);
+  }
+}, 500)
 function runChungMung(winner) {
   if (!winner) {
     return;
