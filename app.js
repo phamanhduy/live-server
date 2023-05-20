@@ -134,14 +134,15 @@ async function addScore({username, name, avatar}, {channel, sessionName, score},
       }
       dataSess['followed'] = true;
     }
-    await SessionGame.updateData({_id: _.get(sessionGame, '_id'), sessionName}, dataSess); 
-    
-    const winner = await SessionGame.getLimitWinner({
-      sessionName,
-    }, 15);
-    socket.emit(`${channel}-ranking`, {
-      ranking: winner,
-      sessionWinner: null,
+    await SessionGame.updateData({_id: _.get(sessionGame, '_id'), sessionName}, dataSess, async (data) => {
+      console.log({data})
+      const winner = await SessionGame.getLimitWinner({
+        sessionName,
+      }, 15);
+      socket.emit(`${channel}-ranking`, {
+        ranking: winner,
+        sessionWinner: null,
+      });
     });
   }
 }
