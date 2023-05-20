@@ -142,7 +142,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    
 }
 
 .row span {
@@ -196,7 +196,7 @@ main {
 
 #playerEquipment {
     display: flex;
-    gap: 0.5rem;
+    
     flex-flow: row wrap;
     margin-left: 0.5rem;
 }
@@ -239,7 +239,6 @@ main {
 
 /* Shadows */
 .primary-panel {
-    border-radius: 0.3rem;
     border: solid 1px;
     text-align: center;
 }
@@ -353,7 +352,7 @@ button:focus {
 .modal-container .content .button-container {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    
 }
 
 /* Equipment Info */
@@ -560,13 +559,12 @@ button:focus {
 
 /* Header */
 header {
-    border-radius: 0.3rem;
     border: solid 1px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.3rem 0.5rem;
+    padding: 0.1rem 0.5rem;
 }
 
 header button {
@@ -600,14 +598,12 @@ header button i {
 /* Stat Panel */
 .stat-panel {
     display: grid;
-    gap: 0.5rem;
     width: 100%;
     text-align: center;
 }
 .stat-panel.intro {
     height: 34px;
     border: 1px solid;
-    margin-top: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -635,13 +631,8 @@ header button i {
 .stat-panel .box {
     white-space: nowrap;
     border: solid 1px;
-    border-radius: 0.3rem;
-    -webkit-border-radius: 0.3rem;
-    -moz-border-radius: 0.3rem;
-    -ms-border-radius: 0.3rem;
-    -o-border-radius: 0.3rem;
     /* width: 70%; */
-    padding: 0.5rem;
+    padding: 0.3rem;
     overflow: hidden;
     display: flex;
 }
@@ -900,7 +891,8 @@ header button i {
   /* Place text to the right */
   .right {
     text-align: left;
-    padding-left: 10px;
+    padding-left: 6px;
+    min-width: 40px;
   }
   
   /* Clear floats after the columns */
