@@ -53,7 +53,6 @@ function connectionTiktok() {
     });
     getRanking();
     socket.on(`${userData?.channel}-ranking`, (dataLive) => {
-      sessionStorage.setItem('ranking', JSON.stringify(_.get(dataLive, 'ranking')));
       showRanking(_.get(dataLive, 'ranking'));
       if (_.get(dataLive, 'sessionWinner')) {
         sessionStorage.setItem('sessionWinner', JSON.stringify(_.get(dataLive, 'sessionWinner')))
@@ -166,7 +165,6 @@ function getRanking() {
 }
 
 function showRanking(data) {
-  console.log({data})
   sessionStorage.setItem('ranking', JSON.stringify(data));
   let avatar = 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg';
   let rankingArr = new Array(15).fill({

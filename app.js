@@ -153,27 +153,27 @@ io.on('connection', (socket) => {
   });
   
   socket.on('connect-tiktok', ({channel, liveSession}) => {
-    tiktokConnector.connectStream(channel, socket, (tiktokLiveConnection) => {
+    tiktokConnector.connectStream(channel, socket, (tiktokLiveConnection, newSocket) => {
       tiktokLiveConnection.on('like', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 8)}, 'like', socket)  
+        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 8)}, 'like', newSocket)  
       });
       tiktokLiveConnection.on('follow', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 20}, 'follow', socket);
+        }, {channel, sessionName: liveSession, score: 20}, 'follow', newSocket);
       });
       tiktokLiveConnection.on('share', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 3}, 'share', socket);
+        }, {channel, sessionName: liveSession, score: 3}, 'share', newSocket);
       })
 
       tiktokLiveConnection.on('chat', data => {
@@ -190,7 +190,7 @@ io.on('connection', (socket) => {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 1}, 'comment', socket);
+        }, {channel, sessionName: liveSession, score: 1}, 'comment', newSocket);
       });
       tiktokLiveConnection.on('roomUser', data => {
         receivedDataLive({

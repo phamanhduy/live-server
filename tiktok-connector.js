@@ -26,7 +26,7 @@ async function connectStream(channel, socket, cb) {
   tiktokLiveConnection.connect().then(state => {
       console.info(`Connected to roomId ${state.roomId}`);
       socket.emit(`connect-success-${channel}`, '');
-      cb(tiktokLiveConnection);
+      cb(tiktokLiveConnection, socket);
   }).catch(err => {
       console.error('Lỗi khi kết nối ', channel, {err});
       setTimeout(() => {
