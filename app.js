@@ -211,6 +211,15 @@ io.on('connection', (socket) => {
           type: 'view',
         });
       });
+
+      socket.on(`dis-connect-${channel}`, () => {
+        console.log('dis', channel)
+        titokCon.disconnect();
+      });
+      titokCon.on('disconnected', () => {
+        console.error('Đã ngắt kết nối ', channel);
+        socket.emit(`disconnect-${channel}`, '');
+      });
     }
   }
 

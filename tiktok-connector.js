@@ -33,14 +33,6 @@ async function connectStream(channel, socket, cb) {
         connectStream(channel, socket, cb);
       }, 1000);
   });
-  socket.on(`dis-connect-${channel}`, () => {
-    console.log('dis', channel)
-    tiktokLiveConnection.disconnect();
-  });
-  tiktokLiveConnection.on('disconnected', () => {
-    console.error('Đã ngắt kết nối ', channel);
-    socket.emit(`disconnect-${channel}`, '');
-  });
 }
 
 module.exports = {
