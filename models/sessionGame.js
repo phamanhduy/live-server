@@ -31,9 +31,13 @@ async function add(data) {
     .then(async (updated) => updated).catch(async (err) => err);
 }
 
-async function updateData(filter, data) {
+async function updateData(filter, data, cb = null) {
   return await SessionGame.updateOne(filter, data)
-    .then(async (updated) => updated).catch(async (err) => err);
+    .then(async (updated) => {
+      if (cb) {
+        cb(updated);
+      }
+    }).catch(async (err) => err);
 }
 
 async function findOne(data) {
