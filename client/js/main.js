@@ -166,6 +166,7 @@ function getRanking() {
 }
 
 function showRanking(data) {
+  console.log({data})
   sessionStorage.setItem('ranking', JSON.stringify(data));
   let avatar = 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg';
   let rankingArr = new Array(15).fill({
