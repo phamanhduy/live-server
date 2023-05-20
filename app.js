@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
@@ -43,7 +42,7 @@ const io = socketIO(server, {
   }
 });
 
-function updateAvatar (dataLive) {
+function updateAvatar(dataLive) {
   const checkTimeExpireImage = FunctionUtil.checkTimeExpire(_.get(dataLive, 'avatar'));
   if (!checkTimeExpireImage) {
     User.updateData({
@@ -81,7 +80,7 @@ async function caculatorScore(socket, dataLive) {
       sessionWinner = {
         channel: _.get(dataLive, 'channel'),
         userId: _.get(user, '_id'),
-        score: _.get(dataLive, 'score',  20),
+        score: _.get(dataLive, 'score', 20),
         sessionName: _.get(dataLive, 'liveSession', ''),
       };
       await SessionGame.add(sessionWinner);
@@ -89,10 +88,10 @@ async function caculatorScore(socket, dataLive) {
       sessionWinner = {
         channel: _.get(dataLive, 'channel'),
         userId: _.get(user, '_id'),
-        score: (_.get(dataLive, 'score',  20)) + _.get(sessionGame, 'score', 20),
+        score: (_.get(dataLive, 'score', 20)) + _.get(sessionGame, 'score', 20),
         sessionName: _.get(dataLive, 'liveSession', ''),
       };
-      await SessionGame.updateData({_id: _.get(sessionGame, '_id')}, sessionWinner);
+      await SessionGame.updateData({ _id: _.get(sessionGame, '_id') }, sessionWinner);
     }
 
     const winner = await SessionGame.getLimitWinner({
@@ -107,8 +106,8 @@ async function caculatorScore(socket, dataLive) {
     console.log(error)
   }
 }
-async function addScore({username, name, avatar}, {channel, sessionName, score}, type, socket) {
-  let user = await User.findOne({username});
+async function addScore({ username, name, avatar }, { channel, sessionName, score }, type, socket) {
+  let user = await User.findOne({ username });
   if (!user) {
     user = await User.add({
       name, username, avatar,
@@ -129,13 +128,13 @@ async function addScore({username, name, avatar}, {channel, sessionName, score},
       score: score + _.get(sessionGame, 'score'),
     }
     if (type === 'follow') {
-      if(_.get(sessionGame, 'followed')) {
+      if (_.get(sessionGame, 'followed')) {
         return;
       }
       dataSess['followed'] = true;
     }
-    await SessionGame.updateData({_id: _.get(sessionGame, '_id'), sessionName}, dataSess, async (data) => {
-      console.log({data})
+    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
+      console.log({ data })
       const winner = await SessionGame.getLimitWinner({
         sessionName,
       }, 15);
@@ -146,39 +145,52 @@ async function addScore({username, name, avatar}, {channel, sessionName, score},
     });
   }
 }
-
+let tiktokLiveConnectionServer = null;
+let channelServer = null;
+let liveSessionServer = null;
 io.on('connection', (socket) => {
   socket.on('score-winner', (dataLive) => {
     caculatorScore(socket, dataLive)
   });
-  
-  socket.on('connect-tiktok', ({channel, liveSession}) => {
-    tiktokConnector.connectStream(channel, socket, (tiktokLiveConnection, newSocket) => {
-      tiktokLiveConnection.on('like', data => {
+
+  socket.on('connect-tiktok', ({ channel, liveSession }) => {
+    tiktokConnector.connectStream(channel, socket, (tiktokLiveConnection) => {
+      tiktokLiveConnectionServer = tiktokLiveConnection;
+      channelServer = channel;
+      liveSessionServer = liveSession;
+      connectWithSocket(tiktokLiveConnection, channel, liveSession);
+    })
+  });
+
+  connectWithSocket(tiktokLiveConnectionServer, channelServer, liveSessionServer);
+  function connectWithSocket(titokCon, channel, liveSession) {
+    if (titokCon) {
+      console.log('reload');
+      titokCon.on('like', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: Math.round(data.likeCount / 8)}, 'like', newSocket)  
+        }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
       });
-      tiktokLiveConnection.on('follow', data => {
+      titokCon.on('follow', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 20}, 'follow', newSocket);
+        }, { channel: channel, sessionName: liveSession, score: 20 }, 'follow', socket);
       });
-      tiktokLiveConnection.on('share', data => {
+      titokCon.on('share', data => {
         addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 3}, 'share', newSocket);
+        }, { channel: channel, sessionName: liveSession, score: 3 }, 'share', socket);
       })
 
-      tiktokLiveConnection.on('chat', data => {
+      titokCon.on('chat', data => {
         receivedDataLive({
-          channel,
+          channel: channel,
           name: _.get(data, 'nickname'),
           username: _.get(data, 'uniqueId'),
           comment: _.get(data, 'comment'),
@@ -190,17 +202,18 @@ io.on('connection', (socket) => {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, {channel, sessionName: liveSession, score: 1}, 'comment', newSocket);
+        }, { channel: channel, sessionName: liveSession, score: 1 }, 'comment', socket);
       });
-      tiktokLiveConnection.on('roomUser', data => {
+      titokCon.on('roomUser', data => {
         receivedDataLive({
-          channel,
+          channel: channel,
           viewers: _.get(data, 'viewerCount'),
           type: 'view',
         });
       });
-    })
-  })
+    }
+  }
+
 });
 
 
@@ -211,10 +224,10 @@ app.get('/', (req, res) => {
 app.get('/api/get-ranking', async (req, res) => {
   const session = _.get(req, 'query.session');
   try {
-    const winner = await SessionGame.getLimitWinner({sessionName: session }, 15);
+    const winner = await SessionGame.getLimitWinner({ sessionName: session }, 15);
     res.send(winner);
   } catch (error) {
-    console.log({error})
+    console.log({ error })
   }
 });
 
@@ -248,7 +261,7 @@ app.post('/api/setData', (req, res) => {
 // tiktokConnector.connectStream('haidangwood16', (tiktokLiveConnection) => {
 // tiktokLiveConnection.on('chat', data => {
 //   console.log({data})
-//   // socket.emit(`chat-${username}`, data);
+//   // socket.emit(chat-${username}, data);
 // });
 // })
 
@@ -268,5 +281,3 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   init();
 });
-
-
