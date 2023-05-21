@@ -4,6 +4,7 @@ let showWord = false;
 let runningTime = false;
 // Lấy các phần tử DOM
 const imageContainer = document.querySelector('.image-container');
+const titleGame = document.querySelector('.title-game');
 
 function randomArr(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
@@ -13,21 +14,30 @@ function randomArr(array) {
 // Hiển thị hình ảnh trên trang web
 function play() {
   showWord = false;
-  const game = dhbc();
-  imageContainer.innerHTML = `<img class="zoom-in-out-box" src="${game.image}" alt="Hình ảnh">`;
+  const game = tiengviet();
+  titleGame.innerHTML = `${game.suggest === '' ? '...' : game.suggest}`;
   sessionStorage.setItem('play', JSON.stringify(game));
   showPlayHtml(game);
 }
-
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 function showPlayHtml(game) {
-  const wordArr = game.word.split('');
+  const wordArrOrigin = FunctionUtil.capitalizeFirstLetterInWords(game.word);
+  console.log(wordArrOrigin)
+  const wordArrRandom = shuffleArray(wordArrOrigin.split(''));
+  console.log({wordArrRandom})
   let html = '';
-  for (let i = 0; i < wordArr.length; i++) {
-    const elm = wordArr[i];
+  for (let i = 0; i < wordArrRandom.length; i++) {
+    const elm = showWord ? wordArrOrigin[i] : wordArrRandom[i];
     if (elm === ' ') {
       html += `<div class='space'></div>`;
     } else {
-      html += `<div class='square'>${showWord ? elm : ''}</div>`;
+      html += `<div class='square'>${elm}${showWord ? '' : '/'}</div>`;
     }
   }
   document.getElementById('container-words').innerHTML = html;
@@ -90,30 +100,30 @@ setTimeout(() => {
 }, 500);
 
 
-function countdown(duration) {
-  let totalSeconds = duration;
-  setInterval(function() {
-    let hours = Math.floor(totalSeconds / 3600);
-    let minutes = Math.floor((totalSeconds % 3600) / 60);
-    let seconds = totalSeconds % 60;
+// function countdown(duration) {
+//   let totalSeconds = duration;
+//   setInterval(function() {
+//     let hours = Math.floor(totalSeconds / 3600);
+//     let minutes = Math.floor((totalSeconds % 3600) / 60);
+//     let seconds = totalSeconds % 60;
 
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-    let display = document.getElementById('time-finish');
-    display.textContent = hours + ':' + minutes + ':' + seconds;
-    totalSeconds--;
-    if (totalSeconds === 0) {
-      totalSeconds = duration;
-    }
-  }, 1000);
-}
+//     hours = hours < 10 ? '0' + hours : hours;
+//     minutes = minutes < 10 ? '0' + minutes : minutes;
+//     seconds = seconds < 10 ? '0' + seconds : seconds;
+//     let display = document.getElementById('time-finish');
+//     display.textContent = hours + ':' + minutes + ':' + seconds;
+//     totalSeconds--;
+//     if (totalSeconds === 0) {
+//       totalSeconds = duration;
+//     }
+//   }, 1000);
+// }
 
-setTimeout(() => {
-  if (sessionStorage.getItem('user')) {
-    countdown(10800);
-  }
-}, 500)
+// setTimeout(() => {
+//   if (sessionStorage.getItem('user')) {
+//     countdown(10800);
+//   }
+// }, 500)
 function runChungMung(winner) {
   if (!winner) {
     return;
@@ -150,13 +160,13 @@ function isTop() {
 }
 
 function adProduct(show = false) {
-  if (show) {
-    document.getElementById('ads-product').style.display = 'block';
-    runImage(false);
-  } else {
-    runImage(true);
-    document.getElementById('ads-product').style.display = 'none';
-  }
+  // if (show) {
+  //   document.getElementById('ads-product').style.display = 'block';
+  //   runImage(false);
+  // } else {
+  //   runImage(true);
+  //   document.getElementById('ads-product').style.display = 'none';
+  // }
 }
 
 function runImage(remove = false) {

@@ -240,7 +240,8 @@ body {
   /* Place text to the right */
   .right {
     text-align: left;
-    padding-left: 10px;
+    padding-left: 6px;
+    min-width: 40px!important;
   }
   
   /* Clear floats after the columns */

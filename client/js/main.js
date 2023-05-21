@@ -88,7 +88,7 @@ function loadingPageData() {
     sessionLive.value = userData?.liveSession;
     serverInput.value = userData?.serverInput;
     // startPlay.value = userData?.startPlay;
-    document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
+    // document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
   } 
 }
 function loadingPageFun(loading) {
@@ -107,8 +107,8 @@ const openInventory = () => {
 
 // Closes inventory
 const closeInventory = () => {
-  let openInv = document.querySelector('#inventory');
-  openInv.style.display = 'none';
+  // let openInv = document.querySelector('#inventory');
+  // openInv.style.display = 'none';
 }
 
 function receivedMessage(dataLive) {
