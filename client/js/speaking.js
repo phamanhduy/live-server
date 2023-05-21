@@ -3,7 +3,7 @@ let isSpeaking = false;
 
 
 // FunctionUtil
-initSpeak('intro');
+// initSpeak('intro');
 
 function initSpeak(type, data) {
   switch (type) {
