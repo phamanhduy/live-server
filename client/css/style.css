@@ -307,7 +307,6 @@ button:focus {
     position: relative;
     width: 100%;
     max-width: 35rem;
-    height: 100%;
 }
 
 .game {
@@ -1129,4 +1128,35 @@ canvas {
 
 #inventossss {
     text-align: center;
+}
+
+#container-scroll {
+    margin-top: 10px;
+    /* border: 1px solid; */
+    padding: 20px;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.avatar {
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+}
+
+.left {
+    float: left;
+    margin-right: 3px;
+}
+
+.container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    /* padding: 2px; */
+    margin: 2px 0;
+    position: relative;
+    height: 41px;
+    display: flex;
 }

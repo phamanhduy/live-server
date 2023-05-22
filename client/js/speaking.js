@@ -92,6 +92,9 @@ function introGame() {
 }
 
 function runSpeaking(msg, cb) {
+  if (isSpeaking) {
+    return;
+  }
   isSpeaking = true;
   fetch('https://ntt123-viettts.hf.space/api/predict/',
     {
@@ -102,6 +105,7 @@ function runSpeaking(msg, cb) {
     }).then(function (response) {
       return response.json();
     }).then(function (json_response) {
+      console.log({json_response})
       if (_.get(json_response, 'data[0]', '')) {
         if (_.get(json_response, 'data[0].is_file', false)) {
           let audio = speakAudio(_.get(json_response, 'data[0].name', ''));
@@ -147,7 +151,7 @@ function runSpeakChungMung(key) {
 
 function speakAudio(audioSpeak) {
   let audioRun = new Audio(`https://ntt123-viettts.hf.space/file=${audioSpeak}`);
-  audioRun.volume = 0.5;
+  audioRun.volume = 0.1;
   audioRun.play();
   return audioRun;
 }

@@ -28,9 +28,7 @@ function shuffleArray(array) {
 }
 function showPlayHtml(game) {
   const wordArrOrigin = FunctionUtil.capitalizeFirstLetterInWords(game.word);
-  console.log(wordArrOrigin)
   const wordArrRandom = shuffleArray(wordArrOrigin.split(''));
-  console.log({wordArrRandom})
   let html = '';
   for (let i = 0; i < wordArrRandom.length; i++) {
     const elm = showWord ? wordArrOrigin[i] : wordArrRandom[i];

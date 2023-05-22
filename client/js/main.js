@@ -1,5 +1,6 @@
 var loadingPage = false;
 var userData = null;
+let isScrollBottom = false;
 
 function getUserSecsion() {
   if (sessionStorage.getItem('user')) {
@@ -35,15 +36,16 @@ function saveUserSecsion(isConnect = true) {
       });
     }
 }
-
+function eventListener(data) {
+  receivedMessage(data);
+  autoScrollBottom();
+}
 function connectionTiktok() {
   if (sessionStorage.getItem('user')) {
     userData = JSON.parse(sessionStorage.getItem('user'));
     loadingPage = true;
     loadingPageFun(loadingPage);
-    socket.on(`${userData?.channel}`, (dataLive) => {
-      receivedMessage(dataLive)
-    });
+    socket.on(`${userData?.channel}`, eventListener);
 
     socket.on(`connect-success-${userData?.channel}`, () => {
       alert(`Kết nối ${userData?.channel} thành công`);
@@ -69,7 +71,9 @@ function disConnect () {
   }
 }
 
-setTimeout(() => {
+let connectionTimeout = setTimeout(() => {
+  clearInterval(connectionTimeout);
+  socket.off(`${userData?.channel}`, eventListener);
   getUserSecsion();
   connectionTiktok(userData);
   loadingPageFun(loadingPage);
@@ -113,13 +117,17 @@ const closeInventory = () => {
 
 function receivedMessage(dataLive) {
   if (_.get(dataLive, 'type') === 'view') {
-    showNumberViewer(dataLive);
+    return showNumberViewer(dataLive);
   } else if (_.get(dataLive, 'type') === 'comment') {
+    htmlMessage(dataLive);
     if (sessionStorage.getItem('winner')) {
       return;
     }
-    caculator(dataLive);
+    return caculator(dataLive);
+  } else {
+    htmlMessage(dataLive)
   }
+
 }
 
 function showNumberViewer(dataLive) {
@@ -225,5 +233,115 @@ function showRanking(data) {
   document.getElementById('group-table').innerHTML = html;
 }
 
+function add3Dots(string, limit)
+{
+  var dots = "...";
+  if(string.length > limit)
+  {
+    // you can also use substr instead of substring
+    string = string.substring(0,limit) + dots;
+  }
+
+    return string;
+}
+
+const usersJoined = [];
+const spea = [];
+function htmlMessage(msg) {
+  let html = '';
+  if (usersJoined.length > 20) {
+    usersJoined.splice(0, 1)
+  }
+  // console.log({msg})
+  usersJoined.push(msg);
+  for (let i = 0; i < usersJoined.length; i++) {
+    const element = usersJoined[i];
+
+      let avatar = element.avatar;
+      let comment = element.comment || '';
+      let fullname = '';
+      if (_.get(element, 'type') === 'follow') {
+        avatar = 'http://cdn.onlinewebfonts.com/svg/img_193993.png';
+        fullname = ` <span>Cảm ơn <strong style="color: red;">${add3Dots(element.name, 20)}</strong> đã Follow live nhé</span>`;
+        // runSpeaking(`Cảm ơn ${element.name} đã pho lâu lai chim nhé hi hi`, () => {});
+      } else  if (_.get(element, 'type') === 'share') {
+        // runSpeaking(`Cảm ơn ${element.name} đã xe lai chim nhé hi hi`, () => {});
+        avatar = 'https://cdn-icons-png.flaticon.com/512/25/25702.png';
+        fullname = ` <span>Cảm ơn <strong style="color: red;">${add3Dots(element.name, 20)}</strong> đã chia sẻ live nhé </span>`;
+      } else if (_.get(element, 'type') === 'like') {
+        // runSpeaking(`Cảm ơn ${element.name} đã xe lai chim nhé hi hi`, () => {});
+        fullname = `  <span>Cảm ơn <strong style="color: red;">${add3Dots(element.name, 20)}</strong> đã thả <strong style="color: red;">${element.likeCount}</strong> trái tim ạ</span>`;
+        avatar = 'https://img.lovepik.com/free-png/20210918/lovepik-heart-shaped-png-image_400222937_wh1200.png';
+      } else if (_.get(element, 'type') === 'joined') {
+        // runSpeaking(`Chào mừng ${element.name} vào xem lai chim nha`, () => {});
+        fullname = `  <span>Chào mừng <strong style="color: red;">${add3Dots(element.name, 20)}</strong> đã vào livestream nhé</span>`;
+        avatar = 'https://icon-library.com/images/meeting-room-icon/meeting-room-icon-12.jpg';
+      } else if (_.get(element, 'type') === 'comment') {
+        // runSpeaking(`${element.name} bình luận là ${comment}`, () => {});
+      }
+
+      // let randomColor = contrastColors[Math.floor(Math.random() * cont rastColors.length)]
+      html += `<div class="container">
+        <div class='left'><img src="${avatar}" alt="Avatar" class="avatar"></div>
+        <strong style="color: #000; float: left">${fullname} </strong>
+        <span style="color: #000; float: left">${add3Dots(comment, 50)}</span>
+      </div>`;
+  }
+  document.getElementById('container-scroll').innerHTML = html;
+  runLiveStream()
+  
+}
+
+function runLiveStream() {
+  let element = usersJoined[usersJoined.length - 1];
+  if (_.get(element, 'type') === 'follow') {
+    runSpeaking(`Cảm ơn ${element.name} đã pho lâu lai chim nhé hi hi`, () => {});
+  } else  if (_.get(element, 'type') === 'share') {
+    runSpeaking(`Cảm ơn ${element.name} đã xe lai chim nhé hi hi`, () => {});
+  } else if (_.get(element, 'type') === 'like') {
+    runSpeaking(`Cảm ơn ${element.name} đã thả tim lai chim nhé hi`, () => {});
+  } else if (_.get(element, 'type') === 'joined') {
+    runSpeaking(`Chào mừng ${element.name} vào xem lai chim nha`, () => {});
+  } else if (_.get(element, 'type') === 'comment') {
+    runSpeaking(`${element.name} bình luận là ${element.comment}`, () => {});
+  }
+}
+function autoScrollBottom(params) {
+  if (sessionStorage.getItem('scroll')) {
+    let scElm = document.getElementById('container-scroll');
+    scElm.scrollTop = scElm.scrollHeight;
+  }
+}
+
+setTimeout(() => {
+  let scElm = document.getElementById('container-scroll');
+  scElm.onscroll = function(ev) {
+    isScrollBottom = false;
+    if ([scElm.scrollTop - (scElm.scrollHeight - scElm.offsetHeight)] >= 0) {
+      isScrollBottom = true;
+    }
+};
+}, 500);
+
+function scrollActive() {
+  if (sessionStorage.getItem('scroll')) {
+    document.getElementById('scrollBottom').innerHTML = 'Kéo xuống';
+  } else {
+    document.getElementById('scrollBottom').innerHTML = '------';
+  }
+}
+setTimeout(() => {
+  scrollActive();
+}, 500)
+
+function scrollBottom() {
+  if (sessionStorage.getItem('scroll')) {
+    sessionStorage.removeItem('scroll');
+    scrollActive();
+  } else {
+    sessionStorage.setItem('scroll', 'true');
+    scrollActive();
+  }
+}
 // document.getElementById('mc-img').src = `${URL_API}/images/mc1.gif`;
 

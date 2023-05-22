@@ -134,7 +134,6 @@ async function addScore({ username, name, avatar }, { channel, sessionName, scor
       dataSess['followed'] = true;
     }
     await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
-      console.log({ data })
       const winner = await SessionGame.getLimitWinner({
         sessionName,
       }, 15);
@@ -171,7 +170,16 @@ io.on('connection', (socket) => {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-        }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
+        }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket);
+        
+        receivedDataLive(socket, {
+          channel: channel,
+          name: _.get(data, 'nickname'),
+          username: _.get(data, 'uniqueId'),
+          avatar: _.get(data, 'profilePictureUrl'),
+          likeCount: _.get(data, 'likeCount'),
+          type: 'like',
+        });
       });
       titokCon.on('follow', data => {
         addScore({
@@ -179,6 +187,14 @@ io.on('connection', (socket) => {
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
         }, { channel: channel, sessionName: liveSession, score: 20 }, 'follow', socket);
+
+        receivedDataLive(socket, {
+          channel: channel,
+          name: _.get(data, 'nickname'),
+          username: _.get(data, 'uniqueId'),
+          avatar: _.get(data, 'profilePictureUrl'),
+          type: 'follow',
+        });
       });
       titokCon.on('share', data => {
         addScore({
@@ -186,10 +202,18 @@ io.on('connection', (socket) => {
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
         }, { channel: channel, sessionName: liveSession, score: 3 }, 'share', socket);
+
+        receivedDataLive(socket, {
+          channel: channel,
+          name: _.get(data, 'nickname'),
+          username: _.get(data, 'uniqueId'),
+          avatar: _.get(data, 'profilePictureUrl'),
+          type: 'share',
+        });
       })
 
       titokCon.on('chat', data => {
-        receivedDataLive({
+        receivedDataLive(socket, {
           channel: channel,
           name: _.get(data, 'nickname'),
           username: _.get(data, 'uniqueId'),
@@ -205,15 +229,24 @@ io.on('connection', (socket) => {
         }, { channel: channel, sessionName: liveSession, score: 1 }, 'comment', socket);
       });
       titokCon.on('roomUser', data => {
-        receivedDataLive({
+        receivedDataLive(socket, {
           channel: channel,
           viewers: _.get(data, 'viewerCount'),
           type: 'view',
         });
       });
 
+      titokCon.on('member', data => {
+        receivedDataLive(socket, {
+          channel: channel,
+          name: _.get(data, 'nickname'),
+          username: _.get(data, 'uniqueId'),
+          avatar: _.get(data, 'profilePictureUrl'),
+          type: 'joined',
+        });
+      });
+
       socket.on(`dis-connect-${channel}`, () => {
-        console.log('dis', channel)
         titokCon.disconnect();
       });
       titokCon.on('disconnected', () => {
@@ -224,7 +257,6 @@ io.on('connection', (socket) => {
   }
 
 });
-
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
@@ -240,32 +272,6 @@ app.get('/api/get-ranking', async (req, res) => {
   }
 });
 
-app.post('/api/setData', (req, res) => {
-  try {
-    const data = _.get(req, 'body');
-    if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live' || _.get(data, 'type') === 'comment') {
-      receivedDataLive({
-        channel: _.get(data, 'liver', '').substring(1),
-        name: _.get(data, 'userData.userNameElement'),
-        comment: _.get(data, 'userData.textMessage'),
-        avatar: _.get(data, 'userData.avatar'),
-        type: _.get(data, 'type'),
-      });
-      res.send(true);
-      return;
-    } else if (_.get(data, 'type') === 'view') {
-      receivedDataLive({
-        channel: _.get(data, 'liver', '').substring(1),
-        viewers: _.get(data, 'viewers'),
-        type: _.get(data, 'type'),
-      });
-    }
-
-    res.send('1');
-  } catch (error) {
-    console.log({ error })
-  }
-});
 
 // tiktokConnector.connectStream('haidangwood16', (tiktokLiveConnection) => {
 // tiktokLiveConnection.on('chat', data => {
@@ -274,8 +280,8 @@ app.post('/api/setData', (req, res) => {
 // });
 // })
 
-function receivedDataLive(dataLive) {
-  io.emit(_.get(dataLive, 'channel'), dataLive);
+function receivedDataLive(socket, dataLive) {
+  socket.emit(_.get(dataLive, 'channel'), dataLive);
 }
 // app.get('/api/get-member-random', async (req, res) => {
 //   try {
@@ -290,3 +296,30 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   init();
 });
+
+// app.post('/api/setData', (req, res) => {
+//   try {
+//     const data = _.get(req, 'body');
+//     if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live' || _.get(data, 'type') === 'comment') {
+//       receivedDataLive(socket, {
+//         channel: _.get(data, 'liver', '').substring(1),
+//         name: _.get(data, 'userData.userNameElement'),
+//         comment: _.get(data, 'userData.textMessage'),
+//         avatar: _.get(data, 'userData.avatar'),
+//         type: _.get(data, 'type'),
+//       });
+//       res.send(true);
+//       return;
+//     } else if (_.get(data, 'type') === 'view') {
+//       receivedDataLive(socket, {
+//         channel: _.get(data, 'liver', '').substring(1),
+//         viewers: _.get(data, 'viewers'),
+//         type: _.get(data, 'type'),
+//       });
+//     }
+
+//     res.send('1');
+//   } catch (error) {
+//     console.log({ error })
+//   }
+// });
