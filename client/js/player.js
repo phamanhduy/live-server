@@ -11,13 +11,13 @@ function randomArr(array) {
 }
 
 // Hiển thị hình ảnh trên trang web
-function play() {
-  showWord = false;
-  const game = dhbc();
-  imageContainer.innerHTML = `<img class="zoom-in-out-box" src="${game.image}" alt="Hình ảnh">`;
-  sessionStorage.setItem('play', JSON.stringify(game));
-  showPlayHtml(game);
-}
+// function play() {
+//   showWord = false;
+//   const game = dhbc();
+//   imageContainer.innerHTML = `<img class="zoom-in-out-box" src="${game.image}" alt="Hình ảnh">`;
+//   sessionStorage.setItem('play', JSON.stringify(game));
+//   showPlayHtml(game);
+// }
 
 function showPlayHtml(game) {
   const wordArr = game.word.split('');
@@ -51,7 +51,7 @@ function ramdomNumber(cb) {
 }
 
 function startRunTimer(duration) {
-  var display = document.getElementById('timer-countdown');
+  var display = $('#timer-countdown');
   let totalSeconds = duration;
   setInterval(function() {
     let minutes = parseInt(Math.floor(totalSeconds / 60), 10);
@@ -59,17 +59,13 @@ function startRunTimer(duration) {
     minutes = minutes < 10 ? '0' + minutes : minutes;
     seconds = seconds < 10 ? '0' + seconds : seconds;
     if (totalSeconds >= 0) {
-      display.textContent = minutes + ':' + seconds;
+      display.text(minutes + ':' + seconds);
     }
     // Replace with your own code to update the countdown display
     if (totalSeconds === duration) {
-      play();
+      runChungMung();
     }
-    if (totalSeconds === 5) {
-      showWord = true;
-      showRanking(JSON.parse(sessionStorage.getItem('ranking')));
-      showPlayHtml(JSON.parse(sessionStorage.getItem('play')))
-    }
+
     if (totalSeconds === 0) {
       ramdomNumber((winner) => {
         totalSeconds = duration;
@@ -90,54 +86,45 @@ setTimeout(() => {
 }, 500);
 
 
-function countdown(duration) {
-  let totalSeconds = duration;
-  setInterval(function() {
-    let hours = Math.floor(totalSeconds / 3600);
-    let minutes = Math.floor((totalSeconds % 3600) / 60);
-    let seconds = totalSeconds % 60;
+// function countdown(duration) {
+//   let totalSeconds = duration;
+//   setInterval(function() {
+//     let hours = Math.floor(totalSeconds / 3600);
+//     let minutes = Math.floor((totalSeconds % 3600) / 60);
+//     let seconds = totalSeconds % 60;
 
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-    let display = document.getElementById('time-finish');
-    display.textContent = hours + ':' + minutes + ':' + seconds;
-    totalSeconds--;
-    if (totalSeconds === 0) {
-      totalSeconds = duration;
-    }
-  }, 1000);
-}
+//     hours = hours < 10 ? '0' + hours : hours;
+//     minutes = minutes < 10 ? '0' + minutes : minutes;
+//     seconds = seconds < 10 ? '0' + seconds : seconds;
+//     let display = document.getElementById('time-finish');
+//     display.textContent = hours + ':' + minutes + ':' + seconds;
+//     totalSeconds--;
+//     if (totalSeconds === 0) {
+//       totalSeconds = duration;
+//     }
+//   }, 1000);
+// }
 
-setTimeout(() => {
-  if (sessionStorage.getItem('user')) {
-    countdown(10800);
-  }
-}, 500)
+// setTimeout(() => {
+//   if (sessionStorage.getItem('user')) {
+//     countdown(10800);
+//   }
+// }, 500)
+
+
 function runChungMung(winner) {
-  if (!winner) {
-    return;
-  }
-  runSpeakChungMung('congratulation');
-  let remainingText = ''
-  if (isTop()) {
-    remainingText = `Oa ! Bạn là top 1, Duy trì để lấy quà nhé 😍`
-  } else {
-    remainingText = `Bạn sắp đuổi kịp top 1 rồi, cố lên ^^`
-  }
+  // runSpeakChungMung('congratulation');
+  let remainingText =  `Oa ! Bạn là top 1, Duy trì để lấy quà nhé 😍`
   document.getElementById("winner-con").style.display = 'block';
-  document.getElementById("winner-name").innerHTML = winner?.name;
-  document.getElementById("winner-avatar").src = winner?.avatar;
-  document.getElementById("show-text").innerHTML = remainingText;
-  let chungMungIntertal = setInterval(() => {
-    getCongraguation();
-  }, 1000);
+  // document.getElementById("winner-name").innerHTML = winner?.name;
+  // document.getElementById("winner-avatar").src = winner?.avatar;
+  // document.getElementById("show-text").innerHTML = remainingText;
 
   setTimeout(() => {
-    clearInterval(chungMungIntertal);
+    // clearInterval(chungMungIntertal);
     document.getElementById("winner-con").style.display = 'none';
     // document.getElementById('canvas').remove()
-  }, 7000);
+  }, 5000);
   // audioChungMung();
 }
 
@@ -177,4 +164,4 @@ function runImage(remove = false) {
     clearInterval(showImgeInval);
   }
 }
-//     runChungMung()
+runChungMung()

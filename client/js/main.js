@@ -74,7 +74,31 @@ setTimeout(() => {
   connectionTiktok(userData);
   loadingPageFun(loadingPage);
   loadingPageData();
+  getCamera();
 }, 500);
+
+function getCamera() {
+ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      var constraints = {
+        video: {
+          width: { ideal: 720 },     // Ideal width
+          height: { ideal: 720 },     // Ideal height
+          facingMode: 'environment',  // Use the rear camera (use 'user' for the front camera)
+          focusMode: { ideal: 'continuous' } // Set focus mode to continuous
+        }
+      };
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(function (stream) {
+          var video = document.getElementById('myVideo');
+          video.srcObject = stream;
+        })
+        .catch(function (error) {
+          console.error('Error accessing the camera: ', error.name, error.message);
+        });
+    } else {
+      console.error('getUserMedia is not supported in this browser');
+    }
+}
 
 function loadingPageData() {
   if (userData) {
@@ -87,8 +111,6 @@ function loadingPageData() {
     maxNumber.value = userData?.maxNumber;
     sessionLive.value = userData?.liveSession;
     serverInput.value = userData?.serverInput;
-    // startPlay.value = userData?.startPlay;
-    document.getElementById('player-name').innerHTML = `@${userData?.channel.length > 8 ? `${userData?.channel.slice(0, 8)}...` : userData?.channel}`
   } 
 }
 function loadingPageFun(loading) {
@@ -167,7 +189,7 @@ function getRanking() {
 function showRanking(data) {
   sessionStorage.setItem('ranking', JSON.stringify(data));
   let avatar = 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg';
-  let rankingArr = new Array(15).fill({
+  let rankingArr = new Array(30).fill({
     avatar,
     name: null,
     score: 0,
@@ -187,9 +209,9 @@ function showRanking(data) {
     name: _.get(d, 'name') || `Top${i+1}`,
     score: d.score
   }));
-  var group1 = rankingArr.slice(0, 5);
-  var group2 = rankingArr.slice(5, 10);
-  var group3 = rankingArr.slice(10, 15);
+  var group1 = rankingArr.slice(0, 10);
+  var group2 = rankingArr.slice(10, 20);
+  var group3 = rankingArr.slice(20, 30);
   
   var groups = [group1, group2, group3];
   let html = '';
@@ -206,13 +228,13 @@ function showRanking(data) {
           <td style="width: 60px">
             <div class="bar-container">
               <div style='width: ${percen}%' class="bar-${i + 1}">
-                <span>${elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name}</span>
+                <span><strong>${elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name}</strong></span>
               </div>
             </div>
           </td>
           <td>
             <div class="side right">
-              <div>${elmItem.score}</div>
+              <div><strong>${elmItem.score}</strong></div>
             </div>
           </td>
         </tr>`

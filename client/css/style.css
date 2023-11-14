@@ -326,7 +326,7 @@ button:focus {
     align-items: center;
     justify-content: center;
     position: fixed;
-    z-index: 1;
+    z-index: 9999;
     width: 100vw;
     height: 100vh;
 }
@@ -379,6 +379,7 @@ button:focus {
 /* Inventory */
 #winner-con {
     flex-direction: column;
+    z-index: 9999;
 }
 
 #winner-con .content {
@@ -559,7 +560,6 @@ button:focus {
 
 /* Header */
 header {
-    border: solid 1px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -580,6 +580,10 @@ header button i {
 #dungeon-main {
     display: none;
     flex-direction: column;
+    filter: brightness(100%);
+    display: flex;
+    position: relative;
+    z-index: 9999;
 }
 
 #dungeon-main h1 {
@@ -600,6 +604,7 @@ header button i {
     display: grid;
     width: 100%;
     text-align: center;
+    z-index: 2;
 }
 .stat-panel.intro {
     height: 34px;
@@ -633,6 +638,9 @@ header button i {
     padding: 0.3rem;
     overflow: hidden;
     display: flex;
+    text-align: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
 }
 
 .stat-panel .box::-webkit-scrollbar {
@@ -889,7 +897,7 @@ header button i {
   /* Place text to the right */
   .right {
     text-align: left;
-    padding-left: 6px;
+    /* padding-left: 6px; */
     min-width: 40px;
   }
   
@@ -902,7 +910,7 @@ header button i {
   
   /* The bar container */
   .bar-container {
-    width: 100%;
+    width: 90%;
     background-color: #f1f1f1;
     text-align: center;
     color: white;
@@ -1009,8 +1017,8 @@ header button i {
     width: 4px;
 }
 
-#timer-countdown {
-    font-size: 35px;
+#timer-countdown, #money {
+    font-size: 30px;
 }
 
 canvas {
@@ -1109,7 +1117,11 @@ canvas {
 }
 
 #myVideo {
-    width: 200px;
-    height: 150px;
-    z-index: 999;
-}
+    position: absolute;
+    height: 100%;
+    /* opacity: 0.7; */
+    z-index: 1;
+    margin-top: 416px;
+    width: 100%;
+    height: 400px;
+  }
