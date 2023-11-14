@@ -187,9 +187,9 @@ function showRanking(data) {
     name: _.get(d, 'name') || `Top${i+1}`,
     score: d.score
   }));
-  var group1 = rankingArr.slice(0, 5);    // 5 objects from index 0 to index 4
-  var group2 = rankingArr.slice(5, 10);   // 5 objects from index 5 to index 9
-  var group3 = rankingArr.slice(10, 15);  // 5 objects from index 10 to index 14
+  var group1 = rankingArr.slice(0, 5);
+  var group2 = rankingArr.slice(5, 10);
+  var group3 = rankingArr.slice(10, 15);
   
   var groups = [group1, group2, group3];
   let html = '';

@@ -630,8 +630,6 @@ header button i {
 }
 .stat-panel .box {
     white-space: nowrap;
-    border: solid 1px;
-    /* width: 70%; */
     padding: 0.3rem;
     overflow: hidden;
     display: flex;

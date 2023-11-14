@@ -118,24 +118,24 @@ function runSpeaking(msg, cb) {
 
 function saveSpeaking(key, dataLive) {
   let text = congratulationGame(dataLive?.name, isTop());
-  fetch('https://ntt123-viettts.hf.space/api/predict/',
-    {
-      method: "POST", body: JSON.stringify(
-        { "data": [text] }
-      ),
-      headers: { "Content-Type": "application/json" }
-    }).then(function (response) {
-      return response.json();
-    }).then(function (json_response) {
-      console.log({json_response})
-      if (_.get(json_response, 'data[0].is_file', false)) {
-        sessionStorage.setItem(key, _.get(json_response, 'data[0].name', ''));
-      } else {
-        const binaryData = atob(json_response.data[0].split(',')[1]);
-        const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
-        sessionStorage.setItem(key, dataUri);
-      }
-    })
+  // fetch('https://ntt123-viettts.hf.space/api/predict/',
+  //   {
+  //     method: "POST", body: JSON.stringify(
+  //       { "data": [text] }
+  //     ),
+  //     headers: { "Content-Type": "application/json" }
+  //   }).then(function (response) {
+  //     return response.json();
+  //   }).then(function (json_response) {
+  //     console.log({json_response})
+  //     if (_.get(json_response, 'data[0].is_file', false)) {
+  //       sessionStorage.setItem(key, _.get(json_response, 'data[0].name', ''));
+  //     } else {
+  //       const binaryData = atob(json_response.data[0].split(',')[1]);
+  //       const dataUri = "data:audio/mpeg;base64," + btoa(binaryData);
+  //       sessionStorage.setItem(key, dataUri);
+  //     }
+  //   })
 }
 
 function runSpeakChungMung(key) {
