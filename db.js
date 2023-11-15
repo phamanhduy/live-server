@@ -3,7 +3,7 @@ require('./models');
 
 async function init() {
   try {
-    const DB_URI = 'mongodb://127.0.0.1:27017/livestream';
+    const DB_URI = 'mongodb+srv://luongthaivien:luongthaivien@cluster0.4pypokw.mongodb.net/livestream?retryWrites=true&w=majority';
     await mongoose.connect(DB_URI, { 
       useNewUrlParser: true,
       useUnifiedTopology: true
