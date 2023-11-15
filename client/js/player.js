@@ -63,13 +63,13 @@ function startRunTimer(duration) {
     }
     // Replace with your own code to update the countdown display
     if (totalSeconds === duration) {
-      runChungMung();
+      // runChungMung();
     }
 
     if (totalSeconds === 0) {
       ramdomNumber((winner) => {
         totalSeconds = duration;
-        runChungMung(JSON.parse(winner));
+        // runChungMung(JSON.parse(winner));
       });
     }
     totalSeconds--;
@@ -164,4 +164,3 @@ function runImage(remove = false) {
     clearInterval(showImgeInval);
   }
 }
-runChungMung()

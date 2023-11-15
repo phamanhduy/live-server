@@ -43,26 +43,26 @@ function connectionTiktok() {
     if (sessionStorage.getItem('user')) {
         userData = JSON.parse(sessionStorage.getItem('user'));
         loadingPageFun(loadingPage);
-        // getRanking();
-
-
         getRanking();
 
         let uniqueId = userData?.channel;
-        console.log({uniqueId})
         if (uniqueId !== '') {
             connection.connect(uniqueId, {
                 enableExtendedGiftInfo: true,
                 ...userData,
             }).then(state => {
-                alert(`Connected to roomId ${state.roomId}`);
+                console.log(`Connected to roomId ${userData?.channel}`);
 
             }).catch(errorMessage => {
                 // schedule next try if obs username set
                 setTimeout(() => {
                     // connectionTiktok();
                 }, 30000);
-            })
+            });
+            connection.on(`${userData?.channel}-ranking`, (dataLive) => {
+                showRanking(_.get(dataLive, 'ranking'));
+                initWheel(_.get(dataLive, 'ranking'));
+            });
         } else {
             alert('no username entered');
         }
@@ -73,18 +73,16 @@ function connectionTiktok() {
 }
 
 
-connection.on(`${userData?.channel}-ranking`, (dataLive) => {
-    showRanking(_.get(dataLive, 'ranking'));
-  });
-
 connection.on('streamEnd', () => {
-    $('#stateText').text('Stream ended.');
-
-    // schedule next try if obs username set
-    if (window.settings.username) {
-        setTimeout(() => {
-            connect(window.settings.username);
-        }, 30000);
+    console.log('Stream ended.');
+    if (sessionStorage.getItem('user')) {
+        userData = JSON.parse(sessionStorage.getItem('user'));
+        // schedule next try if obs username set
+        if (userData?.channel) {
+            setTimeout(() => {
+                connect(userData?.channel);
+            }, 30000);
+        }
     }
 })
 

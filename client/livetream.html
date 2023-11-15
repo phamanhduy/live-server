@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/all.min.css">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./js//wheel//wheels.css">
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="./libs/vnum.js"></script>
-    <script src="./js//to//connection.js"></script>
+    <script src="./js/to/connection.js"></script>
+    <script src="./js/wheel/Winwheel.min.js"></script>
+    <!-- <script src="./js/wheel/TweenMax.min.js"></script> -->
     <link rel="icon" type="image/png" href="https://dungeoncrawler-od.vercel.app/assets/icon/favicon.ico">
     <title>Trò chơi</title></head>
 
@@ -20,13 +23,13 @@
     <main class="mycursor">
         <!-- Hub -->
         <section id="dungeon-main" class="game-container scrollable" style="filter: brightness(100%); display: flex;">
-          <video src="https://khoinghiepbanhang.com/wp-content/uploads/2023/10/videolive1.mp4" id="myVideo" autoplay></video>
+          <!-- <video src="https://khoinghiepbanhang.com/wp-content/uploads/2023/10/videolive1.mp4" id="myVideo" autoplay></video> -->
           <div class="intro">
             <strong id="timer-countdown" style="float: left;">-</strong>
             <strong id="money" style="float: right;">562.566VND</strong>  
           </div>
           <div class="intro" style='text-align: center;'>
-            <hr />
+            <hr style="border: 1px solid red;" />
             <!-- <p id="time-finish1">Qùa tặng xu tương ứng</p>   -->
           </div>
             <header>
@@ -43,6 +46,15 @@
             <div class="stat-panel">
                 <div class="box left" id="group-table">
                 </div>
+            </div>
+            <div class="deal-wheel">
+              <ul class="spinner"></ul>
+              <figure class="cap">
+                
+              </figure>
+              <div class="ticker"></div>
+              <button class="btn-spin">Spin the wheel</button>
+            </div>
             </div>
         </section>
 
@@ -121,4 +133,4 @@
     <script src="./js/player.js"></script>
     <script src="./js/firework.js"></script>
     <script src="./js/speaking.js"></script>
-    <script src="./js/dhbc.js"></script>
+    <script src="./js/wheels.js"></script>
