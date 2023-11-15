@@ -54,7 +54,6 @@ io.on('connection', (socket) => {
   console.info('New connection from origin', socket.handshake.headers['origin'] || socket.handshake.headers['referer']);
 
   socket.on('setUniqueId', (uniqueId, options) => {
-
       // Prohibit the client from specifying these options (for security reasons)
       if (typeof options === 'object' && options) {
           delete options.requestOptions;
@@ -92,19 +91,19 @@ io.on('connection', (socket) => {
       tiktokConnectionWrapper.connection.on('streamEnd', () => socket.emit('streamEnd'));
 
       // Redirect message events
-      tiktokConnectionWrapper.connection.on('roomUser', msg => socketReceiveMessage('roomUser', msg));
-      tiktokConnectionWrapper.connection.on('member', msg => socketReceiveMessage('member', msg));
-      tiktokConnectionWrapper.connection.on('chat', msg => socketReceiveMessage('chat', msg));
-      tiktokConnectionWrapper.connection.on('gift', msg => socketReceiveMessage('gift', msg));
-      tiktokConnectionWrapper.connection.on('social', msg => socketReceiveMessage('social', msg));
-      tiktokConnectionWrapper.connection.on('like', msg => socketReceiveMessage('like', msg));
-      tiktokConnectionWrapper.connection.on('questionNew', msg => socketReceiveMessage('questionNew', msg));
-      tiktokConnectionWrapper.connection.on('linkMicBattle', msg => socketReceiveMessage('linkMicBattle', msg));
-      tiktokConnectionWrapper.connection.on('linkMicArmies', msg => socketReceiveMessage('linkMicArmies', msg));
-      tiktokConnectionWrapper.connection.on('liveIntro', msg => socketReceiveMessage('liveIntro', msg));
-      tiktokConnectionWrapper.connection.on('emote', msg => socketReceiveMessage('emote', msg));
-      tiktokConnectionWrapper.connection.on('envelope', msg => socketReceiveMessage('envelope', msg));
-      tiktokConnectionWrapper.connection.on('subscribe', msg => socketReceiveMessage('subscribe', msg));
+      tiktokConnectionWrapper.connection.on('roomUser', msg => socketReceiveMessage('roomUser', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('member', msg => socketReceiveMessage('member', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('chat', msg => socketReceiveMessage('chat', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('gift', msg => socketReceiveMessage('gift', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('social', msg => socketReceiveMessage('social', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('like', msg => socketReceiveMessage('like', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('questionNew', msg => socketReceiveMessage('questionNew', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('linkMicBattle', msg => socketReceiveMessage('linkMicBattle', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('linkMicArmies', msg => socketReceiveMessage('linkMicArmies', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('liveIntro', msg => socketReceiveMessage('liveIntro', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('emote', msg => socketReceiveMessage('emote', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('envelope', msg => socketReceiveMessage('envelope', msg, options, socket));
+      tiktokConnectionWrapper.connection.on('subscribe', msg => socketReceiveMessage('subscribe', msg, options, socket));
   });
 
   socket.on('disconnect', () => {
@@ -114,28 +113,28 @@ io.on('connection', (socket) => {
   });
 });
 
-function socketReceiveMessage(type, msg) {
+function socketReceiveMessage(type, data, options, socket) {
   switch (type) {
     case 'like':
       addScore({
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
       break;
     case 'follow':
       addScore({
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
       break;
     case 'share':
       addScore({
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
       break;
     default:
       break;
@@ -170,10 +169,9 @@ async function addScore({ username, name, avatar }, { channel, sessionName, scor
       dataSess['followed'] = true;
     }
     await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
-      console.log({ data })
       const winner = await SessionGame.getLimitWinner({
         sessionName,
-      }, 15);
+      }, 30);
       socket.emit(`${channel}-ranking`, {
         ranking: winner,
         sessionWinner: null,
