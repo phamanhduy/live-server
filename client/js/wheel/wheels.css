@@ -150,6 +150,13 @@ body {
   animation: selected 800ms ease;
 }
 
+.text {
+  text-transform: none;
+  font-family: sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
 @keyframes selected {
   25% {
     transform: scale(1.25);

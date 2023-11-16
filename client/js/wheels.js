@@ -1,3 +1,4 @@
+
   //Thông số vòng quay
   $('.cap').html(htmlIcon)
   function getRandomColor() {
@@ -9,15 +10,68 @@
     return color;
 }
 
-  let dataWheels = [];
+  let dataWheels = [
+    {
+        "id": 0,
+        core: 481,
+        "text": "Xin chào 0",
+        "color": getRandomColor(),
+        "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+        "reaction": "dancing"
+    },
+    {
+        "id": 1,
+        core: 485,
+        "text": "Xin chào 1",
+        "color": getRandomColor(),
+        "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+        "reaction": "dancing"
+    },
+    {
+        "id": 2,
+        core: 486,
+        "text": "Xin chào 2",
+        "color": getRandomColor(),
+        "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+        "reaction": "dancing"
+    },
+    {
+        "id": 3,
+        core: 5669,
+        "text": "Xin chào 3",
+        "color": getRandomColor(),
+        "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+        "reaction": "dancing"
+    },
+    {
+        "id": 4,
+        core: 564,
+        "text": "Xin chào 4",
+        "color": getRandomColor(),
+        "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+        "reaction": "dancing"
+    },
+    {
+      "id": 5,
+      core: 569,
+      "text": "Xin chào 42",
+      "color": getRandomColor(),
+      "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+      "reaction": "dancing"
+  },
+];
 
-  for (let i = 0; i < 31; i++) {
-    dataWheels.push({
-      text: `<img style='width: 25px' src='http://localhost:3000/images/gifts/banh.webp'/>Xin chào ${i}`,
-      color: getRandomColor(),
-      reaction: "dancing"
-    });
-  }
+  // for (let i = 0; i < 31; i++) {
+  //   dataWheels.push({
+  //     id: i,
+  //     text: `Xin chào ${i}`,
+  //     color: getRandomColor(),
+  //     image: 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
+  //     reaction: "dancing"
+  //   });
+  // }
+
+  console.log({dataWheels})
     /**
  * Prize data will space out evenly on the deal wheel based on the amount of items available.
  * @param text [string] name of the prize
@@ -40,16 +94,26 @@
     let rotation = 0;
     let currentSlice = 0;
     let prizeNodes;
+
+    let totalCore = 0;
+    let totalPercent = 0;
+
+    for (let i = 0; i < dataWheels.length; i++) {
+      const elm = dataWheels[i];
+      totalCore+= elm.core;
+    }
     
     const createPrizeNodes = (data) => {
       if (data) {
         dataWheels = data;
       }
-      dataWheels.forEach(({ text, color, reaction }, i) => {
+      dataWheels.forEach(({ text, color, reaction, image, id, }, i) => {
         const rotation = ((prizeSlice * i) * -1) - prizeOffset;
+        console.log({rotation})
         spinner.insertAdjacentHTML(
           "beforeend",
-          `<li class="prize" data-reaction=${reaction} style="--rotate: ${rotation}deg">
+          `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${rotation}deg">
+            <img style='width: 25px' src='${image}' />
             <span class="text">${text}</span>
           </li>`
         );
@@ -62,7 +126,11 @@
         `background: conic-gradient(
           from -90deg,
           ${dataWheels
-            .map(({ color }, i) => `${color} 0 ${(100 / dataWheels.length) * (dataWheels.length - i)}%`)
+            .map(({ color, core }, i) => {
+              let percenItem = (core / totalCore) * 100
+              totalPercent += percenItem;
+              return `${color} 0 ${(100 - totalPercent)}%`;
+            })
             .reverse()
           }
         );`
