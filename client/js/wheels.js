@@ -103,40 +103,83 @@
       totalCore+= elm.core;
     }
     
+    // const createPrizeNodes = (data) => {
+    //   if (data) {
+    //     dataWheels = data;
+    //   }
+    //   dataWheels.forEach(({ text, color, reaction, image, id, }, i) => {
+    //     const rotation = ((prizeSlice * i) * -1) - prizeOffset;
+    //     console.log({rotation})
+    //     spinner.insertAdjacentHTML(
+    //       "beforeend",
+    //       `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${rotation}deg">
+    //         <img style='width: 25px' src='${image}' />
+    //         <span class="text">${text}</span>
+    //       </li>`
+    //     );
+    //   });
+    // };
+    
+    // const createConicGradient = () => {
+    //   spinner.setAttribute(
+    //     "style",
+    //     `background: conic-gradient(
+    //       from -90deg,
+    //       ${dataWheels
+    //         .map(({ color, core }, i) => {
+    //           let percenItem = (core / totalCore) * 100
+    //           totalPercent += percenItem;
+    //           return `${color} 0 ${(100 - totalPercent)}%`;
+    //         })
+    //         .reverse()
+    //       }
+    //     );`
+    //   );
+    // };
+    
+
     const createPrizeNodes = (data) => {
+      radianArr = [];
       if (data) {
         dataWheels = data;
       }
-      dataWheels.forEach(({ text, color, reaction, image, id, }, i) => {
-        const rotation = ((prizeSlice * i) * -1) - prizeOffset;
-        console.log({rotation})
+      let totalRotation = 0;
+      dataWheels.forEach(({ text, color, reaction, image, id, core }, i) => {
+
+        let percenItem = (core / totalCore) * 100;
+        let numberOfRournd = ((percenItem / 100) * 360);
+        totalRotation += numberOfRournd;
+        let prizeRotation = totalRotation - (numberOfRournd / 2);
+        radianArr.push({
+          rotation: parseInt(prizeRotation.toFixed(0)),
+          id, text
+        });
         spinner.insertAdjacentHTML(
           "beforeend",
-          `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${rotation}deg">
+          `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${prizeRotation}deg">
             <img style='width: 25px' src='${image}' />
             <span class="text">${text}</span>
           </li>`
         );
       });
     };
-    
+
     const createConicGradient = () => {
       spinner.setAttribute(
         "style",
         `background: conic-gradient(
           from -90deg,
           ${dataWheels
-            .map(({ color, core }, i) => {
+            .map(({ color, core, id, text }, i) => {
               let percenItem = (core / totalCore) * 100
               totalPercent += percenItem;
-              return `${color} 0 ${(100 - totalPercent)}%`;
+              return `${color} 0 ${totalPercent}%`;
             })
-            .reverse()
           }
         );`
       );
     };
-    
+
     
     const setupWheel = (data) => {
       createConicGradient(data);
