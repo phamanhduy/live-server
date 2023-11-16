@@ -37,7 +37,7 @@
     },
     {
         "id": 3,
-        core: 5669,
+        core: 1000,
         "text": "Xin chào 3",
         "color": getRandomColor(),
         "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
@@ -59,6 +59,22 @@
       "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
       "reaction": "dancing"
   },
+  {
+    "id": 6,
+    core: 664,
+    "text": "Xin chào 5",
+    "color": getRandomColor(),
+    "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+    "reaction": "dancing"
+},
+{
+  "id": 7,
+  core: 769,
+  "text": "Xin chào 7",
+  "color": getRandomColor(),
+  "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+  "reaction": "dancing"
+},
 ];
 
   // for (let i = 0; i < 31; i++) {
@@ -107,13 +123,11 @@
     //   if (data) {
     //     dataWheels = data;
     //   }
-    //   dataWheels.forEach(({ text, color, reaction, image, id, }, i) => {
+    //   dataWheels.forEach(({ text, color, reaction }, i) => {
     //     const rotation = ((prizeSlice * i) * -1) - prizeOffset;
-    //     console.log({rotation})
     //     spinner.insertAdjacentHTML(
     //       "beforeend",
-    //       `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${rotation}deg">
-    //         <img style='width: 25px' src='${image}' />
+    //       `<li class="prize" data-reaction=${reaction} style="--rotate: ${rotation}deg">
     //         <span class="text">${text}</span>
     //       </li>`
     //     );
@@ -126,16 +140,13 @@
     //     `background: conic-gradient(
     //       from -90deg,
     //       ${dataWheels
-    //         .map(({ color, core }, i) => {
-    //           let percenItem = (core / totalCore) * 100
-    //           totalPercent += percenItem;
-    //           return `${color} 0 ${(100 - totalPercent)}%`;
-    //         })
+    //         .map(({ color }, i) => `${color} 0 ${(100 / dataWheels.length) * (dataWheels.length - i)}%`)
     //         .reverse()
     //       }
     //     );`
     //   );
     // };
+    
     
 
     const createPrizeNodes = (data) => {
@@ -144,14 +155,14 @@
         dataWheels = data;
       }
       let totalRotation = 0;
-      dataWheels.forEach(({ text, color, reaction, image, id, core }, i) => {
+      dataWheels.map(({ text, color, reaction, image, id, core }, i) => {
 
         let percenItem = (core / totalCore) * 100;
         let numberOfRournd = ((percenItem / 100) * 360);
         totalRotation += numberOfRournd;
         let prizeRotation = totalRotation - (numberOfRournd / 2);
         radianArr.push({
-          rotation: parseInt(prizeRotation.toFixed(0)),
+          rotation: percenItem,
           id, text
         });
         spinner.insertAdjacentHTML(
@@ -223,7 +234,8 @@
       tickerAnim = requestAnimationFrame(runTickerAnimation);
     };
     
-    const selectPrize = () => {
+    const selectPrize = (rotation) => {
+      console.log({rotation, radianArr})
       const selected = Math.floor(rotation / prizeSlice);
       prizeNodes[selected].classList.add(selectedClass);
       reaper.dataset.reaction = prizeNodes[selected].dataset.reaction;
@@ -243,12 +255,13 @@
       runTickerAnimation();
     });
     
-    spinner.addEventListener("transitionend", () => {
+    spinner.addEventListener("transitionend", (e) => {
       cancelAnimationFrame(tickerAnim);
       trigger.disabled = false;
       trigger.focus();
       rotation %= 360;
-      selectPrize();
+
+      selectPrize(rotation);
       wheel.classList.remove(spinClass);
       spinner.style.setProperty("--rotate", rotation);
     });
