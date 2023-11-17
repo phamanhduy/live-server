@@ -114,18 +114,18 @@ setTimeout(() => {
 
 function runChungMung(winner) {
   // runSpeakChungMung('congratulation');
-  let remainingText =  `Oa ! Bạn là top 1, Duy trì để lấy quà nhé 😍`
+  let remainingText =  `Oa ! Chúc mừng ${winner?.text} đã chiến thắng 😍`
   document.getElementById("winner-con").style.display = 'block';
-  // document.getElementById("winner-name").innerHTML = winner?.name;
-  // document.getElementById("winner-avatar").src = winner?.avatar;
-  // document.getElementById("show-text").innerHTML = remainingText;
+  document.getElementById("winner-name").innerHTML = winner?.text;
+  document.getElementById("winner-avatar").src = winner?.image;
+  document.getElementById("show-text").innerHTML = remainingText;
 
   setTimeout(() => {
     // clearInterval(chungMungIntertal);
     document.getElementById("winner-con").style.display = 'none';
     // document.getElementById('canvas').remove()
-  }, 5000);
-  // audioChungMung();
+  }, 7000);
+  audioChungMung();
 }
 
 function isTop() {

@@ -16,7 +16,10 @@ body {
 } */
 
 .deal-wheel {
-  --size: clamp(250px, 80vmin, 700px);
+  /* background-color: #FFF; */
+  margin: 0 auto;
+  padding-top: 10px;
+  --size: clamp(250px, 80vmin, 500px);
   --lg-hs: 0 3%;
   --lg-stop: 50%;
   --lg: linear-gradient(
@@ -55,7 +58,7 @@ body {
   height: var(--size);
   transform: rotate(calc(var(--rotate, 25) * 1deg));
   border-radius: 50%;
-  box-shadow: inset 0 0 0 calc(var(--size) / 40) hsl(0deg 0% 0% / 0.06);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22) !important;
 }
 
 .spinner * {
@@ -82,6 +85,12 @@ body {
   height: var(--cap-size);
 }
 
+.cap img {
+  width: var(--cap-size);
+  height: var(--cap-size);
+  border-radius: 50%;
+}
+
 /* Hide select dropdown from SVG import file */
 .cap select {
   display: none;
@@ -103,8 +112,8 @@ body {
 }
 
 .btn-spin {
-  color: hsl(0deg 0% 100%);
-  background: var(--lg);
+  color: #ffffff;
+  background: #000;
   border: none;
   font-family: inherit;
   font-size: inherit;
@@ -116,13 +125,13 @@ body {
   transition: opacity 200ms ease-out;
 }
 
-.btn-spin:focus {
+/* .btn-spin:focus {
   outline-offset: 2px;
 }
 
 .btn-spin:active {
   transform: translateY(1px);
-}
+} */
 
 .btn-spin:disabled {
   cursor: progress;
@@ -131,7 +140,7 @@ body {
 
 /* Spinning animation */
 .is-spinning .spinner {
-  transition: transform 20s cubic-bezier(0.1, -0.01, 0, 1);
+  transition: transform 10s cubic-bezier(0.1, -0.01, 0, 1);
 }
 
 .is-spinning .ticker {

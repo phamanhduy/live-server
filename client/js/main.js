@@ -61,7 +61,6 @@ function connectionTiktok() {
             });
             connection.on(`${userData?.channel}-ranking`, (dataLive) => {
                 showRanking(_.get(dataLive, 'ranking'));
-                setupWheel(_.get(dataLive, 'ranking'));
             });
         } else {
             alert('no username entered');
@@ -195,7 +194,6 @@ function getRanking() {
             }
         }).then(res => res.json())
             .then((json) => {
-                console.log({json})
                 showRanking(json);
             })
             .catch((err) => {
@@ -205,6 +203,9 @@ function getRanking() {
 }
 
 function showRanking(data) {
+    if (!isSpinnig) {
+        setupWheel(data);
+    }
     sessionStorage.setItem('ranking', JSON.stringify(data));
     let avatar = 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg';
     let rankingArr = new Array(30).fill({
