@@ -54,6 +54,7 @@ io.on('connection', (socket) => {
   console.info('New connection from origin', socket.handshake.headers['origin'] || socket.handshake.headers['referer']);
 
   socket.on('setUniqueId', (uniqueId, options) => {
+    return;
       // Prohibit the client from specifying these options (for security reasons)
       if (typeof options === 'object' && options) {
           delete options.requestOptions;

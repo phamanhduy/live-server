@@ -61,7 +61,7 @@ function connectionTiktok() {
             });
             connection.on(`${userData?.channel}-ranking`, (dataLive) => {
                 showRanking(_.get(dataLive, 'ranking'));
-                initWheel(_.get(dataLive, 'ranking'));
+                setupWheel(_.get(dataLive, 'ranking'));
             });
         } else {
             alert('no username entered');
@@ -195,6 +195,7 @@ function getRanking() {
             }
         }).then(res => res.json())
             .then((json) => {
+                console.log({json})
                 showRanking(json);
             })
             .catch((err) => {
