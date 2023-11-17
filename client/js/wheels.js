@@ -37,7 +37,7 @@
     },
     {
         "id": 3,
-        core: 1000,
+        core: 2000,
         "text": "Xin chào 3",
         "color": getRandomColor(),
         "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
@@ -54,7 +54,7 @@
     {
       "id": 5,
       core: 569,
-      "text": "Xin chào 42",
+      "text": "Xin chào 5",
       "color": getRandomColor(),
       "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
       "reaction": "dancing"
@@ -62,7 +62,7 @@
   {
     "id": 6,
     core: 664,
-    "text": "Xin chào 5",
+    "text": "Xin chào 6",
     "color": getRandomColor(),
     "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
     "reaction": "dancing"
@@ -71,6 +71,14 @@
   "id": 7,
   core: 769,
   "text": "Xin chào 7",
+  "color": getRandomColor(),
+  "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
+  "reaction": "dancing"
+},
+{
+  "id": 8,
+  core: 869,
+  "text": "Xin chào 8",
   "color": getRandomColor(),
   "image": "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
   "reaction": "dancing"
@@ -111,9 +119,11 @@
     let currentSlice = 0;
     let prizeNodes;
 
+    
+
     let totalCore = 0;
     let totalPercent = 0;
-
+    let prizeRotation1 = 0;
     for (let i = 0; i < dataWheels.length; i++) {
       const elm = dataWheels[i];
       totalCore+= elm.core;
@@ -125,6 +135,7 @@
     //   }
     //   dataWheels.forEach(({ text, color, reaction }, i) => {
     //     const rotation = ((prizeSlice * i) * -1) - prizeOffset;
+    //     console.log({rotation})
     //     spinner.insertAdjacentHTML(
     //       "beforeend",
     //       `<li class="prize" data-reaction=${reaction} style="--rotate: ${rotation}deg">
@@ -140,7 +151,10 @@
     //     `background: conic-gradient(
     //       from -90deg,
     //       ${dataWheels
-    //         .map(({ color }, i) => `${color} 0 ${(100 / dataWheels.length) * (dataWheels.length - i)}%`)
+    //         .map(({ color }, i) => {
+    //           console.log((100 / dataWheels.length) * (dataWheels.length - i))
+    //           return `${color} 0 ${(100 / dataWheels.length) * (dataWheels.length - i)}%`
+    //         })
     //         .reverse()
     //       }
     //     );`
@@ -160,11 +174,9 @@
         let percenItem = (core / totalCore) * 100;
         let numberOfRournd = ((percenItem / 100) * 360);
         totalRotation += numberOfRournd;
-        let prizeRotation = totalRotation - (numberOfRournd / 2);
-        radianArr.push({
-          rotation: percenItem,
-          id, text
-        });
+        let prizeRotation =  -(totalRotation - (numberOfRournd / 2));
+
+        prizeRotation1 = prizeRotation
         spinner.insertAdjacentHTML(
           "beforeend",
           `<li class="prize user_${id}" data-reaction=${reaction} style="--rotate: ${prizeRotation}deg">
@@ -182,10 +194,13 @@
           from -90deg,
           ${dataWheels
             .map(({ color, core, id, text }, i) => {
+              // const elm = dataWheels[(dataWheels.length - 1) - i];
+              // console.log({elm})
               let percenItem = (core / totalCore) * 100
               totalPercent += percenItem;
-              return `${color} 0 ${totalPercent}%`;
-            })
+              console.log(100 - totalPercent)
+              return `${color} 0 ${100 - totalPercent}%`;
+            }).reverse()
           }
         );`
       );
@@ -209,11 +224,11 @@
   function playSound() {
       audio.pause();
       audio.currentTime = 0;
+      audio.volume = 0.5;
       audio.play();
   }
   
     const runTickerAnimation = () => {
-      // https://css-tricks.com/get-value-of-css-rotation-through-javascript/
       const values = spinnerStyles.transform.split("(")[1].split(")")[0].split(",");
       const a = values[0];
       const b = values[1];  
@@ -222,23 +237,67 @@
       if (rad < 0) rad += (2 * Math.PI);
       
       const angle = Math.round(rad * (180 / Math.PI));
-      const slice = Math.floor(angle / prizeSlice);
+      let selectedPrize = null;
+      let cumulativePercentage = 0;
     
-      if (currentSlice !== slice) {
-        ticker.style.animation = "none";
-        setTimeout(() => ticker.style.animation = null, 10);
-        currentSlice = slice;
-        playSound();
+      // Convert rotation to a percentage of the total wheel rotation
+      const rotationPercentage = (angle / 360) * 100;
+    
+      for (let i = 0; i < prizes.length; i++) {
+        const prize = prizes[i];
+        const percentage = (prize.core / totalCore) * 100;
+    
+        if (
+          rotationPercentage >= cumulativePercentage &&
+          rotationPercentage < cumulativePercentage + percentage
+        ) {
+          selectedPrize = prize;
+          break;
+        }
+    
+        cumulativePercentage += percentage;
       }
-      
+    
+      if (selectedPrize) {
+        if (currentSlice !== selectedPrize.id) {
+          prizeNodes.forEach((prize) => prize.classList.remove(selectedClass));
+          ticker.style.animation = "none";
+          setTimeout(() => ticker.style.animation = null, 10);
+          currentSlice = selectedPrize.id;
+          playSound();
+          prizeNodes[selectedPrize.id].classList.add(selectedClass);
+        }
+      }
       tickerAnim = requestAnimationFrame(runTickerAnimation);
     };
     
     const selectPrize = (rotation) => {
-      console.log({rotation, radianArr})
-      const selected = Math.floor(rotation / prizeSlice);
-      prizeNodes[selected].classList.add(selectedClass);
-      reaper.dataset.reaction = prizeNodes[selected].dataset.reaction;
+      let selectedPrize = null;
+      let cumulativePercentage = 0;
+      const rotationPercentage = (rotation / 360) * 100;
+      for (let i = 0; i < prizes.length; i++) {
+        const prize = prizes[i];
+        const percentage = (prize.core / totalCore) * 100;
+    
+        if (
+          rotationPercentage >= cumulativePercentage &&
+          rotationPercentage < cumulativePercentage + percentage
+        ) {
+          selectedPrize = prize;
+          break;
+        }
+    
+        cumulativePercentage += percentage;
+      }
+    
+      if (selectedPrize) {
+        prizeNodes[selectedPrize.id].classList.remove(selectedClass);
+        setTimeout(() => {
+          prizeNodes[selectedPrize.id].classList.add(selectedClass);
+        }, 1000);
+        reaper.dataset.reaction = prizeNodes[selectedPrize.id].dataset.reaction;
+      }
+      
     };
     
     trigger.addEventListener("click", () => {
@@ -247,12 +306,12 @@
       }
     
       trigger.disabled = true;
-      rotation = Math.floor(Math.random() * 360 + spinertia(0, 20000));
+      rotation = Math.floor(Math.random() * 360 + spinertia(5000, 7000));
       prizeNodes.forEach((prize) => prize.classList.remove(selectedClass));
       wheel.classList.add(spinClass);
       spinner.style.setProperty("--rotate", rotation);
       ticker.style.animation = "none";
-      runTickerAnimation();
+      runTickerAnimation(rotation);
     });
     
     spinner.addEventListener("transitionend", (e) => {
@@ -260,7 +319,6 @@
       trigger.disabled = false;
       trigger.focus();
       rotation %= 360;
-
       selectPrize(rotation);
       wheel.classList.remove(spinClass);
       spinner.style.setProperty("--rotate", rotation);
