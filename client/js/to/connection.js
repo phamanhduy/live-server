@@ -57,4 +57,8 @@ class TikTokIOConnection {
     on(eventName, eventHandler) {
         this.socket.on(eventName, eventHandler);
     }
+
+    emit(eventName, data) {
+        this.socket.emit(eventName, data);
+    }
 }

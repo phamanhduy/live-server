@@ -3,7 +3,7 @@ let isSpeaking = false;
 
 
 // FunctionUtil
-initSpeak('intro');
+// initSpeak('intro');
 
 function initSpeak(type, data) {
   switch (type) {
@@ -127,7 +127,6 @@ function saveSpeaking(key, dataLive) {
     }).then(function (response) {
       return response.json();
     }).then(function (json_response) {
-      console.log({json_response})
       if (_.get(json_response, 'data[0].is_file', false)) {
         sessionStorage.setItem(key, _.get(json_response, 'data[0].name', ''));
       } else {
@@ -147,7 +146,8 @@ function runSpeakChungMung(key) {
 
 function speakAudio(audioSpeak) {
   let audioRun = new Audio(`https://ntt123-viettts.hf.space/file=${audioSpeak}`);
-  audioRun.volume = 0.5;
+  audioRun.volume = 1;
+  audioRun.playbackRate=1.1;
   audioRun.play();
   return audioRun;
 }

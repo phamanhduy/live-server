@@ -54,7 +54,6 @@ io.on('connection', (socket) => {
   console.info('New connection from origin', socket.handshake.headers['origin'] || socket.handshake.headers['referer']);
 
   socket.on('setUniqueId', (uniqueId, options) => {
-    return;
       // Prohibit the client from specifying these options (for security reasons)
       if (typeof options === 'object' && options) {
           delete options.requestOptions;
@@ -107,6 +106,28 @@ io.on('connection', (socket) => {
       tiktokConnectionWrapper.connection.on('subscribe', msg => socketReceiveMessage('subscribe', msg, options, socket));
   });
 
+
+  socket.on('send_coin', async (data) => {
+    let sessionName = _.get(data, 'userData.liveSession');
+    let user = await User.findOne({ username: _.get(data, 'winner.username')});
+    let sessionGame = await SessionGame.findOne({
+      userId: (new mongoose.Types.ObjectId(_.get(user, '_id'))),
+      sessionName,
+    });
+    let dataSess = {
+      score: parseInt(_.get(data, 'coinReceived')) + _.get(sessionGame, 'score'),
+    }
+    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
+      const winner = await SessionGame.getLimitWinner({
+        sessionName,
+      }, 30);
+      socket.emit(`${_.get(data, 'userData.channel')}-ranking`, {
+        ranking: winner,
+        sessionWinner: null,
+      });
+    });
+  });
+
   socket.on('disconnect', () => {
       if (tiktokConnectionWrapper) {
           tiktokConnectionWrapper.disconnect();
@@ -115,158 +136,47 @@ io.on('connection', (socket) => {
 });
 
 function socketReceiveMessage(type, data, options, socket) {
+  if (type === 'chat') {
+    socket.emit(`${_.get(options, 'channel')}-chat`, data);
+  } else if (type === 'like') {
+    socket.emit(`${_.get(options, 'channel')}-like`, data);
+  } else if (type === 'roomUser') {
+    socket.emit(`${_.get(options, 'channel')}-views`, data);
+  }
   switch (type) {
     case 'like':
       addScore({
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 10) }, 'like', socket)
       break;
     case 'follow':
       addScore({
-        username: _.get(data, 'uniqueId'),
-        name: _.get(data, 'nickname'),
-        avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
+          username: _.get(data, 'uniqueId'),
+          name: _.get(data, 'nickname'),
+          avatar: _.get(data, 'profilePictureUrl')
+      }, { channel: channel, sessionName: liveSession, score: 20 }, 'follow', socket);
       break;
     case 'share':
+      addScore({
+          username: _.get(data, 'uniqueId'),
+          name: _.get(data, 'nickname'),
+          avatar: _.get(data, 'profilePictureUrl')
+      }, { channel: channel, sessionName: liveSession, score: 1 }, 'share', socket);
+      break;
+    case 'gift':
       addScore({
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 8) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: data.diamondCount }, 'gift', socket)
       break;
     default:
       break;
   }
 }
 
-async function addScore({ username, name, avatar }, { channel, sessionName, score }, type, socket) {
-  let user = await User.findOne({ username });
-  if (!user) {
-    user = await User.add({
-      name, username, avatar,
-    });
-  }
-  let sessionGame = await SessionGame.findOne({
-    userId: (new mongoose.Types.ObjectId(_.get(user, '_id'))),
-    sessionName,
-  });
-  if (!sessionGame) {
-    await SessionGame.add({
-      channel, userId: _.get(user, '_id'),
-      score,
-      sessionName,
-    });
-  } else {
-    let dataSess = {
-      score: score + _.get(sessionGame, 'score'),
-    }
-    if (type === 'follow') {
-      if (_.get(sessionGame, 'followed')) {
-        return;
-      }
-      dataSess['followed'] = true;
-    }
-    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
-      const winner = await SessionGame.getLimitWinner({
-        sessionName,
-      }, 30);
-      socket.emit(`${channel}-ranking`, {
-        ranking: winner,
-        sessionWinner: null,
-      });
-    });
-  }
-}
-// Emit global connection statistics
-setInterval(() => {
-  io.emit('statistic', { globalConnectionCount: getGlobalConnectionCount() });
-}, 5000)
-
-// function updateAvatar(dataLive) {
-//   const checkTimeExpireImage = FunctionUtil.checkTimeExpire(_.get(dataLive, 'avatar'));
-//   if (!checkTimeExpireImage) {
-//     User.updateData({
-//       name: _.get(dataLive, 'name', ''),
-//       username: _.get(dataLive, 'username', ''),
-//       // avatarBase64: base64Img,
-//     }, {
-//       avatar: _.get(dataLive, 'avatar', ''),
-//     });
-//   }
-// }
-// async function caculatorScore(socket, dataLive) {
-//   try {
-//     // const base64Img = await FunctionUtil.imageToBase64(_.get(dataLive, 'avatar'));
-//     let user = await User.findOne({
-//       name: _.get(dataLive, 'name'),
-//       username: _.get(dataLive, 'username', ''),
-//       // avatarBase64: base64Img,
-//     });
-//     if (!user) {
-//       user = await User.add({
-//         name: _.get(dataLive, 'name', ''),
-//         username: _.get(dataLive, 'username', ''),
-//         avatar: _.get(dataLive, 'avatar', ''),
-//         // avatarBase64: base64Img,
-//       });
-//     }
-//     updateAvatar(dataLive);
-//     let sessionGame = await SessionGame.findOne({
-//       userId: (new mongoose.Types.ObjectId(_.get(user, '_id'))),
-//       sessionName: _.get(dataLive, 'liveSession', ''),
-//     });
-//     let sessionWinner = null;
-//     if (!sessionGame) {
-//       sessionWinner = {
-//         channel: _.get(dataLive, 'channel'),
-//         userId: _.get(user, '_id'),
-//         score: _.get(dataLive, 'score', 20),
-//         sessionName: _.get(dataLive, 'liveSession', ''),
-//       };
-//       await SessionGame.add(sessionWinner);
-//     } else {
-//       sessionWinner = {
-//         channel: _.get(dataLive, 'channel'),
-//         userId: _.get(user, '_id'),
-//         score: (_.get(dataLive, 'score', 20)) + _.get(sessionGame, 'score', 20),
-//         sessionName: _.get(dataLive, 'liveSession', ''),
-//       };
-//       await SessionGame.updateData({ _id: _.get(sessionGame, '_id') }, sessionWinner);
-//     }
-
-//     const winner = await SessionGame.getLimitWinner({
-//       sessionName: _.get(dataLive, 'liveSession', '')
-//     }, 15);
-//     // console.log({dataLive, winner})
-//     socket.emit(`${_.get(dataLive, 'channel')}-ranking`, {
-//       ranking: winner,
-//       sessionWinner,
-//     });
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-// let tiktokLiveConnectionServer = null;
-// let channelServer = null;
-// let liveSessionServer = null;
-// io.on('connection', (socket) => {
-//   socket.on('score-winner', (dataLive) => {
-//     caculatorScore(socket, dataLive)
-//   });
-
-//   socket.on('connect-tiktok', ({ channel, liveSession }) => {
-//     console.log({ channel, liveSession })
-//     tiktokConnector.connectStream(channel, socket, (tiktokLiveConnection) => {
-//       tiktokLiveConnectionServer = tiktokLiveConnection;
-//       channelServer = channel;
-//       liveSessionServer = liveSession;
-//       connectWithSocket(tiktokLiveConnection, channel, liveSession);
-//     })
-//   });
 
 //   connectWithSocket(tiktokLiveConnectionServer, channelServer, liveSessionServer);
 //   function connectWithSocket(titokCon, channel, liveSession) {
@@ -332,12 +242,75 @@ setInterval(() => {
 // });
 
 
+
+async function addScore({ username, name, avatar }, { channel, sessionName, score }, type, socket) {
+  let user = await User.findOne({ username });
+  if (!user) {
+    user = await User.add({
+      name, username, avatar,
+    });
+  }
+  let sessionGame = await SessionGame.findOne({
+    userId: (new mongoose.Types.ObjectId(_.get(user, '_id'))),
+    sessionName,
+  });
+  if (!sessionGame) {
+    await SessionGame.add({
+      channel, userId: _.get(user, '_id'),
+      score,
+      sessionName,
+    });
+  } else {
+    let dataSess = {
+      score: score + _.get(sessionGame, 'score'),
+    }
+    if (type === 'follow') {
+      if (_.get(sessionGame, 'followed')) {
+        return;
+      }
+      dataSess['followed'] = true;
+    }
+    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
+      const winner = await SessionGame.getLimitWinner({
+        sessionName,
+      }, 30);
+      socket.emit(`${channel}-ranking`, {
+        ranking: winner,
+        sessionWinner: null,
+      });
+    });
+  }
+}
+// Emit global connection statistics
+setInterval(() => {
+  io.emit('statistic', { globalConnectionCount: getGlobalConnectionCount() });
+}, 5000)
+
+// function updateAvatar(dataLive) {
+//   const checkTimeExpireImage = FunctionUtil.checkTimeExpire(_.get(dataLive, 'avatar'));
+//   if (!checkTimeExpireImage) {
+//     User.updateData({
+//       name: _.get(dataLive, 'name', ''),
+//       username: _.get(dataLive, 'username', ''),
+//       // avatarBase64: base64Img,
+//     }, {
+//       avatar: _.get(dataLive, 'avatar', ''),
+//     });
+//   }
+// }
+
+
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
 });
 
 app.get('/to', (req, res) => {
   res.sendFile(__dirname + '/client/to.html');
+});
+
+app.get('/chat', (req, res) => {
+  res.sendFile(__dirname + '/client/chat.html');
 });
 
 app.get('/api/get-ranking', async (req, res) => {

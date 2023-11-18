@@ -1,12 +1,39 @@
 var loadingPage = false;
 var userData = null;
+var viewerCount = 0;
+
+
+function convertTextToVietnameseWords(text) {
+    try {
+        const result = text.replace(/\d+/g, match => {
+            const number = parseInt(match, 10);
+            return to_vietnamese(number);
+        });
+        return result;   
+    } catch (error) {
+        console.log({error});
+    }
+}
+
 
 
 function getUserSecsion() {
     if (sessionStorage.getItem('user')) {
         userData = JSON.parse(sessionStorage.getItem('user'));
-        // URL_API = _.get(userData, 'serverInput');
-        // socket = io(URL_API);
+        $('#tongsotim').html(_.get(userData, 'tongsotim'));
+        clearInterval(timerRuning);
+        startRunTimer(_.get(userData, 'maxNumber'));
+        getRanking();
+        if (!_.isEmpty(_.get(userData, 'linkVideo'))) {
+            try {
+                $('#myVideo').attr('src', _.get(userData, 'linkVideo'));
+                stopCamera();   
+            } catch (error) {
+              console.log({error});  
+            }
+        } else {
+            getCamera();
+        }
     }
 }
 
@@ -20,23 +47,30 @@ function saveUserSecsion(isConnect = true) {
     const maxNumber = document.getElementById('time-input');
     const sessionLive = document.getElementById('live-section');
     const serverInput = document.getElementById('server-input');
+    const linkInput = document.getElementById('link_video');
+    const timInput = document.getElementById('so_tim');
     // const startPlay = document.getElementById('start-play');
     sessionStorage.setItem('user', JSON.stringify({
         channel: channel.value,
         maxNumber: maxNumber.value,
         liveSession: sessionLive.value,
         serverInput: serverInput.value,
+        linkVideo: linkInput.value,
+        tongsotim: timInput.value,
     }));
-    setTimeout(() => {
-        getUserSecsion();
-        connectionTiktok();
-    }, 500);
     if (isConnect) {
-        socket.emit(`connect-tiktok`, {
-            channel: userData?.channel,
-            liveSession: userData?.liveSession
-        });
+        connectionTiktok();
+    } else {
+        setTimeout(() => {
+            getUserSecsion();
+        }, 500);
     }
+    closeInventory();
+}
+
+function changeBanhxe() {
+    var valueOpacity = $('#hienthibanhxe').val();
+    $('.deal-wheel').css("opacity", valueOpacity);    
 }
 
 function connectionTiktok() {
@@ -52,25 +86,64 @@ function connectionTiktok() {
                 ...userData,
             }).then(state => {
                 console.log(`Connected to roomId ${userData?.channel}`);
-
             }).catch(errorMessage => {
                 // schedule next try if obs username set
                 setTimeout(() => {
                     // connectionTiktok();
                 }, 30000);
             });
+            
+            connection.on(`${userData?.channel}-chat`, (dataLive) => {
+                if (!isSpeaking) {
+                    console.log(`${dataLive.nickname} đang nói: ${dataLive.comment}`);
+                    runSpeaking(convertTextToVietnameseWords(dataLive.comment), (data) => {
+        
+                    });
+                }
+            });
+            connection.on(`${userData?.channel}-like`, (dataLive) => {
+                let tongsotim = parseInt(_.get(userData, 'tongsotim'));
+                let likes = _.isNull(sessionStorage.getItem('likes')) ? 0 : parseInt(sessionStorage.getItem('likes'));
+                if (!isSpinnig) {
+                    if (likes < tongsotim) {
+                        likes += dataLive?.likeCount;
+                        sessionStorage.setItem('likes', likes);
+                        $('#sotim').html(tongsotim - likes)
+                    }
+                }
+                if (likes >= tongsotim) {
+                    if (!isSpinnig) {
+                        runWheel();
+                        sessionStorage.setItem('likes', '0');
+                        $('#sotim').html(0);
+                    }
+                }
+            });
+        
+            connection.on(`${userData?.channel}-views`, (dataLive) => {
+                if (typeof dataLive.viewerCount === 'number') {
+                    viewerCount = dataLive.viewerCount;
+                    updateRoomStats(dataLive.viewerCount);
+                }
+            })
             connection.on(`${userData?.channel}-ranking`, (dataLive) => {
                 showRanking(_.get(dataLive, 'ranking'));
             });
         } else {
             alert('no username entered');
         }
-
-
-        closeInventory();
     }
 }
 
+function receivedMessage(userData) {
+}
+function convertVND(x = 1000) {
+    return x.toLocaleString("it-IT", { style: "currency", currency: "VND" });
+  }
+function updateRoomStats(views) {
+    let numberMoney = convertVND((views * 1000) / 2);
+    $('#money').html(numberMoney);
+}
 
 connection.on('streamEnd', () => {
     console.log('Stream ended.');
@@ -90,7 +163,7 @@ setTimeout(() => {
     // connectionTiktok(userData);
     loadingPageFun(loadingPage);
     loadingPageData();
-    getCamera();
+    // getCamera();
 }, 500);
 
 function getCamera() {
@@ -103,14 +176,29 @@ function getCamera() {
                 focusMode: { ideal: 'continuous' } // Set focus mode to continuous
             }
         };
+
+        var video = document.getElementById('myVideo'); // Assuming you have a video element with id 'myVideo'
+        var stream;
+
         navigator.mediaDevices.getUserMedia(constraints)
-            .then(function (stream) {
-                var video = document.getElementById('myVideo');
+            .then(function (mediaStream) {
+                stream = mediaStream;
                 video.srcObject = stream;
             })
             .catch(function (error) {
                 console.error('Error accessing the camera: ', error.name, error.message);
             });
+
+        // Add a function to stop the camera stream
+        window.stopCamera = function() {
+            if (stream) {
+                var tracks = stream.getTracks();
+                tracks.forEach(function(track) {
+                    track.stop();
+                });
+                video.srcObject = null;
+            }
+        };
     } else {
         console.error('getUserMedia is not supported in this browser');
     }
@@ -122,11 +210,15 @@ function loadingPageData() {
         const maxNumber = document.getElementById('time-input');
         const sessionLive = document.getElementById('live-section');
         const serverInput = document.getElementById('server-input');
+        const linkInput = document.getElementById('link_video');
+        const timInput = document.getElementById('so_tim');
 
         channel.value = userData?.channel;
         maxNumber.value = userData?.maxNumber;
         sessionLive.value = userData?.liveSession;
         serverInput.value = userData?.serverInput;
+        linkInput.value = userData?.linkVideo;
+        timInput.value = userData?.tongsotim;
     }
 }
 function loadingPageFun(loading) {
@@ -212,7 +304,7 @@ function showRanking(data) {
         avatar,
         name: null,
         score: 0,
-    })
+    });
     _.assign(rankingArr, _.map(data, (d, i) => {
         return {
             avatar: _.get(d, 'user.0.avatar'),
@@ -240,6 +332,7 @@ function showRanking(data) {
         for (let e = 0; e < elm.length; e++) {
             let elmItem = elm[e];
             let percen = (elmItem.score / tongDiem) * 100;
+            let titleName = elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name;
             htmlItem += `<tr>
           <td style="margin-right: 5px;">
             <img class="raking-avatar" src='${elmItem.avatar}'>
@@ -247,7 +340,7 @@ function showRanking(data) {
           <td style="width: 60px">
             <div class="bar-container">
               <div style='width: ${percen}%' class="bar-${i + 1}">
-                <span><strong>${elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name}</strong></span>
+                <span><strong title='${titleName}'>${titleName}</strong></span>
               </div>
             </div>
           </td>

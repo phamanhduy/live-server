@@ -140,7 +140,7 @@ body {
 
 /* Spinning animation */
 .is-spinning .spinner {
-  transition: transform 10s cubic-bezier(0.1, -0.01, 0, 1);
+  transition: transform 30s cubic-bezier(0.1, -0.01, 0, 1);
 }
 
 .is-spinning .ticker {
@@ -383,4 +383,18 @@ svg {
     50% {
       transform: translateY(4px);
     }
+  }
+
+  #sotim {
+    color: #00ffaa;
+  }
+
+  .text-group .text-heart {
+    font-size: 30px;
+    color: #FFF;
+    font-weight: 700;
+  }
+  .text-group {
+    text-align: center;
+    display: contents;
   }

@@ -2,8 +2,17 @@
 
 let showWord = false;
 let runningTime = false;
+let timerRuning;
 // Lấy các phần tử DOM
 const imageContainer = document.querySelector('.image-container');
+
+function ramdomNumberArr(number = 10) {
+  let arrayCoin = [];
+  for (let i = 0; i <= number; i++) {
+    arrayCoin.push(Math.floor(Math.random() * number) + 1);
+  }
+  return arrayCoin;
+}
 
 function randomArr(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
@@ -33,7 +42,7 @@ function showPlayHtml(game) {
   document.getElementById('container-words').innerHTML = html;
 }
 
-function ramdomNumber(cb) {
+function ramdomNumber(cb, option = { timer: 10000}) {
   adProduct(true);
   // show winner
   runningTime = true;
@@ -47,13 +56,13 @@ function ramdomNumber(cb) {
       sessionStorage.removeItem('winner');
     }, 50);
     adProduct(false);
-  }, 8000);
+  }, option.timer);
 }
 
 function startRunTimer(duration) {
   var display = $('#timer-countdown');
   let totalSeconds = duration;
-  setInterval(function() {
+  timerRuning = setInterval(function() {
     let minutes = parseInt(Math.floor(totalSeconds / 60), 10);
     let seconds = parseInt(totalSeconds % 60, 10);
     minutes = minutes < 10 ? '0' + minutes : minutes;
@@ -74,17 +83,7 @@ function startRunTimer(duration) {
     }
     totalSeconds--;
   }, 1000);
-
 }
-
-
-setTimeout(() => {
-  if (sessionStorage.getItem('user')) {
-    let setting = JSON.parse(sessionStorage.getItem('user'));
-    startRunTimer(setting?.maxNumber);
-  }
-}, 500);
-
 
 // function countdown(duration) {
 //   let totalSeconds = duration;
@@ -111,10 +110,14 @@ setTimeout(() => {
 //   }
 // }, 500)
 
+function getCoin() {
+  return Math.floor(Math.random() * viewerCount) + 5;
+}
 
 function runChungMung(winner) {
+  let coinReceived = getCoin();
   // runSpeakChungMung('congratulation');
-  let remainingText =  `Oa ! Chúc mừng ${winner?.text} đã chiến thắng 😍`
+  let remainingText =  `Chúc mừng bạn dành được <span class='send_coin'>${coinReceived}</span> <img style='width: 40px;' src='./images/khobau/dongxu.png' />`
   document.getElementById("winner-con").style.display = 'block';
   document.getElementById("winner-name").innerHTML = winner?.text;
   document.getElementById("winner-avatar").src = winner?.image;
@@ -125,6 +128,7 @@ function runChungMung(winner) {
     document.getElementById("winner-con").style.display = 'none';
     // document.getElementById('canvas').remove()
   }, 7000);
+  connection.emit('send_coin', {winner, userData, coinReceived});
   audioChungMung();
 }
 

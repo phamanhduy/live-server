@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)https://dungeoncrawler-od.vercel.app/ -->
+<html lang="en" class="mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+    <link rel="stylesheet" href="./js/chat//style.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <!-- <script src="./libs/vnum.js"></script> -->
+    <!-- <script src="./js/to/connection.js"></script> -->
+    <title>Trò chơi</title></head>
+
+
+<body>
+  <div class="errorsSide">
+  </div>
+  <div class="shareLink">
+          <div class="welcomeMess" style="margin-top: 0;">
+              <div class="img"><video src="https://res.cloudinary.com/duw2s4w0s/video/upload/v1620962563/HO%20TV%20assets/ezgif-6-38fc0e6aefa8_owq33f.mp4" alt="brainstorm video" autoplay muted></video></div>
+              <h1 class="roomTitle" class="roomTitle">Error Pharsing</h1>
+              <p id="copyLinker2" class="copyLinker2">#4987720</p>
+          </div>
+      <input id="copyvalue" type="text" value="#4987720">
+      <button id="copyLinker">Copy Code</button>
+  </div>
+  <div class="nameAlert"><h1>Enter your Name</h1><input id="name" type="text" placeholder="Enter your Name"></div>
+  
+<div class="mainChater">
+  <div class="headerDet">
+      <div class="chatDety">
+          <div class="img"><video src="https://res.cloudinary.com/duw2s4w0s/video/upload/v1620962563/HO%20TV%20assets/ezgif-6-38fc0e6aefa8_owq33f.mp4" alt="brainstorm video" autoplay></video></div>
+          <div class="nameC">
+              <p class="roomTitle" id='titleFirst' class="roomTitle">Error Pharsing</p>
+              <input type="text" name="room name" id="roomNameInput" class="roomTitle" value="Its BrainStorming">
+          </div>
+      </div>
+
+      <div class="tools">
+          <button id="groupEdit" tooltip="Google Meet" flow="left"><span class="material-icons blueClick">mode_edit</span></button>
+          <button id="settings" tooltip="Room Settings" flow="left"><span class="material-icons blueClick">settings</span></button>
+      </div>
+  </div>
+
+<div class="blackout"></div>
+
+  <div class="chatArea changeW">
+      <div class="chatMessages">
+    <!--Start of Chat cont-->
+    <div class="welcomeMess">
+        <div class="img"><video src="https://res.cloudinary.com/duw2s4w0s/video/upload/v1620962563/HO%20TV%20assets/ezgif-6-38fc0e6aefa8_owq33f.mp4" alt="brainstorm video" autoplay></video></div>
+        <h1 class="roomTitle">Error Pharsing</h1>
+        <p id="copyLinker2" class="copyLinker2">#40</p>
+    </div>
+
+      <!-- <div class="message mMess" data-number="1122334">
+      <div class="messArea">
+          <p id="sname">James Ericson</p>
+          <div class="textM">Lorem ipsum dolor sit, amet consectetur adipisicing elit. https://mi.com. Dignissimos omnis illum voluptates sed provident saepe?.</div></div>
+          <div class="prof" style="background-color: #ff7b54;"><p>J</p></div>
+      </div> -->
+      <div class="message mMess"><div class="prof" style="background-color: #ffb26b;"><p>Duy</p></div>
+      <div class="messArea">
+          <p id="sname">Duy Phạm</p>
+          <div class="textM" onclick="sendMessage('chào các bạn, chào các bạn')">Chào các bạn, chào các bạn</div>
+      </div>
+
+    <!--End of Chat cont-->
+    </div>
+
+  <div class="messageBox">
+      <button id="genMeetLink" class=" button-s1" tooltip="Google Docs" flow="right"><a href="https://docs.google.com/document/u/0/create" target="blank"><span class="material-icons">description</span></a></button>
+      <button id="genMeetLink" class=" button-s1" tooltip="Google Meet" flow="right"><a href="https://meet.google.com/new" target="blank"><span class="material-icons">video_call</span></a></button>
+      <button id="linkCopy" class="button-s1" tooltip="Copy Link" flow="up"><span class="material-icons">link</span></button>
+      <div class="textA"><textarea id="message" name="message" rows="1" cols="30" placeholder="Type your message here"></textarea></div>
+      <button id="send" class="button-s1" tooltip="Send" flow="left"><span class="material-icons headerIcon">send</span></button>
+  </div>
+  <div id="goToDown" class="downDowny"><span class="material-icons" >arrow_downward</span></div>
+  </div>
+
+</body>
+<script src="./js/speaking.js"></script>
+<script src="./js/chat/app.js"></script>

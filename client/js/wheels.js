@@ -7,6 +7,19 @@ setInterval(() => {
 }, 60000);
 
 var audio = new Audio('./audio/tick.mp3');
+var audioChecknon = new Audio('./audio/audo_chiecnonkydieu.mp3');
+var isSpinnig = false;
+let selectedPrize = null;
+
+function playSoundBackground() {
+  if (isSpinnig) {
+    playSound(audioChecknon);
+    audioChecknon.addEventListener('ended', function () {
+      playSoundBackground();
+    });
+  }
+}
+
 
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
@@ -23,15 +36,14 @@ const spinertia = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-function playSound() {
+function playSound(audio, option = {volume: 0.5, currentTime: 0}) {
   audio.pause();
-  audio.currentTime = 0;
-  audio.volume = 0.5;
-  audio.play();
+  audio.currentTime = option.currentTime;
+  audio.volume = option.volume;
+  audio.play().catch(error => {});
 }
 
 var dataWheels = new Array();
-var isSpinnig = false;
 
 const wheel = document.querySelector(".deal-wheel");
 const spinner = wheel.querySelector(".spinner");
@@ -55,6 +67,7 @@ function convertDataToWheels(data) {
     if (item.score > 0) {
       dataArray.push({
         id: i,
+        username: _.get(item, 'user.0.username'),
         score: _.get(item, 'score', 0),
         text: _.get(item, 'score', 0) === 0 ? '' : _.get(item, 'user.0.name'),
         image: _.get(item, 'user.0.avatar'),
@@ -139,7 +152,6 @@ const runTickerAnimation = () => {
   if (rad < 0) rad += (2 * Math.PI);
 
   const angle = Math.round(rad * (180 / Math.PI));
-  let selectedPrize = null;
   let cumulativePercentage = 0;
 
   const rotationPercentage = (angle / 360) * 100;
@@ -165,7 +177,7 @@ const runTickerAnimation = () => {
       ticker.style.animation = "none";
       setTimeout(() => ticker.style.animation = null, 10);
       currentSlice = selectedPrize.id;
-      playSound();
+      playSound(audio);
       prizeNodes[selectedPrize.id].classList.add(selectedClass);
       changeAvatar(selectedPrize);
     }
@@ -179,7 +191,6 @@ function changeAvatar(selectedPrize) {
 }
 
 const selectPrize = (rotation) => {
-  let selectedPrize = null;
   let cumulativePercentage = 0;
   const rotationPercentage = (rotation / 360) * 100;
   for (let i = 0; i < dataWheels.length; i++) {
@@ -202,42 +213,49 @@ const selectPrize = (rotation) => {
     setTimeout(() => {
       prizeNodes[selectedPrize.id].classList.add(selectedClass);
     }, 1000);
-    runChungMung(selectedPrize)
     // reaper.dataset.reaction = prizeNodes[selectedPrize.id].dataset.reaction;
   }
 
 };
 
-trigger.addEventListener("click", () => {
-  isSpinnig = true;
-  trigger.disabled = true;
-  rotation = Math.floor(Math.random() * 360 + spinertia(5000, 7000));
-  prizeNodes.forEach((prize) => prize.classList.remove(selectedClass));
-  wheel.classList.add(spinClass);
-  spinner.style.setProperty("--rotate", rotation);
-  ticker.style.animation = "none";
-  runTickerAnimation(dataWheels);
-});
+// trigger.addEventListener("click", () => {
+//   isSpinnig = true;
+//   // trigger.disabled = true;
+//   rotation = Math.floor(Math.random() * 360 + spinertia(5000, 7000));
+//   prizeNodes.forEach((prize) => prize.classList.remove(selectedClass));
+//   wheel.classList.add(spinClass);
+//   spinner.style.setProperty("--rotate", rotation);
+//   ticker.style.animation = "none";
+//   runTickerAnimation(dataWheels);
+// });
 
 
 function runWheel() {
   isSpinnig = true;
-  trigger.disabled = true;
+  // trigger.disabled = true;
   rotation = Math.floor(Math.random() * 360 + spinertia(4000, 5000));
   prizeNodes.forEach((prize) => prize.classList.remove(selectedClass));
   wheel.classList.add(spinClass);
   spinner.style.setProperty("--rotate", rotation);
   ticker.style.animation = "none";
   runTickerAnimation(dataWheels);
+  playSoundBackground();
 }
 
 spinner.addEventListener("transitionend", () => {
-  isSpinnig = false;
   cancelAnimationFrame(tickerAnim);
-  trigger.disabled = false;
+  // trigger.disabled = false;
   // trigger.focus();
   rotation %= 360;
   selectPrize(rotation);
   wheel.classList.remove(spinClass);
   spinner.style.setProperty("--rotate", rotation);
+  
+  
+  audioChecknon.pause();
+  audioChecknon.currentTime = 0;
+  ramdomNumber(() => {
+    isSpinnig = false;
+    runChungMung(selectedPrize)
+  }, {timer: 15000})
 });
