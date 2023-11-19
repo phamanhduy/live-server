@@ -327,7 +327,8 @@ button:focus {
     justify-content: center;
     position: fixed;
     z-index: 9999;
-    width: 100vw;
+    width: 100%;
+    height: 100%;
 }
 
 .modal-container .content {
@@ -359,16 +360,19 @@ button:focus {
 }
 
 /* Inventory */
-#inventory {
+#inventory.modal-container {
     flex-direction: column;
+    align-items: flex-start!important;
+    justify-content: left!important;
 }
 
 #inventory .content {
     padding: 0;
     gap: 0;
     height: 35rem;
-    width: 16rem;
+    width: 100%;
 }
+
 
 #inventory .content .inventorySlots {
     padding: 0 0.7em 0.4em;
@@ -387,6 +391,7 @@ button:focus {
     width: 100%;
     align-items: center;
     margin: 0 auto;
+    margin-top: 300px;
 }
 
 #winner-con .content strong {
@@ -394,13 +399,68 @@ button:focus {
     font-weight: 700;
     font-size: 25px;
 }
-#winner-con .content .image-avatar {
+.image-avatar {
     width: 120px;
     border-radius: 50%;
 }
 
 #winner-con .content .inventorySlots {
     padding: 0 0.7em 0.4em;
+}
+
+
+
+#lastwinner .content {
+    padding: 0;
+    gap: 0;
+    height: 575px;
+    width: 100%;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 300px;
+    position: relative;
+}
+
+#lastwinner .content strong {
+    font-weight: 700;
+    font-size: 25px;
+}
+#lastWinner .content .winner-avatar {
+    width: 120px!important;
+    border-radius: 50%!important;
+}
+
+#lastWinner .content .inventorySlots {
+    padding: 0 0.7em 0.4em;
+}
+
+#notifyGift .content {
+    padding: 0;
+    gap: 0;
+    height: 600px;
+    width: 100%;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 300px;
+    position: relative;
+}
+
+#notifyGift .content strong {
+    font-weight: 700;
+    font-size: 25px;
+}
+#notifyGift .content .winner-avatar {
+    width: 120px!important;
+    border-radius: 50%!important;
+}
+
+#notifyGift .content .inventorySlots {
+    padding: 0 0.7em 0.4em;
+}
+
+.img-product {
+    width: 350px;
+    height: 300px;
 }
 
 /* Menu Modal */
@@ -424,6 +484,7 @@ button:focus {
     align-items: center;
     padding: 0.4em 0.7em;
     gap: 0.3rem;
+    color: #05f3e8;
 }
 
 .content .content-head i {
@@ -686,8 +747,8 @@ header button i {
     border: 0.5rem solid #f3f3f3;
     border-top: 0.5rem solid grey;
     border-radius: 50%;
-    width: 3.8rem;
-    height: 3.8rem;
+    /* width: 3.8rem; */
+    /* height: 3.8rem; */
     animation: spin 2s linear infinite;
     margin: 0 auto;
 }
@@ -992,6 +1053,9 @@ header button i {
   .setting {
     text-align: center;
   }
+  .setting input, .setting textarea {
+    width: 80%;
+  }
 
 #container-words {
   display: flex;
@@ -1042,7 +1106,8 @@ canvas {
 }
 
 #ads-product img {
-    height: 250px;
+    height: 300px;
+    width: 350px;
 }
 
 #ads-product {
@@ -1050,32 +1115,47 @@ canvas {
 }
 
 #ads-product .content {
-    padding: 0;
-    gap: 0;
-    /* height: 300px; */
+    height: 500px;
     width: 100%;
     align-items: center;
     margin: 0 auto;
-    margin-top: 180px;
-    background: #4b4b4b;
+    background: #000000;
+    margin-top: 300px;
+    position: relative;
 }
+
+.price-text {
+    font-size: 18px;
+}
+.price-gift {
+    font-size: 28px;
+    color: #05f3e8;
+}
+
 #ads-loading {
     position: relative;
 }
 
 #ads-loading .loader{
     position: absolute;
-    top: 42px;
-    right: -20px;
+    left: 0;
+    /* right: -20px; */
     border: 0.5rem solid #ff0000;
     border-top: 0.5rem solid white;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    animation: spin 2s linear infinite;
+    margin: 1px!important;
 }
 
 .call-action {
-    /* position: absolute; */
-    /* bottom: 100px; */
     left: 20px;
     margin-bottom: 5px;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
 }
 
 .call-action .text-hook{
@@ -1109,7 +1189,7 @@ canvas {
 }
 
 .mycursor {
-    cursor: url("https://cdn-icons-png.flaticon.com/128/3119/3119214.png"), auto;
+    /* cursor: url("https://cdn-icons-png.flaticon.com/128/3119/3119214.png"), auto; */
     padding: 40px;
 }
 
@@ -1120,7 +1200,7 @@ canvas {
 #video-section #myVideo {
     /* position: absolute; */
     height: 100%;
-    opacity: 0.7;
+    opacity: 1;
 }
 
 #tongsotim {
@@ -1139,4 +1219,14 @@ canvas {
 #show-text .send_coin {
     font-size: 35px;
     font-weight: 700;
+}
+
+div.marquee {
+    white-space:no-wrap;
+    overflow:hidden;
+}
+div.marquee > div.marquee-text {
+    white-space:nowrap;
+    display:inline;
+    width:auto;
 }

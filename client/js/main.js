@@ -15,12 +15,15 @@ function convertTextToVietnameseWords(text) {
     }
 }
 
-
+function convertVND(x = 1000) {
+    return x.toLocaleString("it-IT", { style: "currency", currency: "VND" });
+}
 
 function getUserSecsion() {
     if (sessionStorage.getItem('user')) {
         userData = JSON.parse(sessionStorage.getItem('user'));
         $('#tongsotim').html(_.get(userData, 'tongsotim'));
+        $('#texthuongdan').html(_.get(userData, 'huongdan'));
         clearInterval(timerRuning);
         startRunTimer(_.get(userData, 'maxNumber'));
         getRanking();
@@ -49,6 +52,9 @@ function saveUserSecsion(isConnect = true) {
     const serverInput = document.getElementById('server-input');
     const linkInput = document.getElementById('link_video');
     const timInput = document.getElementById('so_tim');
+    const jsonProduct = document.getElementById('json_product');
+    const idProduct = document.getElementById('id_product');
+    const huongdan = document.getElementById('huongdan');
     // const startPlay = document.getElementById('start-play');
     sessionStorage.setItem('user', JSON.stringify({
         channel: channel.value,
@@ -57,6 +63,9 @@ function saveUserSecsion(isConnect = true) {
         serverInput: serverInput.value,
         linkVideo: linkInput.value,
         tongsotim: timInput.value,
+        jsonProduct: jsonProduct.value,
+        idProduct: idProduct.value,
+        huongdan: huongdan.value,
     }));
     if (isConnect) {
         connectionTiktok();
@@ -137,9 +146,7 @@ function connectionTiktok() {
 
 function receivedMessage(userData) {
 }
-function convertVND(x = 1000) {
-    return x.toLocaleString("it-IT", { style: "currency", currency: "VND" });
-  }
+
 function updateRoomStats(views) {
     let numberMoney = convertVND((views * 1000) / 2);
     $('#money').html(numberMoney);
@@ -212,6 +219,9 @@ function loadingPageData() {
         const serverInput = document.getElementById('server-input');
         const linkInput = document.getElementById('link_video');
         const timInput = document.getElementById('so_tim');
+        const jsonProduct = document.getElementById('json_product');
+        const idProduct = document.getElementById('id_product');
+        const huongdan = document.getElementById('huongdan');
 
         channel.value = userData?.channel;
         maxNumber.value = userData?.maxNumber;
@@ -219,6 +229,9 @@ function loadingPageData() {
         serverInput.value = userData?.serverInput;
         linkInput.value = userData?.linkVideo;
         timInput.value = userData?.tongsotim;
+        jsonProduct.value = userData?.jsonProduct;
+        idProduct.value = userData?.idProduct;
+        huongdan.value = userData?.huongdan;
     }
 }
 function loadingPageFun(loading) {
@@ -340,7 +353,7 @@ function showRanking(data) {
           <td style="width: 60px">
             <div class="bar-container">
               <div style='width: ${percen}%' class="bar-${i + 1}">
-                <span><strong title='${titleName}'>${titleName}</strong></span>
+                <span><strong title='${elmItem.name}'>${titleName}</strong></span>
               </div>
             </div>
           </td>

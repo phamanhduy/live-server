@@ -156,14 +156,21 @@ function socketReceiveMessage(type, data, options, socket) {
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: channel, sessionName: liveSession, score: 20 }, 'follow', socket);
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 5 }, 'follow', socket);
       break;
     case 'share':
       addScore({
           username: _.get(data, 'uniqueId'),
           name: _.get(data, 'nickname'),
           avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: channel, sessionName: liveSession, score: 1 }, 'share', socket);
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 1 }, 'share', socket);
+      break;
+    case 'member':
+      addScore({
+          username: _.get(data, 'uniqueId'),
+          name: _.get(data, 'nickname'),
+          avatar: _.get(data, 'profilePictureUrl')
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 1 }, 'member', socket);
       break;
     case 'gift':
       addScore({
@@ -177,72 +184,6 @@ function socketReceiveMessage(type, data, options, socket) {
   }
 }
 
-
-//   connectWithSocket(tiktokLiveConnectionServer, channelServer, liveSessionServer);
-//   function connectWithSocket(titokCon, channel, liveSession) {
-//     if (titokCon) {
-//       console.log('reload');
-//       titokCon.on('like', data => {
-//         addScore({
-//           username: _.get(data, 'uniqueId'),
-//           name: _.get(data, 'nickname'),
-//           avatar: _.get(data, 'profilePictureUrl')
-//         }, { channel: channel, sessionName: liveSession, score: Math.round(data.likeCount / 8) }, 'like', socket)
-//       });
-//       titokCon.on('follow', data => {
-//         addScore({
-//           username: _.get(data, 'uniqueId'),
-//           name: _.get(data, 'nickname'),
-//           avatar: _.get(data, 'profilePictureUrl')
-//         }, { channel: channel, sessionName: liveSession, score: 20 }, 'follow', socket);
-//       });
-//       titokCon.on('share', data => {
-//         addScore({
-//           username: _.get(data, 'uniqueId'),
-//           name: _.get(data, 'nickname'),
-//           avatar: _.get(data, 'profilePictureUrl')
-//         }, { channel: channel, sessionName: liveSession, score: 3 }, 'share', socket);
-//       })
-
-//       titokCon.on('chat', data => {
-//         receivedDataLive({
-//           channel: channel,
-//           name: _.get(data, 'nickname'),
-//           username: _.get(data, 'uniqueId'),
-//           comment: _.get(data, 'comment'),
-//           avatar: _.get(data, 'profilePictureUrl'),
-//           type: 'comment',
-//         });
-
-//         addScore({
-//           username: _.get(data, 'uniqueId'),
-//           name: _.get(data, 'nickname'),
-//           avatar: _.get(data, 'profilePictureUrl')
-//         }, { channel: channel, sessionName: liveSession, score: 1 }, 'comment', socket);
-//       });
-//       titokCon.on('roomUser', data => {
-//         receivedDataLive({
-//           channel: channel,
-//           viewers: _.get(data, 'viewerCount'),
-//           type: 'view',
-//         });
-//       });
-
-//       socket.on(`dis-connect-${channel}`, () => {
-//         console.log('dis', channel)
-//         titokCon.disconnect();
-//       });
-//       titokCon.on('disconnected', () => {
-//         console.error('Đã ngắt kết nối ', channel);
-//         socket.emit(`disconnect-${channel}`, '');
-//       });
-//     }
-//   }
-
-// });
-
-
-
 async function addScore({ username, name, avatar }, { channel, sessionName, score }, type, socket) {
   let user = await User.findOne({ username });
   if (!user) {
@@ -255,7 +196,7 @@ async function addScore({ username, name, avatar }, { channel, sessionName, scor
     sessionName,
   });
   if (!sessionGame) {
-    await SessionGame.add({
+    sessionGame = await SessionGame.add({
       channel, userId: _.get(user, '_id'),
       score,
       sessionName,
@@ -270,16 +211,22 @@ async function addScore({ username, name, avatar }, { channel, sessionName, scor
       }
       dataSess['followed'] = true;
     }
-    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {
-      const winner = await SessionGame.getLimitWinner({
-        sessionName,
-      }, 30);
-      socket.emit(`${channel}-ranking`, {
-        ranking: winner,
-        sessionWinner: null,
-      });
-    });
+    if (type === 'member') {
+      if (_.get(sessionGame, 'isMember')) {
+        return;
+      }
+      dataSess['isMember'] = true;
+    }
+    await SessionGame.updateData({ _id: _.get(sessionGame, '_id'), sessionName }, dataSess, async (data) => {});
   }
+  console.log({username, type, score})
+  const winner = await SessionGame.getLimitWinner({
+    sessionName,
+  }, 30);
+  socket.emit(`${channel}-ranking`, {
+    ranking: winner,
+    sessionWinner: null,
+  });
 }
 // Emit global connection statistics
 setInterval(() => {

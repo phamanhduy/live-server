@@ -1,0 +1,58 @@
+[
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (1).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 365000
+    },
+    {
+        "image": "https://p16-oec-va.ibyteimg.com/tos-maliva-i-o3syd03w52-us/ffbdc5f533f64efc9ab2cd39e513d0f4~tplv-o3syd03w52-resize-jpeg:800:800.jpeg?from=1826719393",
+        "productName": "BÀN CHẢI ĐÁNH RĂNG",
+        "price": 465000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (2).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 1065000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (3).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 665000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (4).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 465000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (5).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 10065000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (6).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 4065000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (7).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 165000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (8).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 365000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (9).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 665000
+    },
+    {
+        "image": "http://localhost:3000/IMG_PRODUCT/img_product (10).jpeg",
+        "productName": "Áo Blazer Nam Dài, Áo khoác",
+        "price": 365000
+    }
+]
+
