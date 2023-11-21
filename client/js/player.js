@@ -126,7 +126,7 @@ function runBackgroundrunGiftr(lastWinner, RANDOM_PRODUCT) {
 }
 
 
-function ramdomNumberLastWinner(cb, option = { timer: 30000}) {
+function ramdomNumberLastWinner(cb, option = { timer: 15000}) {
   adProductLastWinner(true);
   runningTime = true;
   setTimeout(() => {

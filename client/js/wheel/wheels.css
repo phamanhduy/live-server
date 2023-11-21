@@ -18,7 +18,6 @@ body {
 .deal-wheel {
   /* background-color: #FFF; */
   margin: 0 auto;
-  padding-top: 10px;
   --size: clamp(250px, 80vmin, 500px);
   --lg-hs: 0 3%;
   --lg-stop: 50%;
@@ -390,7 +389,7 @@ svg {
   }
 
   .text-group .text-heart {
-    font-size: 30px;
+    font-size: 18px;
     color: #FFF;
     font-weight: 700;
   }

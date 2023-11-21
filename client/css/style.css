@@ -100,14 +100,14 @@ body {
     color: white;
     height: 100vh;
 }
-
+/* 
 main {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -266,15 +266,18 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-    background-color: white;
-    color: black;
+#setting-btn {
+    /* background-color: white;
+    color: black; */
+    position: absolute;
+    border: none;
+    z-index: 1000000;
 }
 
-button:focus {
+/* button:focus {
     outline: none;
     box-shadow: none;
-}
+} */
 
 /* Rarity Colors */
 .Common {
@@ -305,9 +308,6 @@ button:focus {
 .game-container {
     display: inline-block;
     position: relative;
-    width: 100%;
-    max-width: 35rem;
-    height: 100%;
 }
 
 .game {
@@ -340,7 +340,6 @@ button:focus {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
-    margin: 0.5rem;
     -webkit-border-radius: 0.3rem;
     -moz-border-radius: 0.3rem;
     -ms-border-radius: 0.3rem;
@@ -369,10 +368,12 @@ button:focus {
 #inventory .content {
     padding: 0;
     gap: 0;
-    height: 35rem;
     width: 100%;
 }
 
+.setting select {
+    width: 80%;
+}
 
 #inventory .content .inventorySlots {
     padding: 0 0.7em 0.4em;
@@ -390,8 +391,6 @@ button:focus {
     height: 500px;
     width: 100%;
     align-items: center;
-    margin: 0 auto;
-    margin-top: 300px;
 }
 
 #winner-con .content strong {
@@ -416,8 +415,6 @@ button:focus {
     height: 575px;
     width: 100%;
     align-items: center;
-    margin: 0 auto;
-    margin-top: 300px;
     position: relative;
 }
 
@@ -440,8 +437,6 @@ button:focus {
     height: 600px;
     width: 100%;
     align-items: center;
-    margin: 0 auto;
-    margin-top: 300px;
     position: relative;
 }
 
@@ -636,7 +631,6 @@ header button i {
 
 /* Dungeon */
 #dungeon-main {
-    display: none;
     flex-direction: column;
     filter: brightness(100%);
     display: flex;
@@ -953,11 +947,10 @@ header button i {
   }
   
   /* Place text to the right */
-  .right {
+  /* .right {
     text-align: left;
-    /* padding-left: 6px; */
     min-width: 40px;
-  }
+  } */
   
   /* Clear floats after the columns */
   .row:after {
@@ -968,11 +961,11 @@ header button i {
   
   /* The bar container */
   .bar-container {
-    width: 90%;
+    width: 85%;
     background-color: #f1f1f1;
     text-align: center;
     color: white;
-    margin-left: 5px;
+    margin-left: 2px;
   }
   
   /* Individual bars */
@@ -1011,14 +1004,14 @@ header button i {
       background-color: #f44336;
   }
   /* Responsive layout - make the columns stack on top of each other instead of next to each other */
-  @media (max-width: 400px) {
+  /* @media (max-width: 400px) {
     .side, .middle {
       width: 90%;
     }
     .right {
       display: none;
     }
-  }
+  } */
 
   .title-game {
     text-align: center;
@@ -1051,7 +1044,7 @@ header button i {
   }
 
   .setting {
-    text-align: center;
+    margin-left: 5px;
   }
   .setting input, .setting textarea {
     width: 80%;
@@ -1090,8 +1083,8 @@ canvas {
 }
 
 .raking-avatar {
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 20px;
     border-radius: 50%;
 }
 
@@ -1102,7 +1095,7 @@ canvas {
 
 .bar-container span {
     color: #030303;
-    margin-left: 2px;
+    font-size: 13px;
 }
 
 #ads-product img {
@@ -1188,10 +1181,6 @@ canvas {
     padding: 0px;
 }
 
-.mycursor {
-    /* cursor: url("https://cdn-icons-png.flaticon.com/128/3119/3119214.png"), auto; */
-    padding: 40px;
-}
 
 #video-section {
     position: absolute;
@@ -1199,7 +1188,7 @@ canvas {
 }
 #video-section #myVideo {
     /* position: absolute; */
-    height: 100%;
+    /* height: 100%; */
     opacity: 1;
 }
 
@@ -1229,4 +1218,8 @@ div.marquee > div.marquee-text {
     white-space:nowrap;
     display:inline;
     width:auto;
+}
+
+#hienthibanhxe {
+    width: 80%;
 }

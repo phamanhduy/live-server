@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)https://dungeoncrawler-od.vercel.app/ -->
+<html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./js//wheel/wheels.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <!-- <script src="./libs/vnum.js"></script> -->
+    <script src="./js/to/connection.js"></script>
+    <title>Trò chơi</title></head>
+
+<body ap-style="" data-new-gr-c-s-check-loaded="14.1100.0" data-gr-ext-installed="">
+  <div class="setting_class" style="width: 500px;">
+    <div class="content-head">
+      <h3>Cài đặt</h3>
+      <button onclick="closeInventory()">
+        <svg height="20px" viewBox="0 0 30 30" fill="#FFF">    <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"/></svg>
+      </button>
+  </div>
+  <div class="setting">
+    <input id="server-input" placeholder="ngrok server" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <input id="message-input" placeholder="Id tiktok" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <input id="live-section" placeholder="lives secsion" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <input id="time-input" type="number" placeholder="Thời gian chạy" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <input id="link_video" type="text" placeholder="link video" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <input id="so_tim" type="text" placeholder="số tim" autocomplete="off" /> <br>
+  </div>
+  <div class="setting">
+    <textarea id="json_product" name="w3review" rows="10"></textarea>
+  </div>
+  <div class="setting">
+    <input id="id_product" type="text" placeholder="id quà" autocomplete="off" />
+  </div>
+    <div class="setting">
+      <select id="hienthibanhxe" onchange="changeBanhxe()">
+        <option value="0">Ẩn bánh xe</option>
+        <option value="0.2">20% Hiển thị</option>
+        <option value="0.4">40% Hiển thị</option>
+        <option value="0.6">60% Hiển thị</option>
+        <option value="0.8">80% Hiển thị</option>
+        <option value="1" selected>100% Hiển thị</option>
+      </select>
+    </div>
+    <div class="setting">
+      <select id="hienthivideo" onchange="hienthivideo()">
+        <option value="0">HIền thị video</option>
+        <option value="0.2">20% Hiển thị</option>
+        <option value="0.4">40% Hiển thị</option>
+        <option value="0.6">60% Hiển thị</option>
+        <option value="0.8">80% Hiển thị</option>
+        <option value="1" selected>100% Hiển thị</option>
+      </select>
+    </div>
+    <div class="setting">
+      <select id="toanmanhinh" onchange="toanmanhinh()">
+        <option value="0">Full</option>
+        <option value="1" selected>Đóng</option>
+  
+      </select>
+    </div>
+  <div class="setting">
+    <textarea id="huongdan" name="w3review" rows="5"></textarea>
+  </div>
+  <div style="margin-top: 10px; margin-bottom: 10px; width: 100%; margin-left: 10px;">
+    <button style="width: 100px;" onclick="saveUserSecsion(false)">Lưu</button>
+    <button style="width: 100px;" onclick="saveUserSecsion(true)">Kết Nối</button>
+  </div>
+  </div>
+</body>
+</html>
+    <script src="./js/function.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/player.js"></script>
+    <script src="./js/firework.js"></script>
+    <script src="./js/speaking.js"></script>
+    <script src="./js/wheels.js"></script>

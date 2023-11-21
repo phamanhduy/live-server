@@ -2,6 +2,32 @@ var loadingPage = false;
 var userData = null;
 var viewerCount = 0;
 
+const fullscreenElement = document.getElementById('fullscreenElement');
+  // Hàm để bắt đầu chế độ toàn màn hình
+  function openFullscreen() {
+    if (fullscreenElement.requestFullscreen) {
+      fullscreenElement.requestFullscreen();
+    } else if (fullscreenElement.mozRequestFullScreen) { // Firefox
+      fullscreenElement.mozRequestFullScreen();
+    } else if (fullscreenElement.webkitRequestFullscreen) { // Chrome, Safari và Opera
+      fullscreenElement.webkitRequestFullscreen();
+    } else if (fullscreenElement.msRequestFullscreen) { // IE/Edge
+      fullscreenElement.msRequestFullscreen();
+    }
+  }
+
+  // Hàm để thoát khỏi chế độ toàn màn hình
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { // Firefox
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { // Chrome, Safari và Opera
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // IE/Edge
+      document.msExitFullscreen();
+    }
+  }
 
 function convertTextToVietnameseWords(text) {
     try {
@@ -23,6 +49,7 @@ function getUserSecsion() {
     if (sessionStorage.getItem('user')) {
         userData = JSON.parse(sessionStorage.getItem('user'));
         $('#tongsotim').html(_.get(userData, 'tongsotim'));
+        $('#sotim').html(_.get(userData, 'tongsotim'))
         $('#texthuongdan').html(_.get(userData, 'huongdan'));
         clearInterval(timerRuning);
         startRunTimer(_.get(userData, 'maxNumber'));
@@ -35,7 +62,7 @@ function getUserSecsion() {
               console.log({error});  
             }
         } else {
-            getCamera();
+            getCamera('user');
         }
     }
 }
@@ -80,6 +107,20 @@ function saveUserSecsion(isConnect = true) {
 function changeBanhxe() {
     var valueOpacity = $('#hienthibanhxe').val();
     $('.deal-wheel').css("opacity", valueOpacity);    
+}
+
+function hienthivideo() {
+    var valueOpacity = $('#hienthivideo').val();
+    $('#myVideo').css("opacity", valueOpacity);    
+}
+
+function toanmanhinh() {
+    var valueOpacity = $('#toanmanhinh').val();
+    if (valueOpacity == '0') {
+        openFullscreen()
+    } else {
+        closeFullscreen();
+    }
 }
 
 function connectionTiktok() {
@@ -173,14 +214,12 @@ setTimeout(() => {
     // getCamera();
 }, 500);
 
-function getCamera() {
+function getCamera(facingMode = 'facingMode') {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         var constraints = {
             video: {
-                width: { ideal: 720 },     // Ideal width
-                height: { ideal: 720 },     // Ideal height
-                facingMode: 'environment',  // Use the rear camera (use 'user' for the front camera)
-                focusMode: { ideal: 'continuous' } // Set focus mode to continuous
+                facingMode: facingMode,  // Use the rear camera (use 'user' for the front camera)
+                focusMode: { ideal: 'continuous' }, // Set focus mode to continuous
             }
         };
 
@@ -345,7 +384,7 @@ function showRanking(data) {
         for (let e = 0; e < elm.length; e++) {
             let elmItem = elm[e];
             let percen = (elmItem.score / tongDiem) * 100;
-            let titleName = elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}..` : elmItem.name;
+            let titleName = elmItem.name.length > 7 ? `${elmItem.name.slice(0, 7)}` : elmItem.name;
             htmlItem += `<tr>
           <td style="margin-right: 5px;">
             <img class="raking-avatar" src='${elmItem.avatar}'>

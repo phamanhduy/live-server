@@ -149,7 +149,7 @@ function socketReceiveMessage(type, data, options, socket) {
         username: _.get(data, 'uniqueId'),
         name: _.get(data, 'nickname'),
         avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 10) }, 'like', socket)
+      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 100) }, 'like', socket)
       break;
     case 'follow':
       addScore({
@@ -260,6 +260,10 @@ app.get('/chat', (req, res) => {
   res.sendFile(__dirname + '/client/chat.html');
 });
 
+
+app.get('/setting', (req, res) => {
+  res.sendFile(__dirname + '/client/setting.html');
+});
 app.get('/api/get-ranking', async (req, res) => {
   const session = _.get(req, 'query.session');
   try {

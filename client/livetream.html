@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!-- saved from url=(0037)https://dungeoncrawler-od.vercel.app/ -->
-<html lang="en" class="mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/all.min.css">
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./js//wheel//wheels.css">
+    <link rel="stylesheet" href="./js//wheel/wheels.css">
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -15,21 +15,10 @@
 
 <body ap-style="" data-new-gr-c-s-check-loaded="14.1100.0" data-gr-ext-installed="">
   <div style="z-index: 1000;position: absolute;">
-    <button onclick="openInventory()">
+    <button id="setting-btn" onclick="openInventory()">
       <svg viewBox="0 0 48 48" height="1em" fill="#FFF"><path d="M39.139,26.282C38.426,25.759,38,24.919,38,24.034s0.426-1.725,1.138-2.247l3.294-2.415	c0.525-0.386,0.742-1.065,0.537-1.684c-0.848-2.548-2.189-4.872-3.987-6.909c-0.433-0.488-1.131-0.642-1.728-0.38l-3.709,1.631	c-0.808,0.356-1.749,0.305-2.516-0.138c-0.766-0.442-1.28-1.23-1.377-2.109l-0.446-4.072c-0.071-0.648-0.553-1.176-1.191-1.307	c-2.597-0.531-5.326-0.54-7.969-0.01c-0.642,0.129-1.125,0.657-1.196,1.308l-0.442,4.046c-0.097,0.88-0.611,1.668-1.379,2.11	c-0.766,0.442-1.704,0.495-2.515,0.138l-3.729-1.64c-0.592-0.262-1.292-0.11-1.725,0.377c-1.804,2.029-3.151,4.35-4.008,6.896	c-0.208,0.618,0.008,1.301,0.535,1.688l3.273,2.4C9.574,22.241,10,23.081,10,23.966s-0.426,1.725-1.138,2.247l-3.294,2.415	c-0.525,0.386-0.742,1.065-0.537,1.684c0.848,2.548,2.189,4.872,3.987,6.909c0.433,0.489,1.133,0.644,1.728,0.38l3.709-1.631	c0.808-0.356,1.748-0.305,2.516,0.138c0.766,0.442,1.28,1.23,1.377,2.109l0.446,4.072c0.071,0.648,0.553,1.176,1.191,1.307	C21.299,43.864,22.649,44,24,44c1.318,0,2.648-0.133,3.953-0.395c0.642-0.129,1.125-0.657,1.196-1.308l0.443-4.046	c0.097-0.88,0.611-1.668,1.379-2.11c0.766-0.441,1.705-0.493,2.515-0.138l3.729,1.64c0.594,0.263,1.292,0.111,1.725-0.377	c1.804-2.029,3.151-4.35,4.008-6.896c0.208-0.618-0.008-1.301-0.535-1.688L39.139,26.282z M24,31c-3.866,0-7-3.134-7-7s3.134-7,7-7	s7,3.134,7,7S27.866,31,24,31z"/></svg>
     </button>
-
-    <br />
-    <select id="hienthibanhxe" onchange="changeBanhxe()">
-      <option value="0">Ẩn bánh xe</option>
-      <option value="0.2">20% Hiển thị</option>
-      <option value="0.4">40% Hiển thị</option>
-      <option value="0.6">60% Hiển thị</option>
-      <option value="0.8">80% Hiển thị</option>
-      <option value="1" selected>100% Hiển thị</option>
-    </select>
-  </div>
-    <main class="mycursor">
+    <main class="mycursor" id="fullscreenElement">
       
         <!-- Hub -->
         <section id="video-section">
@@ -45,10 +34,10 @@
             <!-- <strong style="font-size: 20px;">Top 1 sẽ nhận được tiền tối đa là 2.5 Triệu</strong>   -->
           </div>
           <div class="intro" style="text-align: center;">
-            <strong style="font-size: 20px;">Top 1 sẽ nhận được quà tặng giá trị tối đa <span style="font-size: 25px; color: #05f3e8;">2.5 Triệu</span></strong>  
+            <!-- <strong style="font-size: 20px;">Top 1 sẽ nhận được <span style="font-size: 25px; color: #05f3e8;">1.5củ</span></strong>   -->
           </div>
           <div class="intro" style="text-align: center;">
-            <strong style="font-size: 25px;">
+            <strong style="font-size: 18px;">
               Khi thời gian kết thúc
               <strong id="timer-countdown">-</strong>
             </strong>  
@@ -57,26 +46,27 @@
             <hr style="border: 1px solid red;" />
             <!-- <p id="time-finish1">Qùa tặng xu tương ứng</p>   -->
           </div>
-            <header>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/hoahong.webp" /> <strong>1</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/nhac.webp" /> <strong>1</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/bantim.webp" /> <strong>5</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/kem.webp" /> <strong>1</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/nhac.webp" /> <strong>1</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/banh.webp" /> <strong>30</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/nuochoa.webp" /> <strong>20</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/hoahong2.webp" /> <strong>10</strong></span>
-                  <span><img width="26px" class="zoom-in-out-box" src="./images/gifts/gg.webp" /> <strong>1</strong></span>
+            <header style="width: 100%;">
+                  <span><strong>1</strong></span>
+                  <span> <strong>1</strong></span>
+                  <span> <strong>5</strong></span>
+                  <span><strong>1</strong></span>
+                  <span> <strong>1</strong></span>
+                  <span> <strong>30</strong></span>
+                  <span> <strong>20</strong></span>
+                  <span> <strong>10</strong></span>
+                  <span><strong>1</strong></span>
             </header>
+            
             <div class="stat-panel">
                 <div class="box left" id="group-table">
                 </div>
             </div>
-            <div class='marquee'>
+            <!-- <div class='marquee'>
               <div class='marquee-text'>
                 <strong id="texthuongdan"></strong>
               </div>
-          </div>
+          </div> -->
             <div class="deal-wheel">
               <ul class="spinner"></ul>
               <figure class="cap">
@@ -131,11 +121,37 @@
                 <div class="setting">
                   <input id="id_product" type="text" placeholder="id quà" autocomplete="off" />
                 </div>
+                  <div class="setting">
+                    <select id="hienthibanhxe" onchange="changeBanhxe()">
+                      <option value="0">Ẩn bánh xe</option>
+                      <option value="0.2">20% Hiển thị</option>
+                      <option value="0.4">40% Hiển thị</option>
+                      <option value="0.6">60% Hiển thị</option>
+                      <option value="0.8">80% Hiển thị</option>
+                      <option value="1" selected>100% Hiển thị</option>
+                    </select>
+                  </div>
+                  <div class="setting">
+                    <select id="hienthivideo" onchange="hienthivideo()">
+                      <option value="0">HIền thị video</option>
+                      <option value="0.2">20% Hiển thị</option>
+                      <option value="0.4">40% Hiển thị</option>
+                      <option value="0.6">60% Hiển thị</option>
+                      <option value="0.8">80% Hiển thị</option>
+                      <option value="1" selected>100% Hiển thị</option>
+                    </select>
+                  </div>
+                  <div class="setting">
+                    <select id="toanmanhinh" onchange="toanmanhinh()">
+                      <option value="0">Full</option>
+                      <option value="1" selected>Đóng</option>
 
+                    </select>
+                  </div>
                 <div class="setting">
                   <textarea id="huongdan" name="w3review" rows="5"></textarea>
                 </div>
-                <div style="margin-top: 100px; margin-bottom: 100px; width: 100%; text-align: center;">
+                <div style="margin-top: 10px; margin-bottom: 10px; width: 100%; margin-left: 10px;">
                   <button style="width: 100px;" onclick="saveUserSecsion(false)">Lưu</button>
                   <button style="width: 100px;" onclick="saveUserSecsion(true)">Kết Nối</button>
                 </div>

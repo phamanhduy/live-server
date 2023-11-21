@@ -102,9 +102,9 @@ const createPrizeNodes = (dataWheels) => {
     // let maxPercent = (maxNumber / sumScore(dataWheels)) * 100;
     // let fontSize = percentItem * (15 / maxPercent);
 
-    let fontSize = 15;
+    let fontSize = 13;
     if (percentItem < 5) {
-      fontSize = 12;
+      fontSize = 11;
     }
 
     spinner.insertAdjacentHTML(
