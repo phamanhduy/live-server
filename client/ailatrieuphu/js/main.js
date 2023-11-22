@@ -67,7 +67,7 @@ function getUserSecsion() {
     }
 }
 
-var URL_API = _.get(JSON.parse(sessionStorage.getItem('user')), 'serverInput') || 'http://localhost:3000/';
+var URL_API = _.get(JSON.parse(sessionStorage.getItem('user')), 'serverInput') || 'http://localhost:3000';
 let connection = new TikTokIOConnection(URL_API);
 
 var socket = io(URL_API);
@@ -147,7 +147,6 @@ function connectionTiktok() {
                 if (!isSpeaking) {
                     console.log(`${dataLive.nickname} đang nói: ${dataLive.comment}`);
                     runSpeaking(convertTextToVietnameseWords(dataLive.comment), (data) => {
-        
                     });
                 }
             });
@@ -181,7 +180,7 @@ function connectionTiktok() {
             });
 
             connection.on(`${userData?.channel}-gift`, (dataLive) => {
-                console.log({dataLive})
+                caculatorScore(dataLive);
             });
         } else {
             alert('no username entered');
@@ -189,6 +188,17 @@ function connectionTiktok() {
     }
 }
 
+function caculatorScore(data) {
+    let game = JSON.parse(sessionStorage.getItem('play'));
+    if (game && score[_.get(data, 'giftName')] == _.get(game, 'answer')) {
+        console.log({winner: {
+            username: _.get(data, 'uniqueId'),
+        }, userData, coinReceived: _.get(data, 'diamondCount')})
+        connection.emit('send_coin', {winner: {
+            username: _.get(data, 'uniqueId'),
+        }, userData, coinReceived: _.get(data, 'diamondCount')});
+    }
+}
 function receivedMessage(userData) {
 }
 
@@ -376,9 +386,13 @@ function showRanking(data) {
         name: _.get(d, 'name') || `Top${i + 1}`,
         score: d.score
     }));
-    var group1 = rankingArr.slice(0, 5);
-    var group2 = rankingArr.slice(5, 10);
-    var group3 = rankingArr.slice(10, 15);
+    // var group1 = rankingArr.slice(0, 5);
+    // var group2 = rankingArr.slice(5, 10);
+    // var group3 = rankingArr.slice(10, 15);
+
+    var group1 = rankingArr.slice(0, 6);
+    var group2 = rankingArr.slice(6, 12);
+    var group3 = rankingArr.slice(12, 18);
 
     var groups = [group1, group2, group3];
     let html = '';

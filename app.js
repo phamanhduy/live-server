@@ -154,20 +154,20 @@ function socketReceiveMessage(type, data, options, socket) {
         avatar: _.get(data, 'profilePictureUrl')
       }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: Math.round(data.likeCount / 100) }, 'like', socket)
       break;
-    case 'follow':
-      addScore({
-          username: _.get(data, 'uniqueId'),
-          name: _.get(data, 'nickname'),
-          avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 5 }, 'follow', socket);
-      break;
-    case 'share':
-      addScore({
-          username: _.get(data, 'uniqueId'),
-          name: _.get(data, 'nickname'),
-          avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 1 }, 'share', socket);
-      break;
+    // case 'follow':
+    //   addScore({
+    //       username: _.get(data, 'uniqueId'),
+    //       name: _.get(data, 'nickname'),
+    //       avatar: _.get(data, 'profilePictureUrl')
+    //   }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 5 }, 'follow', socket);
+    //   break;
+    // case 'share':
+    //   addScore({
+    //       username: _.get(data, 'uniqueId'),
+    //       name: _.get(data, 'nickname'),
+    //       avatar: _.get(data, 'profilePictureUrl')
+    //   }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 1 }, 'share', socket);
+    //   break;
     case 'member':
       addScore({
           username: _.get(data, 'uniqueId'),
@@ -175,13 +175,13 @@ function socketReceiveMessage(type, data, options, socket) {
           avatar: _.get(data, 'profilePictureUrl')
       }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: 1 }, 'member', socket);
       break;
-    case 'gift':
-      addScore({
-        username: _.get(data, 'uniqueId'),
-        name: _.get(data, 'nickname'),
-        avatar: _.get(data, 'profilePictureUrl')
-      }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: data.diamondCount }, 'gift', socket)
-      break;
+    // case 'gift':
+    //   addScore({
+    //     username: _.get(data, 'uniqueId'),
+    //     name: _.get(data, 'nickname'),
+    //     avatar: _.get(data, 'profilePictureUrl')
+    //   }, { channel: _.get(options, 'channel'), sessionName: _.get(options, 'liveSession'), score: data.diamondCount }, 'gift', socket)
+    //   break;
     default:
       break;
   }
@@ -261,7 +261,7 @@ app.get('/ailatrieuphu', (req, res) => {
 app.get('/api/get-ranking-altp', async (req, res) => {
   const session = _.get(req, 'query.session');
   try {
-    const winner = await SessionGame.getLimitWinner({ sessionName: session }, 15);
+    const winner = await SessionGame.getLimitWinner({ sessionName: session }, 18);
     res.send(winner);
   } catch (error) {
     console.log({ error })

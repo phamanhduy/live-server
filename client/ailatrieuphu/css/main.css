@@ -40,7 +40,7 @@ animation: color 1s infinite;
 color: black;
 }
 .title{
-    color: #e0e0e0;
+    color: #ffffff;
     font-family: monospace;
     font-size: 18px;
     text-align: center;
@@ -100,6 +100,10 @@ width: 100%;
 cursor: pointer;
 font-family: monospace;
 margin-top: 5px;
+border: 1px solid red;
+color: #FFF;
+font-weight: 700;
+font-size: 15px;
 }
 .item{
 	background: url('../images/bg_list_score.png');
@@ -130,20 +134,19 @@ background-size: cover;
 background-position: center;
 display: none;
 }
-#clock{
-    height: 44px;
-    width: 44px;
-    border: 4px dashed #F44336;
-    position: absolute;
-    /* left: 350px; */
-    /* top: 38%; */
-    right: 0;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 36px;
-    font-size: 21px;
-    font-family: fantasy;
-    font-weight: 700;
+    #clock {
+        height: 60px;
+        width: 60px;
+        border: 4px dashed #F44336;
+        position: absolute;
+        /* left: 350px; */
+        /* top: 38%; */
+        border-radius: 50%;
+        text-align: center;
+        line-height: 48px;
+        font-size: 33px;
+        font-family: fantasy;
+        font-weight: 700;
 }
 .display-none{
 display: none;
@@ -167,9 +170,8 @@ display: none;
     transform: rotate(90deg);
 }
 .modal-content{
-    border: none;
-    background: none;
-    margin-top: 50px;
+    background-color: #000;
+    position: absolute;
 }
 .luatchoi{
     line-height: 34px;

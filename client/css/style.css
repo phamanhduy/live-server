@@ -369,8 +369,9 @@ button {
 
 #inventory .content {
     padding: 0;
-    gap: 0;
+    /* gap: 0; */
     width: 100%;
+    margin-top: 40px;
 }
 
 .setting select {
@@ -1053,7 +1054,7 @@ header button i {
     margin-left: 5px;
   }
   .setting input, .setting textarea {
-    width: 80%;
+    width: 100%;
   }
 
 #container-words {
@@ -1196,8 +1197,9 @@ canvas {
 #video-section #myVideo {
     /* position: absolute; */
     /* height: 100%; */
-    opacity: 0.3;
-    width: 100%;
+    opacity: 1;
+    /* width: 100%; */
+    height: 100%;
 }
 
 #tongsotim {

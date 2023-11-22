@@ -33,8 +33,8 @@ var GameUI = {
       
     },
     displayNext: function() {
-
         const game = ailatrieuphu();
+        sessionStorage.setItem('play', JSON.stringify(game));
         this.displayQuestion(game);
         this.displayMedia(game);
         this.displayChoices(game);
@@ -62,8 +62,16 @@ var GameUI = {
         var choices = _.get(question, 'choices') || [];
         var html = '';
         for (var i = 0; i < choices.length; i++) {
+            let image = '<img width="17px" src="https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/eba3a9bb85c33e017f3648eaf88d7189~tplv-obj.png" />'
+            if (i == 1) {
+                image = '<img width="17px" src="https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/d56945782445b0b8c8658ed44f894c7b~tplv-obj.png" />'
+            } else if (i == 2) {
+                image = '<img width="17px" src="https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/802a21ae29f9fae5abe3693de9f874bd~tplv-obj.png" />'
+            } else if (i == 3) {
+                image = '<img width="17px" src="https://p19-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.png" />'
+            }
             let choice = choices[i];
-            html += `<div class="col-6 col-sm-3"><button type="button" class="raise" id="choice-${i}">${_.get(choice, 'stt')}. ${_.get(choice, 'text')}</button></div>`;
+            html += `<div class="col-6 col-sm-3"><button type="button" class="raise" id="choice-${i}">${image} ${_.get(choice, 'stt')}. ${_.get(choice, 'text')}</button></div>`;
         }
         $(".answer .row").html(html);
     },
