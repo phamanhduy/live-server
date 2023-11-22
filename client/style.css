@@ -230,6 +230,10 @@ body {
     margin-top:10px;
     margin-right: 20px;
   }
+
+  .side strong {
+    font-weight: 700;
+  }
   
   .middle {
     margin-top:10px;
@@ -241,6 +245,7 @@ body {
   .right {
     text-align: left;
     padding-left: 10px;
+    font-weight: 700;
   }
   
   /* Clear floats after the columns */

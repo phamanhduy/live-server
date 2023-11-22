@@ -12,11 +12,10 @@ const { TikTokConnectionWrapper, getGlobalConnectionCount } = require('./connect
 const { clientBlocked } = require('./limiter');
 
 const db = require('./db');
-const usersComment = require('./models/usersComment');
+const ailatrieuphuControl = require('./controllers/ailatrieuphuController');
 const liveSession = require('./models/liveSession');
 const User = require('./models/user');
 const SessionGame = require('./models/sessionGame');
-const FunctionUtil = require('./function');
 // const tiktokConnector = require('./tiktok-connector');
 const app = express();
 app.use(cors());
@@ -54,6 +53,8 @@ io.on('connection', (socket) => {
   console.info('New connection from origin', socket.handshake.headers['origin'] || socket.handshake.headers['referer']);
 
   socket.on('setUniqueId', (uniqueId, options) => {
+    console.log({options})
+    // return;
       // Prohibit the client from specifying these options (for security reasons)
       if (typeof options === 'object' && options) {
           delete options.requestOptions;
@@ -142,6 +143,8 @@ function socketReceiveMessage(type, data, options, socket) {
     socket.emit(`${_.get(options, 'channel')}-like`, data);
   } else if (type === 'roomUser') {
     socket.emit(`${_.get(options, 'channel')}-views`, data);
+  } else if (type === 'gift') {
+    socket.emit(`${_.get(options, 'channel')}-gift`, data);
   }
   switch (type) {
     case 'like':
@@ -229,24 +232,9 @@ async function addScore({ username, name, avatar }, { channel, sessionName, scor
   });
 }
 // Emit global connection statistics
-setInterval(() => {
-  io.emit('statistic', { globalConnectionCount: getGlobalConnectionCount() });
-}, 5000)
-
-// function updateAvatar(dataLive) {
-//   const checkTimeExpireImage = FunctionUtil.checkTimeExpire(_.get(dataLive, 'avatar'));
-//   if (!checkTimeExpireImage) {
-//     User.updateData({
-//       name: _.get(dataLive, 'name', ''),
-//       username: _.get(dataLive, 'username', ''),
-//       // avatarBase64: base64Img,
-//     }, {
-//       avatar: _.get(dataLive, 'avatar', ''),
-//     });
-//   }
-// }
-
-
+// setInterval(() => {
+//   io.emit('statistic', { globalConnectionCount: getGlobalConnectionCount() });
+// }, 5000)
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/livetream.html');
@@ -264,6 +252,22 @@ app.get('/chat', (req, res) => {
 app.get('/setting', (req, res) => {
   res.sendFile(__dirname + '/client/setting.html');
 });
+
+app.get('/ailatrieuphu', (req, res) => {
+  res.sendFile(__dirname + '/client/ailatrieuphu.html');
+});
+
+
+app.get('/api/get-ranking-altp', async (req, res) => {
+  const session = _.get(req, 'query.session');
+  try {
+    const winner = await SessionGame.getLimitWinner({ sessionName: session }, 15);
+    res.send(winner);
+  } catch (error) {
+    console.log({ error })
+  }
+});
+
 app.get('/api/get-ranking', async (req, res) => {
   const session = _.get(req, 'query.session');
   try {
@@ -274,51 +278,6 @@ app.get('/api/get-ranking', async (req, res) => {
   }
 });
 
-app.post('/api/setData', (req, res) => {
-  try {
-    const data = _.get(req, 'body');
-    if (_.get(data, 'type') === 'follow' || _.get(data, 'type') === 'live' || _.get(data, 'type') === 'comment') {
-      receivedDataLive({
-        channel: _.get(data, 'liver', '').substring(1),
-        name: _.get(data, 'userData.userNameElement'),
-        comment: _.get(data, 'userData.textMessage'),
-        avatar: _.get(data, 'userData.avatar'),
-        type: _.get(data, 'type'),
-      });
-      res.send(true);
-      return;
-    } else if (_.get(data, 'type') === 'view') {
-      receivedDataLive({
-        channel: _.get(data, 'liver', '').substring(1),
-        viewers: _.get(data, 'viewers'),
-        type: _.get(data, 'type'),
-      });
-    }
-
-    res.send('1');
-  } catch (error) {
-    console.log({ error })
-  }
-});
-
-// tiktokConnector.connectStream('haidangwood16', (tiktokLiveConnection) => {
-// tiktokLiveConnection.on('chat', data => {
-//   console.log({data})
-//   // socket.emit(chat-${username}, data);
-// });
-// })
-
-function receivedDataLive(dataLive) {
-  io.emit(_.get(dataLive, 'channel'), dataLive);
-}
-// app.get('/api/get-member-random', async (req, res) => {
-//   try {
-//     const userRandom = await usersComment.getRamdom();
-//     res.send(userRandom);
-//   } catch (error) {
-//     console.log({error})
-//   }
-// });
 const PORT = 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

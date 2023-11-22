@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)https://dungeoncrawler-od.vercel.app/ -->
+<html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <!-- <script src="./libs/vnum.js"></script> -->
+    <script src="./js/to/connection.js"></script>
+    <title>Trò chơi</title></head>
+    <link rel="stylesheet" type="text/css" href="css/libs/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/libs/button.css">
+    <link rel="stylesheet" type="text/css" href="css/libs/animate.css">
+    <link rel="stylesheet" type="text/css" href="css/libs/sweetalert.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+<body ap-style="" data-new-gr-c-s-check-loaded="14.1100.0" data-gr-ext-installed="">
+  <div style="z-index: 1000;position: absolute; top: 0; width: 100%">
+    <button id="setting-btn" onclick="openInventory()">
+      <svg viewBox="0 0 48 48" height="1em" fill="#FFF"><path d="M39.139,26.282C38.426,25.759,38,24.919,38,24.034s0.426-1.725,1.138-2.247l3.294-2.415	c0.525-0.386,0.742-1.065,0.537-1.684c-0.848-2.548-2.189-4.872-3.987-6.909c-0.433-0.488-1.131-0.642-1.728-0.38l-3.709,1.631	c-0.808,0.356-1.749,0.305-2.516-0.138c-0.766-0.442-1.28-1.23-1.377-2.109l-0.446-4.072c-0.071-0.648-0.553-1.176-1.191-1.307	c-2.597-0.531-5.326-0.54-7.969-0.01c-0.642,0.129-1.125,0.657-1.196,1.308l-0.442,4.046c-0.097,0.88-0.611,1.668-1.379,2.11	c-0.766,0.442-1.704,0.495-2.515,0.138l-3.729-1.64c-0.592-0.262-1.292-0.11-1.725,0.377c-1.804,2.029-3.151,4.35-4.008,6.896	c-0.208,0.618,0.008,1.301,0.535,1.688l3.273,2.4C9.574,22.241,10,23.081,10,23.966s-0.426,1.725-1.138,2.247l-3.294,2.415	c-0.525,0.386-0.742,1.065-0.537,1.684c0.848,2.548,2.189,4.872,3.987,6.909c0.433,0.489,1.133,0.644,1.728,0.38l3.709-1.631	c0.808-0.356,1.748-0.305,2.516,0.138c0.766,0.442,1.28,1.23,1.377,2.109l0.446,4.072c0.071,0.648,0.553,1.176,1.191,1.307	C21.299,43.864,22.649,44,24,44c1.318,0,2.648-0.133,3.953-0.395c0.642-0.129,1.125-0.657,1.196-1.308l0.443-4.046	c0.097-0.88,0.611-1.668,1.379-2.11c0.766-0.441,1.705-0.493,2.515-0.138l3.729,1.64c0.594,0.263,1.292,0.111,1.725-0.377	c1.804-2.029,3.151-4.35,4.008-6.896c0.208-0.618-0.008-1.301-0.535-1.688L39.139,26.282z M24,31c-3.866,0-7-3.134-7-7s3.134-7,7-7	s7,3.134,7,7S27.866,31,24,31z"/></svg>
+    </button>
+    <main class="mycursor" id="fullscreenElement">
+      
+        <!-- Hub -->
+        <section id="video-section">
+          <video id="myVideo" autoplay controls>
+            <source src="" type="video/mp4">
+            Your browser does not support HTML video.
+          </video>
+        </section>
+
+        <section id="dungeon-main" class="game-container scrollable" style="filter: brightness(100%); display: flex;">
+          <div style="text-align: center;">
+            <!-- <strong id="timer-countdown" style="float: left;">-</strong> -->
+            <!-- <strong style="font-size: 20px;">Top 1 sẽ nhận được tiền tối đa là 2.5 Triệu</strong>   -->
+          </div>
+          <div class="intro" style="text-align: center;">
+            <!-- <strong style="font-size: 20px;">Top 1 sẽ nhận được <span style="font-size: 25px; color: #05f3e8;">1.5củ</span></strong>   -->
+          </div>
+          <div class="intro" style="text-align: center;">
+            <!-- <strong style="font-size: 18px;">
+              Khi thời gian kết thúc
+              <strong id="timer-countdown">-</strong>
+            </strong>   -->
+          </div>
+          <div class="intro mt-5" style='text-align: center;'>
+            <!-- <p id="time-finish1">Qùa tặng xu tương ứng</p>   -->
+          </div>
+            <div class="stat-panel">
+                <div class="box left" id="group-table">
+                </div>
+            </div>
+     <!-- End Screen Start Game -->
+     <div id="wrapper" class="animated bounceIn mt-2">
+        <div id="box-left">
+           <div class="title" id="question"></div>
+           <div class="box-media" style="display: none;"></div>
+           <div class="answer mt-1">
+              <div class="row" style="margin-left: 0; margin-right: 0;">
+              </div>
+           </div>
+        </div>
+        <!-- <div class="point">Score : <span>0</span>  </div>
+        <div id="box-right">
+        </div> -->
+     </div>
+     <div id="clock"></div>
+     <div class="win"></div>
+     <div class="gameover animated jello"></div>
+     <audio data-key="1" src="sounds/Begin.mp3"></audio>
+     <audio data-key="2" src="sounds/Hoi.mp3"></audio>
+     <audio data-key="3" src="sounds/click.mp3"></audio>
+     <audio data-key="4" loop src="sounds/nhac_nen1.mp3"></audio>
+     <audio data-key="5" src="sounds/het_gio.mp3"></audio>
+     <audio data-key="6" src="sounds/Thua_Cuoc.mp3"></audio>
+     <audio data-key="7" src="sounds/khen_cau_15.mp3"></audio>
+     <audio data-correct="0" src="sounds/a_d.mp3"></audio>
+     <audio data-correct="1" src="sounds/b_d.mp3"></audio>
+     <audio data-correct="2" src="sounds/c_d.mp3"></audio>
+     <audio data-correct="3" src="sounds/d_d.mp3"></audio>
+     <audio data-wrong="0" src="sounds/a_s.mp3"></audio>
+     <audio data-wrong="1" src="sounds/b_s.mp3"></audio>
+     <audio data-wrong="2" src="sounds/c_s.mp3"></audio>
+     <audio data-wrong="3" src="sounds/d_s.mp3"></audio>
+     <script type="text/javascript" src="libs/jquery-3.1.1.slim.min.js" ></script>
+     <script type="text/javascript" src="libs/tether.min.js"></script>
+     <script type="text/javascript" src="libs/bootstrap.min.js"></script>
+     <script type="text/javascript" src="libs/sweetalert.min.js"></script>
+     <script type="text/javascript" src="libs/jquery.countdown.min.js"></script>
+     <script type="text/javascript" src="libs/animatedModal.min.js"></script>
+     <script type="text/javascript" src="questions.js"></script>
+     <script type="text/javascript" src="app.js"></script>
+     
+            </div>
+        </section>
+
+        <!-- ===== Modals ===== -->
+        <div class="modal-container" id="inventory">
+            <div class="content">
+                <div class="content-head">
+                    <h3>Cài đặt</h3>
+                    <button onclick="closeInventory()">
+                      <svg height="20px" viewBox="0 0 30 30" fill="#FFF">    <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"/></svg>
+                    </button>
+                </div>
+                <div class="setting">
+                  <input id="server-input" placeholder="ngrok server" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <input id="message-input" placeholder="Id tiktok" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <input id="live-section" placeholder="lives secsion" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <input id="time-input" type="number" placeholder="Thời gian chạy" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <input id="link_video" type="text" placeholder="link video" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <input id="so_tim" type="text" placeholder="số tim" autocomplete="off" /> <br>
+                </div>
+                <div class="setting">
+                  <textarea id="json_product" name="w3review" rows="10"></textarea>
+                </div>
+                <div class="setting">
+                  <input id="id_product" type="text" placeholder="id quà" autocomplete="off" />
+                </div>
+                  <div class="setting">
+                    <select id="hienthibanhxe" onchange="changeBanhxe()">
+                      <option value="0">Ẩn bánh xe</option>
+                      <option value="0.2">20% Hiển thị</option>
+                      <option value="0.4">40% Hiển thị</option>
+                      <option value="0.6">60% Hiển thị</option>
+                      <option value="0.8">80% Hiển thị</option>
+                      <option value="1" selected>100% Hiển thị</option>
+                    </select>
+                  </div>
+                  <div class="setting">
+                    <select id="hienthivideo" onchange="hienthivideo()">
+                      <option value="0">HIền thị video</option>
+                      <option value="0.2">20% Hiển thị</option>
+                      <option value="0.4">40% Hiển thị</option>
+                      <option value="0.6">60% Hiển thị</option>
+                      <option value="0.8">80% Hiển thị</option>
+                      <option value="1" selected>100% Hiển thị</option>
+                    </select>
+                  </div>
+                  <div class="setting">
+                    <select id="toanmanhinh" onchange="toanmanhinh()">
+                      <option value="0">Full</option>
+                      <option value="1" selected>Đóng</option>
+
+                    </select>
+                  </div>
+                <div class="setting">
+                  <textarea id="huongdan" name="w3review" rows="5"></textarea>
+                </div>
+                <div style="margin-top: 10px; margin-bottom: 10px; width: 100%; margin-left: 10px;">
+                  <button style="width: 100px;" onclick="saveUserSecsion(false)">Lưu</button>
+                  <button style="width: 100px;" onclick="saveUserSecsion(true)">Kết Nối</button>
+                </div>
+            </div>
+            <!-- <button id="menu-btn" onclick="disConnect()">Ngắt kết nối</button> -->
+        </div>
+
+        <div class="modal-container" style="display: none;" id="winner-con">
+          <div class="content">
+              <div class="content-head">
+                  <h3>Vinh danh người giành chiến thắng</h3>
+              </div>
+              <strong id="winner-name">Duy phạm</strong>
+              <div class="wrapper-winner">
+                <img class="image-avatar" id="image-avatar" src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg">
+              </div>
+              <div class="ruong-img">
+                <img width="100px" src="./images/khobau/ruongkhobau.png" />
+              </div>
+              <span id="show-text">Còn cách người dẫn đầu 456 điểm nữa! Cố lên</span>
+          </div>
+      </div>
+
+      <div class="modal-container lastwinner" style="display: none;" id="lastwinner">
+        <div class="content" id="lastwinner-content">
+
+        </div>
+    </div>
+
+    <div class="modal-container lastwinner" style="display: none;" id="notifyGift">
+      <div class="content" id="notifyGift-content">
+
+      </div>
+  </div>
+
+      <div class="modal-container" style="display: none;" id="ads-product">
+        <div class="content" id="content-ads">
+          <div id="ads-loading" class="ads-game-container" style="display: block;">
+            <div class="loader"></div>
+        </div>
+          <div class="content-head">
+              <h3>Quà tặng khi thời gian kết thúc</h3>
+          </div>
+          <img class="img-product" src="https://logoaz.net/wp-content/uploads/2019/02/quy-tac-chup-anh-san-pham-phong-nen.jpg" alt="Girl in a jacket">
+          <div class="call-action">
+            <svg class="icon-action" fill="red" height="50px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+              viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+            <polygon points="283.7,298.7 283.7,0 198.3,0 198.3,298.7 70.3,298.7 241,512 411.7,298.7 "/>
+            </svg>
+            <span class="text-hook">Click giỏ hàng xem quà tặng</span>
+          </div>
+        </div>
+    </div>
+    </main>
+    <script src="./altp.js"></script>
+    <script src="./js/function.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/player.js"></script>
+    <script src="./js/speaking.js"></script>
